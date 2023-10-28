@@ -3,6 +3,12 @@ import java.awt.*;
 public class Dot {
     private int x;
     private int y;
+    private static int x1 = 50;
+    private static int y1 = 100;
+    private static int x2 = 250;
+    private static int y3 = 300;
+    private static int x3 = 250;
+    private static int x4 = 50;
     private static int step = 1;
     private static final Color DOT_COLOR = Color.RED;
 
@@ -17,12 +23,7 @@ public class Dot {
     }
 
     public void moveDot() {
-        int x1 = 50;
-        int y1 = 100;
-        int x2 = 250;
-        int x3 = 250;
-        int y3 = 300;
-        int x4 = 50;
+        
 
         if (x >= x1 && x < x2 && y == y1) {
             x += step;
@@ -41,6 +42,22 @@ public class Dot {
 
     public int getY() {
         return y;
+    }
+
+    public int getX1() {
+        return x1;
+    }
+
+    public int getY1() {
+        return y1;
+    }
+
+    public int getX2() {
+        return x2;
+    }
+
+    public int getY3() {
+        return y3;
     }
 
     public void setX(int newX) {

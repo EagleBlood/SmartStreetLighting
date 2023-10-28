@@ -30,4 +30,9 @@ public class Lamp {
         int dotY = dot.getY();
         return Math.abs(dotX - x) <= LAMP_RADIUS;
     }
+
+    public void setPosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 }
