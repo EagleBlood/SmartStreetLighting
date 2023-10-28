@@ -6,7 +6,7 @@ public class Canvas {
 
     public Canvas(Dot dot, Lamp lamp) {
         this.dot = dot;
-        this.lamp = new Lamp(50);
+        this.lamp = new Lamp(50, 90);
     }
 
     public void draw(Graphics g) {
@@ -15,5 +15,7 @@ public class Canvas {
         if (dot != null) {
             dot.draw(g);
         }
+
+        lamp.draw(g);
     }
 }

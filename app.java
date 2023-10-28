@@ -4,13 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class app {
-    
+
     private static Dot dot;
     private static Lamp lamp;
     private static Canvas canvas;
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Symulator Ruchu Kropek");
+        JFrame frame = new JFrame("Symulator oświetlenia ulicznego");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel() {
             @Override

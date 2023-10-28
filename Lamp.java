@@ -1,11 +1,19 @@
+import java.awt.*;
 import java.util.List;
 
 public class Lamp {
     private int x;
+    private int y;
     private static final int LAMP_RADIUS = 60;
 
-    public Lamp(int x) {
+    public Lamp(int x, int y) {
         this.x = x;
+        this.y = y;
+    }
+
+    public void draw(Graphics g) {
+        g.setColor(Color.ORANGE);
+        g.fillOval(x, y, 10, 10);
     }
 
     public void activateDots(List<Dot> dots) {
