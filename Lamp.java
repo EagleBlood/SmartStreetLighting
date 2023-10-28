@@ -4,8 +4,10 @@ import java.util.List;
 public class Lamp {
     private int x;
     private int y;
+
     private static final int LAMP_RADIUS = 60;
     private static final Color LAMP_COLOR = Color.ORANGE;
+    private static final int LAMP_SIZE = 10;
 
     public Lamp(int x, int y) {
         this.x = x;
@@ -14,7 +16,10 @@ public class Lamp {
 
     public void draw(Graphics g) {
         g.setColor(LAMP_COLOR);
-        g.fillOval(x, y, 10, 10);
+        // Draw the dot from its center
+        int drawX = x - LAMP_SIZE / 2;
+        int drawY = y - LAMP_SIZE / 2;
+        g.fillOval(drawX, drawY, LAMP_SIZE, LAMP_SIZE);
     }
 
     public void activateDots(List<Dot> dots) {
@@ -27,7 +32,7 @@ public class Lamp {
 
     public boolean checkActivation(Dot dot) {
         int dotX = dot.getX();
-        int dotY = dot.getY();
+        //int dotY = dot.getY();
         return Math.abs(dotX - x) <= LAMP_RADIUS;
     }
 

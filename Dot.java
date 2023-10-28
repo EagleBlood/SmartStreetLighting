@@ -10,7 +10,9 @@ public class Dot {
     private static int x3 = 250;
     private static int x4 = 50;
     private static int step = 1;
+    
     private static final Color DOT_COLOR = Color.RED;
+    private static final int DOT_SIZE = 10;
 
     public Dot(int x, int y) {
         this.x = x;
@@ -19,7 +21,10 @@ public class Dot {
 
     public void draw(Graphics g) {
         g.setColor(DOT_COLOR);
-        g.fillOval(x, y, 10, 10);
+        // Draw the dot from its center
+        int drawX = x - DOT_SIZE / 2;
+        int drawY = y - DOT_SIZE / 2;
+        g.fillOval(drawX, drawY, DOT_SIZE, DOT_SIZE);
     }
 
     public void moveDot() {
