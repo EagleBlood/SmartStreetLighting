@@ -10,7 +10,9 @@ public class Dot {
     private static int x3 = 250;
     private static int x4 = 50;
     private static int step = 1;
-    
+
+    private boolean inLampRange;
+
     private static final Color DOT_COLOR = Color.RED;
     private static final int DOT_SIZE = 10;
 
@@ -28,7 +30,7 @@ public class Dot {
     }
 
     public void moveDot() {
-        
+
 
         if (x >= x1 && x < x2 && y == y1) {
             x += step;
@@ -71,5 +73,13 @@ public class Dot {
 
     public void setY(int newY) {
         y = newY;
+    }
+
+    public boolean isInLampRange() {
+        return inLampRange;
+    }
+
+    public void setInLampRange(boolean inLampRange) {
+        this.inLampRange = inLampRange;
     }
 }

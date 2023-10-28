@@ -29,7 +29,8 @@ public class Canvas {
 
         // Draw the lamps
         for (Lamp lamp : lamps) {
-            lamp.draw(g);
+            lamp.draw(g, dot);
+            lamp.checkActivation(dot);
         }
     }
 

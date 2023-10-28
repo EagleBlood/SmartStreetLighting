@@ -5,6 +5,9 @@ import java.awt.event.ActionListener;
 
 public class app {
 
+    private static final int CANVAS_WIDTH = 400;
+    private static final int CANVAS_HEIGHT = 400;
+
     private static Dot dot;
     private static Canvas canvas;
 
@@ -19,7 +22,7 @@ public class app {
             }
         };
         frame.add(panel);
-        frame.setSize(300, 400);
+        frame.setSize(CANVAS_WIDTH, CANVAS_HEIGHT);
         frame.setVisible(true);
 
         dot = new Dot(50, 100);
