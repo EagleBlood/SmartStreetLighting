@@ -1,18 +1,23 @@
 import java.awt.*;
 
 public class Dot {
+    //dot coordinates
     private int x;
     private int y;
+
+    //path coordinates
     private static int x1 = 50;
-    private static int y1 = 100;
-    private static int x2 = 250;
+    private static int y1 = 50;
+
+    private static int x2 = 300;
+
     private static int y3 = 300;
-    private static int x3 = 250;
+    private static int x3 = 300;
+
     private static int x4 = 50;
+
     private static int step = 1;
-
     private boolean inLampRange;
-
     private static final Color DOT_COLOR = Color.RED;
     private static final int DOT_SIZE = 10;
 
@@ -30,8 +35,6 @@ public class Dot {
     }
 
     public void moveDot() {
-
-
         if (x >= x1 && x < x2 && y == y1) {
             x += step;
         } else if (x == x2 && y >= y1 && y < y3) {

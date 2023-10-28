@@ -6,8 +6,9 @@ public class Lamp {
     private int y;
     private boolean active = false;
 
-    private static final int LAMP_RADIUS = 60;
+    private static final int LAMP_RADIUS = 50;
     private static final Color LAMP_COLOR = Color.ORANGE;
+    private static final Color LAMP_LIT_COLOR = Color.RED;
     private static final int LAMP_SIZE = 10;
 
     public Lamp(int x, int y) {
@@ -23,8 +24,8 @@ public class Lamp {
         g.fillOval(drawX, drawY, LAMP_SIZE, LAMP_SIZE);
 
         if (checkActivation(dot)) {
-            g.setColor(new Color(255, 165, 0, 102));
-            g.drawOval(x - LAMP_RADIUS, 400 / 2 - LAMP_RADIUS, 2 * LAMP_RADIUS, 2 * LAMP_RADIUS);
+            g.setColor(LAMP_LIT_COLOR);
+            g.drawOval(x - LAMP_RADIUS, y - LAMP_RADIUS, 2 * LAMP_RADIUS, 2 * LAMP_RADIUS);
             active = true;
         } else {
             active = false;
