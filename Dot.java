@@ -4,6 +4,7 @@ public class Dot {
     private int x;
     private int y;
     private static int step = 1;
+    private static final Color DOT_COLOR = Color.RED;
 
     public Dot(int x, int y) {
         this.x = x;
@@ -11,7 +12,7 @@ public class Dot {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.RED);
+        g.setColor(DOT_COLOR);
         g.fillOval(x, y, 10, 10);
     }
 

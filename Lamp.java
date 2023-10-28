@@ -5,6 +5,7 @@ public class Lamp {
     private int x;
     private int y;
     private static final int LAMP_RADIUS = 60;
+    private static final Color LAMP_COLOR = Color.ORANGE;
 
     public Lamp(int x, int y) {
         this.x = x;
@@ -12,7 +13,7 @@ public class Lamp {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.ORANGE);
+        g.setColor(LAMP_COLOR);
         g.fillOval(x, y, 10, 10);
     }
 
