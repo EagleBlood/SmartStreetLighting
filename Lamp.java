@@ -1,27 +1,24 @@
-public class Lamp {
+import java.util.List;
 
-    int x;
+public class Lamp {
+    private int x;
     private static final int LAMP_RADIUS = 60;
 
-    Lamp(int x) {
+    public Lamp(int x) {
         this.x = x;
     }
 
-    boolean isActive() {
-        for (Main.Point dot : dots) {
+    public void activateDots(List<Dot> dots) {
+        for (Dot dot : dots) {
             if (checkActivation(dot)) {
-                return true;
+                // You can perform actions or set flags on the Dot here
             }
         }
-        return false;
     }
 
-    boolean checkActivation(Main.Point dot) {
-        if (Math.abs(dot.x - x) <= LAMP_RADIUS) {
-            dot.inLampRange = true;
-            return true;
-        }
-        dot.inLampRange = false;
-        return false;
+    private boolean checkActivation(Dot dot) {
+        int dotX = dot.getX();
+        int dotY = dot.getY();
+        return Math.abs(dotX - x) <= LAMP_RADIUS;
     }
 }

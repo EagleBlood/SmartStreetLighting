@@ -2,9 +2,11 @@ import java.awt.Graphics;
 
 public class Canvas {
     private Dot dot;
+    private Lamp lamp;
 
-    public Canvas(Dot dot) {
+    public Canvas(Dot dot, Lamp lamp) {
         this.dot = dot;
+        this.lamp = new Lamp(50);
     }
 
     public void draw(Graphics g) {

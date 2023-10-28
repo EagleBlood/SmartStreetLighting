@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 public class app {
     
     private static Dot dot;
+    private static Lamp lamp;
     private static Canvas canvas;
 
     public static void main(String[] args) {
@@ -24,7 +25,7 @@ public class app {
 
         dot = new Dot(50, 100);
 
-        canvas = new Canvas(dot);
+        canvas = new Canvas(dot, lamp);
 
         Timer timer = new Timer(10, new ActionListener() {
             @Override
