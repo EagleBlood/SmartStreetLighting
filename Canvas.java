@@ -1,12 +1,20 @@
-import java.awt.Graphics;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Canvas {
     private Dot dot;
-    private Lamp lamp;
+    private List<Lamp> lamps;
 
-    public Canvas(Dot dot, Lamp lamp) {
+    public Canvas(Dot dot) {
         this.dot = dot;
-        this.lamp = new Lamp(50, 90);
+        lamps = new ArrayList<>();
+
+        // Add lamps in each corner of the path
+        lamps.add(new Lamp(50, 90)); // Top left corner
+        lamps.add(new Lamp(250, 90)); // Top right corner
+        lamps.add(new Lamp(250, 300)); // Bottom right corner
+        lamps.add(new Lamp(50, 300)); // Bottom left corner
     }
 
     public void draw(Graphics g) {
@@ -16,6 +24,8 @@ public class Canvas {
             dot.draw(g);
         }
 
-        lamp.draw(g);
+        for (Lamp lamp : lamps) {
+            lamp.draw(g);
+        }
     }
 }

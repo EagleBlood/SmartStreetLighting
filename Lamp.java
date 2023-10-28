@@ -25,7 +25,7 @@ public class Lamp {
         }
     }
 
-    private boolean checkActivation(Dot dot) {
+    public boolean checkActivation(Dot dot) {
         int dotX = dot.getX();
         int dotY = dot.getY();
         return Math.abs(dotX - x) <= LAMP_RADIUS;
