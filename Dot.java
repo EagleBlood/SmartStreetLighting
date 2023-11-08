@@ -49,22 +49,6 @@ public class Dot {
         position.setLocation(pointAtLength[0], pointAtLength[1]);
         distance += step;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
-    
-    
-    
-    
-
-    
 
     public Point2D.Double getPosition() {
         return position;

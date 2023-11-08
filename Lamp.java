@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 
 public class Lamp {
@@ -14,10 +15,11 @@ public class Lamp {
     }
 
     public void draw(Graphics g, Dot dot) {
-        g.setColor(LAMP_COLOR);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(LAMP_COLOR);
         int drawX = (int) position.getX() - LAMP_SIZE / 2;
         int drawY = (int) position.getY() - LAMP_SIZE / 2;
-        g.fillOval(drawX, drawY, LAMP_SIZE, LAMP_SIZE);
+        g2d.fill(new Ellipse2D.Double(drawX, drawY, LAMP_SIZE, LAMP_SIZE));
 
         if (isDotInRange(dot)) {
             active = true;
@@ -26,8 +28,8 @@ public class Lamp {
         }
 
         if (active) {
-            g.setColor(LAMP_LIT_COLOR);
-            g.drawOval((int) position.getX() - LAMP_RADIUS, (int) position.getY() - LAMP_RADIUS, 2 * LAMP_RADIUS, 2 * LAMP_RADIUS);
+            g2d.setColor(LAMP_LIT_COLOR);
+            g2d.draw(new Ellipse2D.Double(position.getX() - LAMP_RADIUS, position.getY() - LAMP_RADIUS, 2 * LAMP_RADIUS, 2 * LAMP_RADIUS));
         }
     }
 

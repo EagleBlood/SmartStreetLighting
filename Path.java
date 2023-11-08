@@ -1,6 +1,7 @@
 import java.awt.*;
-import java.awt.Shape;
+import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 
 public class Path {
     private Shape shape;
@@ -80,6 +81,7 @@ public class Path {
                     lastX = coords[0];
                     lastY = coords[1];
                     break;
+
                 case PathIterator.SEG_LINETO:
                     double x = coords[0];
                     double y = coords[1];
@@ -96,16 +98,26 @@ public class Path {
                     lastX = x;
                     lastY = y;
                     break;
-                case PathIterator.SEG_QUADTO:
-                    // handle quadratic curve segment
-                    break;
-                case PathIterator.SEG_CUBICTO:
-                    // handle cubic curve segment
-                    break;
+
+                    case PathIterator.SEG_QUADTO:
+                        // handle quadratic curve segment
+                        break;
+
+                    case PathIterator.SEG_CUBICTO:
+                        // handle cubic curve segment
+                        break;
+
             }
             pathIterator.next();
         }
         return null;
+    }
+
+     public void setCustomPath(Point2D.Double startPoint, Point2D.Double endPoint) {
+        Path2D.Double customPath = new Path2D.Double();
+        customPath.moveTo(startPoint.getX(), startPoint.getY());
+        customPath.lineTo(endPoint.getX(), endPoint.getY());
+        this.shape = customPath;
     }
 
     public boolean isEmpty() {

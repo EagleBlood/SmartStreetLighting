@@ -13,10 +13,8 @@ public class Canvas {
 
     public Canvas(Path path) {
         this.path = path;
-
         lamps = new ArrayList<>();
         dot = new Dot(new Point2D.Double(50, 50), path);
-        
         updateLamps();
     }
 
