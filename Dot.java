@@ -1,81 +1,77 @@
 import java.awt.*;
+import java.awt.geom.Point2D;
 
 public class Dot {
-    //dot coordinates
-    private int x;
-    private int y;
-
-    //path coordinates
-    private static int x1 = 50;
-    private static int y1 = 50;
-
-    private static int x2 = 300;
-
-    private static int y3 = 300;
-    private static int x3 = 300;
-
-    private static int x4 = 50;
-
-    private static int step = 1;
+    private double step = 3;
     private boolean inLampRange;
     private static final Color DOT_COLOR = Color.RED;
-    private static final int DOT_SIZE = 10;
+    private static final int DOT_SIZE = 12;
+    private Point2D.Double position; // Current position of the dot
+    private Path path;
+    private double distance = 0.0;
 
-    public Dot(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Dot(Point2D.Double initialPosition, Path path) {
+        this.position = initialPosition;
+        this.path = path;
     }
 
     public void draw(Graphics g) {
         g.setColor(DOT_COLOR);
+
         // Draw the dot from its center
-        int drawX = x - DOT_SIZE / 2;
-        int drawY = y - DOT_SIZE / 2;
+        int drawX = (int) position.getX() - DOT_SIZE / 2;
+        int drawY = (int) position.getY() - DOT_SIZE / 2;
         g.fillOval(drawX, drawY, DOT_SIZE, DOT_SIZE);
+
+        // Move the dot on the path
+        moveDot();
     }
 
     public void moveDot() {
-        if (x >= x1 && x < x2 && y == y1) {
-            x += step;
-        } else if (x == x2 && y >= y1 && y < y3) {
-            y += step;
-        } else if (x <= x3 && x > x4 && y == y3) {
-            x -= step;
-        } else if (x == x4 && y <= y3 && y > y1) {
-            y -= step;
+        if (path == null) {
+            // No path to follow, exit.
+            return;
         }
+
+        if (distance >= path.getLength()) {
+            // If the dot has reached the end of the path, move to the next path segment
+            if (path.hasNextPath()) {
+                path = path.getNextPath();
+                distance = 0.0;
+            } else {
+                // If there are no more paths, reset to the beginning of the path
+                path = path.getFirstPath();
+                distance = 0.0;
+            }
+        }
+
+        float[] pointAtLength = path.getPointAtLength(distance);
+        position.setLocation(pointAtLength[0], pointAtLength[1]);
+        distance += step;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+
+    public Point2D.Double getPosition() {
+        return position;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getX1() {
-        return x1;
-    }
-
-    public int getY1() {
-        return y1;
-    }
-
-    public int getX2() {
-        return x2;
-    }
-
-    public int getY3() {
-        return y3;
-    }
-
-    public void setX(int newX) {
-        x = newX;
-    }
-
-    public void setY(int newY) {
-        y = newY;
+    public void setPosition(Point2D.Double newPosition) {
+        this.position = newPosition;
     }
 
     public boolean isInLampRange() {
@@ -84,5 +80,13 @@ public class Dot {
 
     public void setInLampRange(boolean inLampRange) {
         this.inLampRange = inLampRange;
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
+    }
+
+    public Path getPath() {
+        return path;
     }
 }

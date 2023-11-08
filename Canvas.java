@@ -1,46 +1,53 @@
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Canvas {
     private Dot dot;
     private List<Lamp> lamps;
+    private Path path; // Add the path object here
+
     private static final Color PATH_COLOR = Color.GRAY;
     private int pathThickness = 1;
 
-    public Canvas(Dot dot) {
-        this.dot = dot;
+    public Canvas(Path path) {
+        this.path = path;
+
         lamps = new ArrayList<>();
-        // Add lamps in each corner of the dot's path
-        updatePathAndLamps();
+        dot = new Dot(new Point2D.Double(50, 50), path);
+        
+        updateLamps();
     }
 
     public void draw(Graphics g) {
-        // Clear the canvas or background, if needed
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(pathThickness));
         g2d.setColor(PATH_COLOR);
 
-        // Draw the dot's path in grey
-        g2d.drawRect(dot.getX1(), dot.getY1(), dot.getX2() - dot.getX1(), dot.getY3() - dot.getY1());
+        // Draw the dynamic path
+        path.draw(g2d);
 
         // Draw other elements, if any
-        dot.draw(g);
+        dot.draw(g); // Draw the dot object
 
         // Draw the lamps
         for (Lamp lamp : lamps) {
             lamp.draw(g, dot);
-            lamp.checkActivation(dot);
+            //lamp.checkActivation(dot, path);
         }
     }
 
-    // Update the path and lamps based on the dot's position
-    private void updatePathAndLamps() {
+    private void updateLamps() {
         lamps.clear();
-        // Add lamps in each corner of the dot's path
-        lamps.add(new Lamp(dot.getX1(), dot.getY1())); // Top left corner
-        lamps.add(new Lamp(dot.getX2(), dot.getY1())); // Top right corner
-        lamps.add(new Lamp(dot.getX2(), dot.getY3())); // Bottom right corner
-        lamps.add(new Lamp(dot.getX1(), dot.getY3())); // Bottom left corner
+        double totalPathLength = path.getLength();
+        double distance = 0.0;
+        double interval = 100.0; // Interval between lamps
+    
+        while (distance < totalPathLength) {
+            float[] pos = path.getPointAtLength(distance);
+            lamps.add(new Lamp(new Point2D.Double(pos[0], pos[1])));
+            distance += interval;
+        }
     }
 }
