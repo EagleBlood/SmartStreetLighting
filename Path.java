@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 
 public class Path {
     private Shape shape;
@@ -147,4 +148,22 @@ public class Path {
         }
         return firstPath;
     }
+
+    public Shape getPath2D() {
+        return shape;
+    }
+
+    public Object getPath() {
+        return shape;
+    }
+
+    public void append(Object path, boolean connect) {
+        if (path instanceof Path) {
+            Path p = (Path) path;
+            ((Path2D.Double) shape).append(p.getPath2D(), connect);
+        }
+    }
+
+    
+
 }
