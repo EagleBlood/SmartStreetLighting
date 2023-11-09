@@ -2,20 +2,51 @@ import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Path {
+    private Dot dot;
+    private List<Lamp> lamps = new ArrayList<>();
     private Shape shape;
     private double lastX;
     private double lastY;
     private Path nextPath;
-
+    
     public Path(Shape shape) {
         this.shape = shape;
+
+        // Create a new dot if one doesn't already exist
+        if (dot == null) {
+            dot = new Dot(new Point2D.Double(50, 50), this);
+            //dot = new Dot(path2D.getCurrentPoint().getX(), path2D.getCurrentPoint().getY());
+        }
+        
+        updateLamps();
+    }
+
+    void updateLamps() {
+        lamps.clear();
+        double totalPathLength = getLength();
+        double distance = 0.0;
+        double interval = 100.0; // Interval between lamps
+    
+        while (distance < totalPathLength) {
+            float[] pos = getPointAtLength(distance);
+            lamps.add(new Lamp(new Point2D.Double(pos[0], pos[1])));
+            distance += interval;
+        }
     }
 
     public void draw(Graphics2D g2d) {
-        g2d.draw(shape);
+        g2d.draw(shape); // Draw the path
+    
+        dot.draw(g2d); // Draw the dot
+    
+        // Draw the lamps
+        for (Lamp lamp : lamps) {
+            lamp.draw(g2d, dot);
+        }
     }
 
     public Shape getShape() {
@@ -114,27 +145,8 @@ public class Path {
         return null;
     }
 
-     public void setCustomPath(Point2D.Double startPoint, Point2D.Double endPoint) {
-        Path2D.Double customPath = new Path2D.Double();
-        customPath.moveTo(startPoint.getX(), startPoint.getY());
-        customPath.lineTo(endPoint.getX(), endPoint.getY());
-        this.shape = customPath;
-    }
-
-    public boolean isEmpty() {
-        return false;
-    }
-
     public Path getNextPath() {
         return nextPath;
-    }
-
-    public void setNextPath(Path nextPath) {
-        this.nextPath = nextPath;
-    }
-
-    public void setShape(Shape shape) {
-        this.shape = shape;
     }
 
     public boolean hasNextPath() {
@@ -149,21 +161,40 @@ public class Path {
         return firstPath;
     }
 
-    public Shape getPath2D() {
-        return shape;
+    public Point2D getStartPoint() {
+        return new Point2D.Double(shape.getBounds2D().getX(), shape.getBounds2D().getY());
     }
 
-    public Object getPath() {
-        return shape;
+    public Point2D getEndPoint() {
+        return new Point2D.Double(lastX, lastY);
     }
 
-    public void append(Object path, boolean connect) {
-        if (path instanceof Path) {
-            Path p = (Path) path;
-            ((Path2D.Double) shape).append(p.getPath2D(), connect);
+    public void moveFirstPointTo(Point2D lastPoint) {
+        Path2D newPath = new Path2D.Double();
+        PathIterator pathIterator = shape.getPathIterator(null);
+        double[] coords = new double[6];
+        boolean firstPoint = true;
+        while (!pathIterator.isDone()) {
+            int segmentType = pathIterator.currentSegment(coords);
+            if (firstPoint && segmentType == PathIterator.SEG_MOVETO) {
+                newPath.moveTo(lastPoint.getX(), lastPoint.getY());
+                firstPoint = false;
+            } else {
+                switch (segmentType) {
+                    case PathIterator.SEG_MOVETO:
+                        newPath.moveTo(coords[0], coords[1]);
+                        break;
+                    case PathIterator.SEG_LINETO:
+                        newPath.lineTo(coords[0], coords[1]);
+                        break;
+                    // Add cases for other segment types if needed
+                }
+            }
+            pathIterator.next();
         }
+        shape = newPath;
     }
 
-    
+
 
 }

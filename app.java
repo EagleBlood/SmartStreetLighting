@@ -11,8 +11,9 @@ public class app {
     private static final int CANVAS_WIDTH = 400;
     private static final int CANVAS_HEIGHT = 400;
 
-    private static Canvas canvas1;
-    private static Canvas canvas2;
+    private static Canvas canvas1 = null;
+    private static Canvas canvas2 = null;
+    private static Dot dot = new Dot(new Point2D.Double(0, 0), null);
     private static Timer timer;
     // TODO: Fix buttonMode for sth more elegant
     private static int buttonMode = 0;
@@ -21,8 +22,10 @@ public class app {
         JFrame frame = new JFrame("Street Lighting Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Create a dynamic path, e.g., a rectangle
-        Path2D.Double path2D1 = new Path2D.Double();
+
+
+        // Canvas 1
+        //Path2D.Double path2D1 = new Path2D.Double();
         Path path = new Path(new Rectangle2D.Double(50, 50, 100, 150));
 
         /*
@@ -33,14 +36,10 @@ public class app {
         path2D1.append(line2, true);
         path2D1.append(line3, true);
         Path path1 = new Path(path2D1);*/
-        canvas1 = new Canvas(path);
+        canvas1 = new Canvas();
+        canvas1.addPath(path);
 
-        // Create dummy path
-        Path2D.Double path2D2 = new Path2D.Double();
-        Line2D.Double line4 = new Line2D.Double(0, 0, 0, 0);
-        path2D2.append(line4, true);
-        Path path2 = new Path(path2D2);
-        canvas2 = new Canvas(path2);
+
 
         // Panel for the canvas
         JPanel canvasPanel = new JPanel() {
@@ -52,7 +51,9 @@ public class app {
                         break;
 
                     case 2:
-                        canvas2.paintComponent(g);
+                        if (canvas2 != null) {
+                            canvas2.paintComponent(g);
+                        }
                         break;
 
                     default:
@@ -72,9 +73,13 @@ public class app {
 
         // Spinner panel
         JPanel spinnerPanel = new JPanel();
-        SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(2, 2, 5, 1);
+        /*SpinnerNumberModel spinnerNumberModel = new SpinnerNumberModel(2, 2, 6, 1);
         JSpinner spinner = new JSpinner(spinnerNumberModel);
-        spinnerPanel.add(spinner);
+        spinnerPanel.add(spinner);*/
+
+        // Add a radio button to the GUI
+        JRadioButton radioButton = new JRadioButton("Draw separate paths");
+        spinnerPanel.add(radioButton);
 
         frame.setLayout(new BorderLayout());
         frame.add(buttonPanel, BorderLayout.NORTH); // Add the button panel to the top
@@ -98,64 +103,89 @@ public class app {
         });
 
         // Initialize a counter for the number of paths placed
-        int[] pathsPlaced = {
-            0
-        };
+        //int[] pathsPlaced = { 0 };
 
         // Add a mouse listener to the canvas
         canvasPanel.addMouseListener(new MouseAdapter() {
-            private int startX,
-            startY,
-            endX,
-            endY;
-            private boolean isStartSet = false;
-
+            private int startX, startY, endX, endY;
+            private boolean isDrawingPath = false;
+        
             @Override public void mouseClicked(MouseEvent e) {
-                // Get the spinner value
-                int spinnerValue = (int)spinner.getValue();
-
+                // Initialize canvas2 if it doesn't exist
+                if (canvas2 == null) {
+                    canvas2 = new Canvas();
+                }
+        
                 if (buttonMode == 2) {
-                    if (!isStartSet) {
-                        // Store the starting point of the path
-                        startX = e.getX();
-                        startY = e.getY();
-                        isStartSet = true;
-                    } else if (pathsPlaced[0] < spinnerValue) {
-                        // Store the ending point of the path
-                        endX = e.getX();
-                        endY = e.getY();
-                        isStartSet = false;
-
-                        // Create a new path object using the starting and ending points
-                        Path2D.Double path2D = new Path2D.Double();
-                        Line2D.Double line = new Line2D.Double(startX, startY, endX, endY);
-                        path2D.append(line, true);
-                        Path userPath = new Path(path2D);
-
-
-                        //fix paths
-                        // Add the path to the existing canvas2 object
-                        if (buttonMode == 2 && pathsPlaced[0] < spinnerValue) {
-                            if (canvas2 == null) {
-                                canvas2 = new Canvas(path2);
-                            }
+                    if (radioButton.isSelected()) {
+                        // Separate paths mode
+                        if (!isDrawingPath) {
+                            // Start drawing a new path
+                            startX = e.getX();
+                            startY = e.getY();
+                            isDrawingPath = true;
+                        } else {
+                            // Finish drawing the current path
+                            endX = e.getX();
+                            endY = e.getY();
+                            isDrawingPath = false;
+        
+                            // Create a new path object using the starting and ending points
+                            Path2D.Double path2D = new Path2D.Double();
+                            Line2D.Double line = new Line2D.Double(startX, startY, endX, endY);
+                            path2D.append(line, true);
+                            Path userPath = new Path(path2D);
+        
+                            // Add the path to the existing canvas2 object
                             canvas2.addPath(userPath);
                         }
-
-                        // Update the timer to move the dot along the new path
-                        if (timer != null) {
-                            timer.stop();
-                        }
-                        timer = new Timer(10, new ActionListener() {
-                            @Override public void actionPerformed(ActionEvent e) {
-                                canvasPanel.repaint();
+                    } else {
+                        // Continuous paths mode
+                        if (!isDrawingPath) {
+                            // Start drawing a new path
+                            startX = e.getX();
+                            startY = e.getY();
+                            isDrawingPath = true;
+                        } else {
+                            // Finish drawing the current path
+                            endX = e.getX();
+                            endY = e.getY();
+        
+                            // Get the start point of the new path
+                            Point2D startPoint;
+                            if (!canvas2.getPaths().isEmpty()) {
+                                Path lastPath = canvas2.getPaths().get(canvas2.getPaths().size() - 1);
+                                startPoint = lastPath.getEndPoint();
+                            } else {
+                                startPoint = new Point2D.Double(startX, startY);
                             }
-                        });
-                        timer.start();
-
-                        // Increment the counter for paths placed
-                        pathsPlaced[0]++;
+        
+                            // Create a new path object using the starting and ending points
+                            Path2D.Double path2D = new Path2D.Double();
+                            Line2D.Double line = new Line2D.Double(startPoint.getX(), startPoint.getY(), endX, endY);
+                            path2D.append(line, true);
+                            Path userPath = new Path(path2D);
+        
+                            // Add the path to the existing canvas2 object
+                            canvas2.addConnectedPath(userPath, true);
+        
+                            // Reset the start point for the next path
+                            startX = endX;
+                            startY = endY;
+                        }
                     }
+        
+                    // Update the timer to move the dot along the new path
+                    if (timer != null) {
+                        timer.stop();
+                    }
+        
+                    timer = new Timer(10, new ActionListener() {
+                        @Override public void actionPerformed(ActionEvent e) {
+                            canvasPanel.repaint();
+                        }
+                    });
+                    timer.start();
                 }
             }
         });
@@ -169,7 +199,7 @@ public class app {
                 }
 
                 // Reset the counter when button2 is clicked
-                pathsPlaced[0] = 0;
+                //pathsPlaced[0] = 0;
 
                 // Add spinner panel to the bottom when button2 is clicked
                 frame.add(spinnerPanel, BorderLayout.SOUTH);
@@ -182,8 +212,37 @@ public class app {
 
         // Create and start the timer
         timer = new Timer(10, new ActionListener() {
+            private int currentPathIndex = 0;
+            private double currentPathProgress = 0.0;
+        
             @Override public void actionPerformed(ActionEvent e) {
-                canvasPanel.repaint(); // Repaint the canvas panel
+                if (canvas2 != null && !canvas2.getPaths().isEmpty()) {
+                    // Get the current path
+                    Path currentPath = canvas2.getPaths().get(currentPathIndex);
+        
+                    // Move the dot along the current path
+                    currentPathProgress += 0.01; // Adjust this value to change the speed of the dot
+                    if (currentPathProgress > 1.0) {
+                        // The dot has reached the end of the current path
+                        currentPathProgress = 0.0;
+                        currentPathIndex++;
+                        if (currentPathIndex >= canvas2.getPaths().size()) {
+                            // The dot has reached the end of the last path
+                            currentPathIndex = 0; // Reset to the first path
+                        }
+                    }
+        
+                    // Calculate the new position of the dot
+                    Point2D startPoint = currentPath.getStartPoint();
+                    Point2D endPoint = currentPath.getEndPoint();
+                    double newX = startPoint.getX() + (endPoint.getX() - startPoint.getX()) * currentPathProgress;
+                    double newY = startPoint.getY() + (endPoint.getY() - startPoint.getY()) * currentPathProgress;
+        
+                    // Update the position of the existing dot
+                    dot.setPosition(newX, newY);
+                }
+        
+                canvasPanel.repaint();
             }
         });
     }

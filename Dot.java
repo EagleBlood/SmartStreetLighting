@@ -73,4 +73,8 @@ public class Dot {
     public Path getPath() {
         return path;
     }
+
+    public void setPosition(double newX, double newY) {
+        position.setLocation(newX, newY);
+    }
 }
