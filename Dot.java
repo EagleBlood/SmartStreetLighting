@@ -1,18 +1,20 @@
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.List;
 
-public class Dot {
+public class Dot{
     private double step = 3;
     private boolean inLampRange;
     private static final Color DOT_COLOR = Color.RED;
     private static final int DOT_SIZE = 12;
     private Point2D.Double position; // Current position of the dot
+    private List<Path> paths;
     private Path path;
-    private double distance = 0.0;
+    private int currentPathIndex = 0;
+    private double currentDistance = 0.0;
 
-    public Dot(Point2D.Double initialPosition, Path path) {
+    public Dot(Point2D.Double initialPosition) {
         this.position = initialPosition;
-        this.path = path;
     }
 
     public void draw(Graphics g) {
@@ -28,28 +30,49 @@ public class Dot {
     }
 
     public void moveDot() {
-        if (path == null) {
-            // No path to follow, exit.
+        if (paths == null || paths.isEmpty()) {
+            // No paths to follow, exit.
             return;
         }
-
-        if (distance >= path.getLength()) {
-            // If the dot has reached the end of the path, move to the next path segment
-            if (path.hasNextPath()) {
-                path = path.getNextPath();
-                distance = 0.0;
-            } else {
-                // If there are no more paths, reset to the beginning of the path
-                path = path.getFirstPath();
-                distance = 0.0;
-            }
+    
+        // Calculate the total length of all paths
+        double totalLength = paths.stream().mapToDouble(Path::getLength).sum();
+    
+        // Check if the dot has reached the end of the entire path sequence
+        if (currentDistance >= totalLength) {
+            // Move to the beginning of the first path
+            currentDistance = 0.0;
+            currentPathIndex = 0;
         }
-
-        float[] pointAtLength = path.getPointAtLength(distance);
+    
+        // Find the current path and update the distance
+        Path currentPath = null;
+        double remainingDistance = currentDistance;
+        int i;
+        for (i = 0; i < paths.size(); i++) {
+            currentPath = paths.get(i);
+            double pathLength = currentPath.getLength();
+            if (remainingDistance < pathLength) {
+                break;
+            }
+            remainingDistance -= pathLength;
+        }
+    
+        // Get the current position on the current path
+        double[] pointAtLength = currentPath.getPointAtLength(remainingDistance);
         position.setLocation(pointAtLength[0], pointAtLength[1]);
-        distance += step;
+    
+        // Update the canvas to repaint the dot's position
+        if (currentPath.getCanvas() != null) {
+            ((Canvas) currentPath.getCanvas()).repaint();
+        }
+    
+        // Update the current path index and distance for the next iteration
+        currentPathIndex = i;
+        currentDistance += step;
     }
-
+    
+    
     public Point2D.Double getPosition() {
         return position;
     }
@@ -70,11 +93,18 @@ public class Dot {
         this.path = path;
     }
 
-    public Path getPath() {
-        return path;
+    public void setPathList(List<Path> paths) {
+        this.paths = paths;
+        if (!paths.isEmpty()) {
+            // Find the last path in the list
+            this.path = paths.get(paths.size() - 1);
+            
+            // Set the current path index based on the last path
+            this.currentPathIndex = paths.size() - 1;
+            
+            // Set the distance to the total distance traveled across all paths
+            this.currentDistance = paths.stream().limit(currentPathIndex).mapToDouble(Path::getLength).sum();
+        }
     }
-
-    public void setPosition(double newX, double newY) {
-        position.setLocation(newX, newY);
-    }
+    
 }

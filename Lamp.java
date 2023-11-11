@@ -26,7 +26,7 @@ public class Lamp {
         } else {
             active = false;
         }
-
+        
         if (active) {
             g2d.setColor(LAMP_LIT_COLOR);
             g2d.draw(new Ellipse2D.Double(position.getX() - LAMP_RADIUS, position.getY() - LAMP_RADIUS, 2 * LAMP_RADIUS, 2 * LAMP_RADIUS));

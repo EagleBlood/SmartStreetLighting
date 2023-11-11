@@ -6,55 +6,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Path {
-    private Dot dot;
+    private static final Color PATH_COLOR = Color.GRAY;
+    private static final int PATH_THICKNESS = 20;
+    private static final int LAMP_ACTIVE_STROKE = 1;
+
     private List<Lamp> lamps = new ArrayList<>();
-    private Shape shape;
+    private Path2D.Float path2D;
     private double lastX;
     private double lastY;
     private Path nextPath;
+    private Canvas canvas;
     
-    public Path(Shape shape) {
-        this.shape = shape;
+    public Path(Path2D.Float path2D) {
+        this.path2D = path2D;
 
-        // Create a new dot if one doesn't already exist
-        if (dot == null) {
-            dot = new Dot(new Point2D.Double(50, 50), this);
-            //dot = new Dot(path2D.getCurrentPoint().getX(), path2D.getCurrentPoint().getY());
-        }
-        
         updateLamps();
     }
 
+
     void updateLamps() {
         lamps.clear();
-        double totalPathLength = getLength();
+        float totalPathLength = getLength();
         double distance = 0.0;
         double interval = 100.0; // Interval between lamps
     
         while (distance < totalPathLength) {
-            float[] pos = getPointAtLength(distance);
+            double[] pos = getPointAtLength(distance);
             lamps.add(new Lamp(new Point2D.Double(pos[0], pos[1])));
             distance += interval;
         }
     }
 
-    public void draw(Graphics2D g2d) {
-        g2d.draw(shape); // Draw the path
+    public void draw(Graphics2D g2d, Dot dot) {
+        // Set the color and thickness for the path
+        g2d.setColor(PATH_COLOR);
+        g2d.setStroke(new BasicStroke(PATH_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
     
-        dot.draw(g2d); // Draw the dot
+        // Draw the path
+        g2d.draw(path2D);
     
         // Draw the lamps
         for (Lamp lamp : lamps) {
+            g2d.setStroke(new BasicStroke(LAMP_ACTIVE_STROKE));
             lamp.draw(g2d, dot);
         }
     }
 
-    public Shape getShape() {
-        return shape;
-    }
 
+    //For lamps generation
     public int getLength() {
-        PathIterator pathIterator = shape.getPathIterator(null);
+        PathIterator pathIterator = path2D.getPathIterator(null);
         double[] coords = new double[6];
         double length = 0;
         while (!pathIterator.isDone()) {
@@ -100,8 +101,9 @@ public class Path {
         return (int) Math.round(length);
     }
 
-    public float[] getPointAtLength(double distance) {
-        PathIterator pathIterator = shape.getPathIterator(null);
+    //For dot movement
+    public double[] getPointAtLength(double distance) {
+        PathIterator pathIterator = path2D.getPathIterator(null);
         double[] coords = new double[6];
         double totalLength = 0;
         double lastX = 0;
@@ -121,7 +123,7 @@ public class Path {
                     if (totalLength + segmentLength >= distance) {
                         double remainingLength = distance - totalLength;
                         double ratio = remainingLength / segmentLength;
-                        float[] point = new float[2];
+                        double[] point = new double[2];
                         point[0] = (float) (lastX + ratio * (x - lastX));
                         point[1] = (float) (lastY + ratio * (y - lastY));
                         return point;
@@ -144,34 +146,11 @@ public class Path {
         }
         return null;
     }
-
-    public Path getNextPath() {
-        return nextPath;
-    }
-
-    public boolean hasNextPath() {
-        return nextPath != null;
-    }
-
-    public Path getFirstPath() {
-        Path firstPath = this;
-        while (firstPath.hasNextPath()) {
-            firstPath = firstPath.getNextPath();
-        }
-        return firstPath;
-    }
-
-    public Point2D getStartPoint() {
-        return new Point2D.Double(shape.getBounds2D().getX(), shape.getBounds2D().getY());
-    }
-
-    public Point2D getEndPoint() {
-        return new Point2D.Double(lastX, lastY);
-    }
-
+    
+    //For user path generation
     public void moveFirstPointTo(Point2D lastPoint) {
-        Path2D newPath = new Path2D.Double();
-        PathIterator pathIterator = shape.getPathIterator(null);
+        Path2D.Float newPath = new Path2D.Float();
+        PathIterator pathIterator = path2D.getPathIterator(null);
         double[] coords = new double[6];
         boolean firstPoint = true;
         while (!pathIterator.isDone()) {
@@ -192,9 +171,52 @@ public class Path {
             }
             pathIterator.next();
         }
-        shape = newPath;
+        path2D = newPath;
+        lastX = coords[0];
+        lastY = coords[1];
+    }
+    
+
+    public void setCanvas(Canvas canvas) {
+        this.canvas = canvas;
     }
 
+    public Object getCanvas() {
+        return canvas;
+    }
 
+    public Path getNextPath() {
+        return nextPath;
+    }
+
+    public boolean hasNextPath() {
+        return nextPath != null;
+    }
+
+    public Point2D getStartPoint() {
+        return new Point2D.Double(path2D.getBounds2D().getMinX(), path2D.getBounds2D().getMinY());
+    }
+
+    public Point2D getEndPoint() {
+        return new Point2D.Double(lastX, lastY);
+    }
+
+    public Path getFirstPath() {
+        Path firstPath = this;
+        while (firstPath.hasNextPath()) {
+            firstPath = firstPath.getNextPath();
+        }
+        return firstPath;
+    }
+
+    public void append(Path path) {
+        this.path2D.append(path.getPath2D(), true);
+    }
+
+    public Path2D getPath2D() {
+        return path2D;
+    }
+
+    
 
 }
