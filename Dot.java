@@ -1,9 +1,12 @@
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class Dot{
-    private double step = 3;
+    private double step = 4;
     private boolean inLampRange;
     private static final Color DOT_COLOR = Color.RED;
     private static final int DOT_SIZE = 12;
@@ -12,9 +15,33 @@ public class Dot{
     private Path path;
     private int currentPathIndex = 0;
     private double currentDistance = 0.0;
+    private List<Drawable> drawables;
+    private Map<Drawable, List<Drawable>> drawableConnections;
+    private Drawable currentDrawable;
+    private Random random = new Random();
+    private int currentDrawableIndex;
+    private Drawable previousDrawable;
+    private boolean isReversing = false;
+    private Drawable lastReversedDrawable;
 
-    public Dot(Point2D.Double initialPosition) {
-        this.position = initialPosition;
+    public Dot(Point2D.Double position, List<Drawable> drawables, Map<Drawable, List<Drawable>> drawableConnections) {
+        this.position = position;
+        this.drawables = drawables;
+        this.drawableConnections = drawableConnections; // Initialize drawableConnections
+        this.currentDrawable = getFirstDrawable();
+    }
+
+    private Drawable getFirstDrawable() {
+        if (drawables == null || drawables.isEmpty()) {
+            // No drawables to follow, exit.
+            return null;
+        }
+    
+        // Generate a random index
+        int index = random.nextInt(drawables.size());
+    
+        // Return the Drawable at the generated index
+        return drawables.get(0);
     }
 
     public void draw(Graphics g) {
@@ -30,48 +57,85 @@ public class Dot{
     }
 
     public void moveDot() {
-        if (paths == null || paths.isEmpty()) {
-            // No paths to follow, exit.
+        if (currentDrawable == null) {
+            // No drawable to follow, exit.
             return;
         }
     
-        // Calculate the total length of all paths
-        double totalLength = paths.stream().mapToDouble(Path::getLength).sum();
+        // Define a small tolerance for floating-point comparisons
+        double tolerance = DOT_SIZE / 2.0;  // Adjust the tolerance to account for the radius of the dot
     
-        // Check if the dot has reached the end of the entire path sequence
-        if (currentDistance >= totalLength) {
-            // Move to the beginning of the first path
+        Double currentPosition = currentDrawable.getPosition(currentDistance);
+        Double nextPosition;
+    
+        // Check if the current distance exceeds the total length of the current drawable with tolerance
+        if (currentDistance >= currentDrawable.getLength() - tolerance) {
+            // Move to the next drawable when the drawable is complete
+            currentDrawable = getNextDrawable();
+            currentDistance = currentDrawable.getLength() - tolerance;
+            isReversing = true;  // Start moving in the reverse direction
+        } else if (currentDistance < 0) {
+            // Move to the previous drawable when the drawable is complete in reverse
+            currentDrawable = getNextDrawable();
             currentDistance = 0.0;
-            currentPathIndex = 0;
+            isReversing = false;  // Start moving in the forward direction again
         }
     
-        // Find the current path and update the distance
-        Path currentPath = null;
-        double remainingDistance = currentDistance;
-        int i;
-        for (i = 0; i < paths.size(); i++) {
-            currentPath = paths.get(i);
-            double pathLength = currentPath.getLength();
-            if (remainingDistance < pathLength) {
-                break;
+        // Move the dot towards the next point on the drawable
+        if (isReversing) {
+            nextPosition = currentDrawable.getPosition(currentDistance - step);
+        } else {
+            nextPosition = currentDrawable.getPosition(currentDistance + step);
+        }
+    
+        // Check if nextPosition is not null before accessing its coordinates
+        if (nextPosition != null) {
+            // Calculate the direction vector from the current position to the next position
+            double dx = nextPosition.getX() - currentPosition.getX();
+            double dy = nextPosition.getY() - currentPosition.getY();
+    
+            // Add the direction vector to the current position to get the new position
+            position.setLocation(currentPosition.getX() + dx, currentPosition.getY() + dy);
+    
+            // Update the current distance
+            if (isReversing) {
+                currentDistance -= step;
+            } else {
+                currentDistance += step;
             }
-            remainingDistance -= pathLength;
         }
-    
-        // Get the current position on the current path
-        double[] pointAtLength = currentPath.getPointAtLength(remainingDistance);
-        position.setLocation(pointAtLength[0], pointAtLength[1]);
-    
-        // Update the canvas to repaint the dot's position
-        if (currentPath.getCanvas() != null) {
-            ((Canvas) currentPath.getCanvas()).repaint();
-        }
-    
-        // Update the current path index and distance for the next iteration
-        currentPathIndex = i;
-        currentDistance += step;
     }
     
+    
+    
+    
+    private Drawable getNextDrawable() {
+        // Get the list of Drawable objects connected to the current Drawable
+        List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
+    
+        // Generate a random index
+        int index = random.nextInt(connectedDrawables.size());
+    
+        // Return the Drawable at the generated index
+        return connectedDrawables.get(index);
+    }
+    
+
+
+
+    private Drawable getPreviousDrawable() {
+        return previousDrawable;
+    }
+
+    
+    
+    
+    public void setCurrentDrawable(Drawable drawable) {
+        this.currentDrawable = drawable;
+        if (drawable instanceof Path) {
+            ((Path) drawable).setDot(this);
+        }
+    }
     
     public Point2D.Double getPosition() {
         return position;
@@ -105,6 +169,18 @@ public class Dot{
             // Set the distance to the total distance traveled across all paths
             this.currentDistance = paths.stream().limit(currentPathIndex).mapToDouble(Path::getLength).sum();
         }
+    }
+
+    public void setDrawables(List<Drawable> drawables) {
+        this.drawables = drawables;
+    }
+
+    public void setDrawableConnections(Map<Drawable, List<Drawable>> drawableConnections) {
+        this.drawableConnections = drawableConnections;
+    }
+
+    public Drawable[] getDrawables() {
+        return drawables.toArray(new Drawable[0]);
     }
     
 }

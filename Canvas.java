@@ -2,16 +2,17 @@ import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class Canvas extends JPanel {
     private List<Path> pathList = new ArrayList<>();
-    private Dot dot; // Add Dot instance
+    private List<Dot> dots;  // Change to a list of Dots
 
-    public Canvas() {
-        dot = new Dot(new Point2D.Double(0, 0));
+    public Canvas(List<Dot> dots) {
+        this.dots = dots;
     }
 
     @Override
@@ -19,14 +20,18 @@ public class Canvas extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        // Draw the paths
-        for (Path path : pathList) {
-            path.draw(g2d, dot);
-        }
+        // Draw each Dot
+        for (Dot dot : dots) {
+            // Draw each Drawable in the Dot object
+            for (Drawable drawable : dot.getDrawables()) {
+                drawable.draw(g2d);
+            }
 
-        // Draw the dot
-        dot.draw(g2d);
+            // Draw the dot
+            dot.draw(g2d);
+        }
     }
+
 
     public void drawPath(Path userPath) {
         pathList.add(userPath);
@@ -74,6 +79,14 @@ public class Canvas extends JPanel {
         repaint(); // Repaint the canvas after drawing the connected paths
     }
     
+    public List<Dot> getDots() {
+        return dots;
+    }
+
+    public void setDotPathList(List<Path> paths, Dot dot) {
+        dot.setPathList(paths);
+        repaint();
+    }
     
     
     
@@ -81,20 +94,5 @@ public class Canvas extends JPanel {
 
     public List<Path> getPathList() {
         return pathList;
-    }
-
-    public Dot getDot() {
-        return dot;
-    }
-
-    public void setDotPath(Path path) {
-        dot.setPath(path);
-        dot.setPosition((Double) path.getStartPoint());
-        repaint();
-    }
-
-    public void setDotPathList(List<Path> paths) {
-        dot.setPathList(paths);
-        repaint();
     }
 }
