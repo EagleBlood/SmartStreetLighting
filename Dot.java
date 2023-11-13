@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -16,6 +17,7 @@ public class Dot{
     private int currentPathIndex = 0;
     private double currentDistance = 0.0;
     private List<Drawable> drawables;
+    private List<Drawable> allDrawables;
     private Map<Drawable, List<Drawable>> drawableConnections;
     private Drawable currentDrawable;
     private Random random = new Random();
@@ -23,12 +25,15 @@ public class Dot{
     private Drawable previousDrawable;
     private boolean isReversing = false;
     private Drawable lastReversedDrawable;
+    private double tolerance = DOT_SIZE / 2.0;
 
-    public Dot(Point2D.Double position, List<Drawable> drawables, Map<Drawable, List<Drawable>> drawableConnections) {
+
+    public Dot(Point2D.Double position, List<Drawable> drawables, List<Drawable> allDrawables, Map<Drawable, List<Drawable>> drawableConnections) {
         this.position = position;
         this.drawables = drawables;
         this.drawableConnections = drawableConnections; // Initialize drawableConnections
         this.currentDrawable = getFirstDrawable();
+        this.allDrawables = allDrawables;
     }
 
     private Drawable getFirstDrawable() {
@@ -57,47 +62,51 @@ public class Dot{
     }
 
     public void moveDot() {
+        // Update connections
+        for (Drawable drawable : allDrawables) {
+            double distance = currentDrawable.getDistanceTo(drawable);
+            if (distance < threshold) {
+                addConnection(currentDrawable, drawable);
+            } else {
+                removeConnection(currentDrawable, drawable);
+            }
+        }
+        
         if (currentDrawable == null) {
-            // No drawable to follow, exit.
+            System.out.println("CurrentDrawable is null");
             return;
         }
-    
-        // Define a small tolerance for floating-point comparisons
-        double tolerance = DOT_SIZE / 2.0;  // Adjust the tolerance to account for the radius of the dot
     
         Double currentPosition = currentDrawable.getPosition(currentDistance);
         Double nextPosition;
     
-        // Check if the current distance exceeds the total length of the current drawable with tolerance
         if (currentDistance >= currentDrawable.getLength() - tolerance) {
-            // Move to the next drawable when the drawable is complete
-            currentDrawable = getNextDrawable();
-            currentDistance = currentDrawable.getLength() - tolerance;
-            isReversing = true;  // Start moving in the reverse direction
-        } else if (currentDistance < 0) {
-            // Move to the previous drawable when the drawable is complete in reverse
-            currentDrawable = getNextDrawable();
-            currentDistance = 0.0;
-            isReversing = false;  // Start moving in the forward direction again
+            List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
+            if (connectedDrawables != null && !connectedDrawables.isEmpty()) {
+                currentDrawable = getNextDrawable();
+                currentDistance = 0.0;
+                isReversing = false;
+                System.out.println("Moving to next drawable");
+            } else {
+                currentDistance = currentDrawable.getLength() - tolerance;
+                isReversing = true;
+                System.out.println("Reversing");
+            }
+        } else if (currentDistance <= step) {
+            isReversing = false;
+            System.out.println("Forward");
         }
     
-        // Move the dot towards the next point on the drawable
         if (isReversing) {
             nextPosition = currentDrawable.getPosition(currentDistance - step);
         } else {
             nextPosition = currentDrawable.getPosition(currentDistance + step);
         }
     
-        // Check if nextPosition is not null before accessing its coordinates
         if (nextPosition != null) {
-            // Calculate the direction vector from the current position to the next position
             double dx = nextPosition.getX() - currentPosition.getX();
             double dy = nextPosition.getY() - currentPosition.getY();
-    
-            // Add the direction vector to the current position to get the new position
             position.setLocation(currentPosition.getX() + dx, currentPosition.getY() + dy);
-    
-            // Update the current distance
             if (isReversing) {
                 currentDistance -= step;
             } else {
@@ -105,19 +114,25 @@ public class Dot{
             }
         }
     }
+
+    public void setAllDrawables(List<Drawable> allDrawables) {
+        this.allDrawables = allDrawables;
+    }
     
     
     
     
-    private Drawable getNextDrawable() {
-        // Get the list of Drawable objects connected to the current Drawable
+    public Drawable getNextDrawable() {
         List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
-    
-        // Generate a random index
-        int index = random.nextInt(connectedDrawables.size());
-    
-        // Return the Drawable at the generated index
-        return connectedDrawables.get(index);
+        if (connectedDrawables != null && !connectedDrawables.isEmpty()) {
+            for (Drawable drawable : connectedDrawables) {
+                double distance = currentDrawable.getDistanceTo(drawable);
+                if (distance < threshold) {
+                    return drawable;
+                }
+            }
+        }
+        return null;
     }
     
 
@@ -126,6 +141,34 @@ public class Dot{
     private Drawable getPreviousDrawable() {
         return previousDrawable;
     }
+
+    public void addConnection(Drawable drawable1, Drawable drawable2) {
+    List<Drawable> connections1 = drawableConnections.get(drawable1);
+    if (connections1 == null) {
+        connections1 = new ArrayList<>();
+        drawableConnections.put(drawable1, connections1);
+    }
+    connections1.add(drawable2);
+
+    List<Drawable> connections2 = drawableConnections.get(drawable2);
+    if (connections2 == null) {
+        connections2 = new ArrayList<>();
+        drawableConnections.put(drawable2, connections2);
+    }
+    connections2.add(drawable1);
+}
+
+public void removeConnection(Drawable drawable1, Drawable drawable2) {
+    List<Drawable> connections1 = drawableConnections.get(drawable1);
+    if (connections1 != null) {
+        connections1.remove(drawable2);
+    }
+
+    List<Drawable> connections2 = drawableConnections.get(drawable2);
+    if (connections2 != null) {
+        connections2.remove(drawable1);
+    }
+}
 
     
     

@@ -66,16 +66,18 @@ public class app {
         List<Drawable> drawables = new ArrayList<>();
         drawables.add(drawable1);
         drawables.add(drawable2);
-        //drawables.add(drawable3);
+        drawables.add(drawable3);
+
+        List<Drawable> allDrawables = drawables;
 
         // Create the Dot objects
         Point2D.Double startPoint = drawable1.getEntryPoint();
-        Dot dot1 = new Dot(startPoint, drawables, drawableConnections);
+        Dot dot1 = new Dot(startPoint, drawables, allDrawables, drawableConnections);
 
         // For each Drawable object, add a List of Drawable objects that are connected to it to the Map
-        drawableConnections.put(drawable1, Arrays.asList(drawable2));
-        drawableConnections.put(drawable2, Arrays.asList(drawable1));
-        //drawableConnections.put(drawable3, Arrays.asList(drawable1, drawable2));
+        drawableConnections.put(drawable1, Arrays.asList(drawable2, drawable3));
+        drawableConnections.put(drawable2, Arrays.asList(drawable1, drawable3));
+        drawableConnections.put(drawable3, Arrays.asList(drawable1, drawable2));
         
         // Initialize the Canvas objects with the drawables and drawableConnections
         canvas1 = new Canvas(Arrays.asList(dot1));

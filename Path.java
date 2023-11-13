@@ -349,4 +349,16 @@ public Double getPosition(double distance) {
     public boolean isExitPoint(Double position) {
         return position.equals(getExitPoint());
     }
+
+    /*public void moveAlongPath(Drawable drawable, double distance) {
+        Path2D path = drawable.getPath();
+        Point2D.Double position = path.getPosition(distance);
+        this.setPosition(position);
+    }*/
+
+
+    @Override
+    public double getDistanceTo(Drawable drawable) {
+
+    }
 }

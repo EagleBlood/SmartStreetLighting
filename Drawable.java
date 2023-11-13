@@ -12,4 +12,5 @@ public interface Drawable {
     Double getPosition(double d);
     boolean isEntryPoint(Double position);
     boolean isExitPoint(Double position);
+    double getDistanceTo(Drawable drawable);
 }
