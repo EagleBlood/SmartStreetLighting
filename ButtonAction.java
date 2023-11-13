@@ -27,20 +27,20 @@ public class ButtonAction {
     public ActionListener button1Action() {
         return new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
-                app.buttonMode = app.ButtonMode.MODE1;
+                App.buttonMode = App.ButtonMode.MODE1;
                 if (!timer.isRunning()) {
                     timer = new Timer(10, new ActionListener() {
                         @Override public void actionPerformed(ActionEvent e) {
                             // Move the dot along the path
                             // ...
-    
+
                             // Repaint the canvas panel
                             canvasPanel.repaint();
                         }
                     });
                     timer.start();
                 }
-    
+
                 canvasPanel.repaint(); // Repaint the canvas panel
             }
         };
@@ -53,11 +53,11 @@ public class ButtonAction {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                app.buttonMode = app.ButtonMode.MODE2;
+                App.buttonMode = App.ButtonMode.MODE2;
                 if (!timer.isRunning()) {
                     timer.start();
                 }
-            
+
                 // Add a mouse listener to the canvas
                 canvasPanel.addMouseListener(new MouseAdapter() {
                     @Override
@@ -68,8 +68,8 @@ public class ButtonAction {
                             startX = e.getX();
                             startY = e.getY();
                             isDrawingPath = true;
-                        } 
-                        else 
+                        }
+                        else
                         {
                             // Finish drawing the current path
                             endX = e.getX();
