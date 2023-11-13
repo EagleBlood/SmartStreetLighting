@@ -62,16 +62,6 @@ public class Dot{
     }
 
     public void moveDot() {
-        // Update connections
-        for (Drawable drawable : allDrawables) {
-            double distance = currentDrawable.getDistanceTo(drawable);
-            if (distance < threshold) {
-                addConnection(currentDrawable, drawable);
-            } else {
-                removeConnection(currentDrawable, drawable);
-            }
-        }
-        
         if (currentDrawable == null) {
             System.out.println("CurrentDrawable is null");
             return;
@@ -81,20 +71,32 @@ public class Dot{
         Double nextPosition;
     
         if (currentDistance >= currentDrawable.getLength() - tolerance) {
-            List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
-            if (connectedDrawables != null && !connectedDrawables.isEmpty()) {
-                currentDrawable = getNextDrawable();
+            Drawable nextDrawable = getNextDrawable();
+            if (nextDrawable != null) {
+                previousDrawable = currentDrawable;
+                currentDrawable = nextDrawable;
                 currentDistance = 0.0;
                 isReversing = false;
                 System.out.println("Moving to next drawable");
             } else {
-                currentDistance = currentDrawable.getLength() - tolerance;
                 isReversing = true;
                 System.out.println("Reversing");
+                // Add a connection back to the previousDrawable
+                List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
+                if (connectedDrawables == null) {
+                    connectedDrawables = new ArrayList<>();
+                    drawableConnections.put(currentDrawable, connectedDrawables);
+                }
+                connectedDrawables.add(previousDrawable);
             }
-        } else if (currentDistance <= step) {
+        } else if (currentDistance <= step && isReversing) {
             isReversing = false;
             System.out.println("Forward");
+            // Remove the connection to the previousDrawable
+            List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
+            if (connectedDrawables != null) {
+                connectedDrawables.remove(previousDrawable);
+            }
         }
     
         if (isReversing) {
@@ -114,33 +116,40 @@ public class Dot{
             }
         }
     }
-
-    public void setAllDrawables(List<Drawable> allDrawables) {
-        this.allDrawables = allDrawables;
-    }
-    
-    
     
     
     public Drawable getNextDrawable() {
         List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
         if (connectedDrawables != null && !connectedDrawables.isEmpty()) {
-            for (Drawable drawable : connectedDrawables) {
+            List<Drawable> closestDrawables = new ArrayList<>();
+            double minDistance = currentDrawable.getDistanceTo(connectedDrawables.get(0));
+            closestDrawables.add(connectedDrawables.get(0));
+            for (int i = 1; i < connectedDrawables.size(); i++) {
+                Drawable drawable = connectedDrawables.get(i);
                 double distance = currentDrawable.getDistanceTo(drawable);
-                if (distance < threshold) {
-                    return drawable;
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestDrawables.clear();
+                    closestDrawables.add(drawable);
+                } else if (distance == minDistance) {
+                    closestDrawables.add(drawable);
                 }
+            }
+            // If there are multiple closest drawables, select one randomly
+            if (closestDrawables.size() > 1) {
+                System.out.println("Multiple closest drawables: " + closestDrawables);
+                Random rand = new Random();
+                Drawable nextDrawable = closestDrawables.get(rand.nextInt(closestDrawables.size()));
+                System.out.println("Selected drawable: " + nextDrawable);
+                return nextDrawable;
+            } else {
+                System.out.println("Single closest drawable: " + closestDrawables.get(0));
+                return closestDrawables.get(0);
             }
         }
         return null;
     }
     
-
-
-
-    private Drawable getPreviousDrawable() {
-        return previousDrawable;
-    }
 
     public void addConnection(Drawable drawable1, Drawable drawable2) {
     List<Drawable> connections1 = drawableConnections.get(drawable1);

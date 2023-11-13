@@ -10,6 +10,7 @@ import java.util.Map;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.lang.reflect.Array;
 
 public class app {
     public enum ButtonMode {
@@ -50,16 +51,18 @@ public class app {
 
         Path2D.Float path2D2 = new Path2D.Float();
         Line2D.Double line3 = new Line2D.Double(400, 300, 400, 200);
-        Line2D.Double line4 = new Line2D.Double(400, 200, 400, 100);
+        Line2D.Double line4 = new Line2D.Double(400, 200, 200, 200);
         path2D2.append(line3, true);
         path2D2.append(line4, true);
         Drawable drawable2 = new Path(path2D2);
 
         Path2D.Float path2D3 = new Path2D.Float();
         Line2D.Double line5 = new Line2D.Double(400, 300, 400, 400);
-        Line2D.Double line6 = new Line2D.Double(400, 400, 400, 500);
+        Line2D.Double line6 = new Line2D.Double(400, 400, 200, 400);
+        Line2D.Double line7 = new Line2D.Double(200, 400, 200, 200);
         path2D3.append(line5, true);
         path2D3.append(line6, true);
+        path2D3.append(line7, true);
         Drawable drawable3 = new Path(path2D3);
 
         // Add the Drawable objects to the drawables list
@@ -75,9 +78,9 @@ public class app {
         Dot dot1 = new Dot(startPoint, drawables, allDrawables, drawableConnections);
 
         // For each Drawable object, add a List of Drawable objects that are connected to it to the Map
-        drawableConnections.put(drawable1, Arrays.asList(drawable2, drawable3));
-        drawableConnections.put(drawable2, Arrays.asList(drawable1, drawable3));
-        drawableConnections.put(drawable3, Arrays.asList(drawable1, drawable2));
+        drawableConnections.put(drawable1, new ArrayList<>(Arrays.asList(drawable2, drawable3)));
+        drawableConnections.put(drawable2, new ArrayList<>(Arrays.asList(drawable1)));
+        drawableConnections.put(drawable3, new ArrayList<>(Arrays.asList(drawable1)));
         
         // Initialize the Canvas objects with the drawables and drawableConnections
         canvas1 = new Canvas(Arrays.asList(dot1));

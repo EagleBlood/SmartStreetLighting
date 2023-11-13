@@ -359,6 +359,12 @@ public Double getPosition(double distance) {
 
     @Override
     public double getDistanceTo(Drawable drawable) {
+        Point2D.Double thisExitPoint = this.getExitPoint();
+        Point2D.Double otherEntryPoint = drawable.getEntryPoint();
 
+        double dx = thisExitPoint.getX() - otherEntryPoint.getX();
+        double dy = thisExitPoint.getY() - otherEntryPoint.getY();
+
+        return Math.sqrt(dx * dx + dy * dy);
     }
 }
