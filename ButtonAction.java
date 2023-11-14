@@ -14,7 +14,7 @@ import javax.swing.*;
 public class ButtonAction {
     private Timer timer;
     private JPanel canvasPanel;
-    private Canvas canvas = new Canvas();
+    private Canvas canvas;
     List<Path> userPathList = new ArrayList<>();
 
 
@@ -46,6 +46,7 @@ public class ButtonAction {
         };
     }
 
+    /*
     public ActionListener button2Action() {
         return new ActionListener() {
             private int startX, startY, endX, endY;
@@ -119,5 +120,5 @@ public class ButtonAction {
             }
 
         };
-    }
+    }*/
 }

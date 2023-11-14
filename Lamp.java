@@ -21,11 +21,12 @@ public class Lamp {
         int drawY = (int) position.getY() - LAMP_SIZE / 2;
         g2d.fill(new Ellipse2D.Double(drawX, drawY, LAMP_SIZE, LAMP_SIZE));
 
-        if (isDotInRange(dot)) {
+        if (dot != null && isDotInRange(dot)) {
             active = true;
         } else {
             active = false;
         }
+
         
         if (active) {
             g2d.setColor(LAMP_LIT_COLOR);
