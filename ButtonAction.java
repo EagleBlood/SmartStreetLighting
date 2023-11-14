@@ -1,20 +1,13 @@
-import java.awt.event.ActionEvent;
+import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Line2D;
-import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.*;
 
 
 public class ButtonAction {
     private Timer timer;
-    private JPanel canvasPanel;
-    private Canvas canvas;
+    private final JPanel canvasPanel;
+    private final Canvas canvas;
     List<Path> userPathList = new ArrayList<>();
 
 
@@ -25,24 +18,20 @@ public class ButtonAction {
     }
 
     public ActionListener button1Action() {
-        return new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) {
-                App.buttonMode = App.ButtonMode.MODE1;
-                if (!timer.isRunning()) {
-                    timer = new Timer(10, new ActionListener() {
-                        @Override public void actionPerformed(ActionEvent e) {
-                            // Move the dot along the path
-                            // ...
+        return e -> {
+            App.buttonMode = App.ButtonMode.MODE1;
+            if (!timer.isRunning()) {
+                timer = new Timer(10, e1 -> {
+                    // Move the dot along the path
+                    // ...
 
-                            // Repaint the canvas panel
-                            canvasPanel.repaint();
-                        }
-                    });
-                    timer.start();
-                }
-
-                canvasPanel.repaint(); // Repaint the canvas panel
+                    // Repaint the canvas panel
+                    canvasPanel.repaint();
+                });
+                timer.start();
             }
+
+            canvasPanel.repaint(); // Repaint the canvas panel
         };
     }
 

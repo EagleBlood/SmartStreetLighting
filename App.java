@@ -10,7 +10,6 @@ import java.util.Map;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.lang.reflect.Array;
 
 public class App {
     public enum ButtonMode {
@@ -18,22 +17,19 @@ public class App {
     }
     public static ButtonMode buttonMode = ButtonMode.NONE;
 
-    private static Canvas canvas1 = new Canvas();
-    private static Canvas canvas2 = new Canvas();
-    private static Timer timer;
-
+    private static Canvas canvas1;
+//    private static Canvas canvas2;
 
 
     public static void main(String[] args) {
 
-        timer = new Timer(1000, new ActionListener() {
+        // Code to execute each time the timer fires
+        Timer timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Code to execute each time the timer fires
-        }
+            }
         });
-
-
 
         // Create a Map to represent the connections between Drawable objects
         Map<Drawable, List<Drawable>> drawableConnections = new HashMap<>();
@@ -53,6 +49,31 @@ public class App {
         path2D2.append(line4, true);
         Drawable drawable2 = new Path(path2D2);
 
+        Path2D.Float path2D3 = new Path2D.Float();
+        Line2D.Double line5 = new Line2D.Double(400, 300, 400, 400);
+        Line2D.Double line6 = new Line2D.Double(400, 400, 200, 400);
+        Line2D.Double line7 = new Line2D.Double(200, 400, 200, 200);
+        path2D3.append(line5, true);
+        path2D3.append(line6, true);
+        path2D3.append(line7, true);
+        Drawable drawable3 = new Path(path2D3);
+
+        // Add the Drawable objects to the drawables list
+        List<Drawable> drawables = new ArrayList<>();
+        drawables.add(drawable1);
+        drawables.add(drawable2);
+        drawables.add(drawable3);
+
+        // Create the Dot objects
+        Point2D.Double startPoint = drawable1.getEntryPoint();
+        Dot dot1 = new Dot(startPoint, drawables, drawableConnections);
+
+        // For each Drawable object, add a List of Drawable objects that are connected to it to the Map
+        drawableConnections.put(drawable1, new ArrayList<>(Arrays.asList(drawable2, drawable3)));
+        drawableConnections.put(drawable2, new ArrayList<>(List.of(drawable1)));
+        drawableConnections.put(drawable3, new ArrayList<>(List.of(drawable1)));
+
+
         JPanel left = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -64,19 +85,7 @@ public class App {
         SettingsPanel settingsPanel = new SettingsPanel();
         left.add(settingsPanel, gbc);
 
-
-        Path2D.Float path2D3 = new Path2D.Float();
-        Line2D.Double line5 = new Line2D.Double(400, 300, 400, 400);
-        Line2D.Double line6 = new Line2D.Double(400, 400, 200, 400);
-        Line2D.Double line7 = new Line2D.Double(200, 400, 200, 200);
-        path2D3.append(line5, true);
-        path2D3.append(line6, true);
-        path2D3.append(line7, true);
-        Drawable drawable3 = new Path(path2D3);
-
         JPanel buttonPanel = new JPanel() {
-
-
             @Override
             public Dimension getPreferredSize() {
                 return new Dimension(800, 50);
@@ -94,30 +103,7 @@ public class App {
 
         };
 
-        // Add the Drawable objects to the drawables list
-        List<Drawable> drawables = new ArrayList<>();
-        drawables.add(drawable1);
-        drawables.add(drawable2);
-        drawables.add(drawable3);
-
-        // Create the Dot objects
-        Point2D.Double startPoint = drawable1.getEntryPoint();
-        Dot dot1 = new Dot(startPoint, drawables, allDrawables, drawableConnections);
-
-        // For each Drawable object, add a List of Drawable objects that are connected to it to the Map
-        drawableConnections.put(drawable1, new ArrayList<>(Arrays.asList(drawable2, drawable3)));
-        drawableConnections.put(drawable2, new ArrayList<>(Arrays.asList(drawable1)));
-        drawableConnections.put(drawable3, new ArrayList<>(Arrays.asList(drawable1)));
-
-        // Initialize the Canvas objects with the drawables and drawableConnections
-        canvas1 = new Canvas(Arrays.asList(dot1));
-
-
-//            @Override
-//            public Color getBackground() {
-//                return Color.YELLOW;
-//            }
-
+        canvas1 = new Canvas(List.of(dot1));
         JPanel canvasPanel = new JPanel() {
 
             @Override
@@ -137,9 +123,9 @@ public class App {
                         canvas1.paintComponent(g);
                         break;
 
-                    case MODE2:
-                        canvas2.paintComponent(g);
-                        break;
+//                    case MODE2:
+//                        canvas2.paintComponent(g);
+//                        break;
 
                     default:
                         break;
@@ -178,7 +164,7 @@ public class App {
         frame.setVisible(true);
 
         ButtonAction buttonAction1 = new ButtonAction(timer, canvasPanel, canvas1);
-        ButtonAction buttonAction2 = new ButtonAction(timer, canvasPanel, canvas2);
+//        ButtonAction buttonAction2 = new ButtonAction(timer, canvasPanel, canvas2);
 
         button1.addActionListener(buttonAction1.button1Action());
         //button2.addActionListener(buttonAction2.button2Action());

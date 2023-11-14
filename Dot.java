@@ -7,33 +7,22 @@ import java.util.Map;
 import java.util.Random;
 
 public class Dot{
-    private double step = 4;
-    private boolean inLampRange;
     private static final Color DOT_COLOR = Color.RED;
     private static final int DOT_SIZE = 12;
-    private Point2D.Double position; // Current position of the dot
-    private List<Path> paths;
-    private Path path;
-    private int currentPathIndex = 0;
+    private final Point2D.Double position; // Current position of the dot;
     private double currentDistance = 0.0;
-    private List<Drawable> drawables;
-    private List<Drawable> allDrawables;
-    private Map<Drawable, List<Drawable>> drawableConnections;
+    private final List<Drawable> drawables;
+    private final Map<Drawable, List<Drawable>> drawableConnections;
     private Drawable currentDrawable;
-    private Random random = new Random();
-    private int currentDrawableIndex;
     private Drawable previousDrawable;
     private boolean isReversing = false;
-    private Drawable lastReversedDrawable;
-    private double tolerance = DOT_SIZE / 2.0;
 
 
-    public Dot(Point2D.Double position, List<Drawable> drawables, List<Drawable> allDrawables, Map<Drawable, List<Drawable>> drawableConnections) {
+    public Dot(Point2D.Double position, List<Drawable> drawables, Map<Drawable, List<Drawable>> drawableConnections) {
         this.position = position;
         this.drawables = drawables;
         this.drawableConnections = drawableConnections; // Initialize drawableConnections
         this.currentDrawable = getFirstDrawable();
-        this.allDrawables = allDrawables;
     }
 
     private Drawable getFirstDrawable() {
@@ -41,10 +30,9 @@ public class Dot{
             // No drawables to follow, exit.
             return null;
         }
-    
+
         // Generate a random index
-        int index = random.nextInt(drawables.size());
-    
+
         // Return the Drawable at the generated index
         return drawables.get(0);
     }
@@ -59,6 +47,8 @@ public class Dot{
 
         // Move the dot on the path
         moveDot();
+
+        ///chyba tutaj trzeba dodać sprawdzanie lampy
     }
 
     public void moveDot() {
@@ -66,10 +56,16 @@ public class Dot{
             System.out.println("CurrentDrawable is null");
             return;
         }
-    
+
         Double currentPosition = currentDrawable.getPosition(currentDistance);
         Double nextPosition;
-    
+
+        for (Lamp lamp : currentDrawable.getLamps()) {
+            lamp.activate(this);
+        }
+
+        double step = 4;
+        double tolerance = DOT_SIZE / 2.0;
         if (currentDistance >= currentDrawable.getLength() - tolerance) {
             Drawable nextDrawable = getNextDrawable();
             if (nextDrawable != null) {
@@ -82,11 +78,7 @@ public class Dot{
                 isReversing = true;
                 System.out.println("Reversing");
                 // Add a connection back to the previousDrawable
-                List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
-                if (connectedDrawables == null) {
-                    connectedDrawables = new ArrayList<>();
-                    drawableConnections.put(currentDrawable, connectedDrawables);
-                }
+                List<Drawable> connectedDrawables = drawableConnections.computeIfAbsent(currentDrawable, k -> new ArrayList<>());
                 connectedDrawables.add(previousDrawable);
             }
         } else if (currentDistance <= step && isReversing) {
@@ -98,13 +90,13 @@ public class Dot{
                 connectedDrawables.remove(previousDrawable);
             }
         }
-    
+
         if (isReversing) {
             nextPosition = currentDrawable.getPosition(currentDistance - step);
         } else {
             nextPosition = currentDrawable.getPosition(currentDistance + step);
         }
-    
+
         if (nextPosition != null) {
             double dx = nextPosition.getX() - currentPosition.getX();
             double dy = nextPosition.getY() - currentPosition.getY();
@@ -116,8 +108,8 @@ public class Dot{
             }
         }
     }
-    
-    
+
+
     public Drawable getNextDrawable() {
         List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
         if (connectedDrawables != null && !connectedDrawables.isEmpty()) {
@@ -149,90 +141,13 @@ public class Dot{
         }
         return null;
     }
-    
 
-    public void addConnection(Drawable drawable1, Drawable drawable2) {
-    List<Drawable> connections1 = drawableConnections.get(drawable1);
-    if (connections1 == null) {
-        connections1 = new ArrayList<>();
-        drawableConnections.put(drawable1, connections1);
-    }
-    connections1.add(drawable2);
-
-    List<Drawable> connections2 = drawableConnections.get(drawable2);
-    if (connections2 == null) {
-        connections2 = new ArrayList<>();
-        drawableConnections.put(drawable2, connections2);
-    }
-    connections2.add(drawable1);
-}
-
-public void removeConnection(Drawable drawable1, Drawable drawable2) {
-    List<Drawable> connections1 = drawableConnections.get(drawable1);
-    if (connections1 != null) {
-        connections1.remove(drawable2);
-    }
-
-    List<Drawable> connections2 = drawableConnections.get(drawable2);
-    if (connections2 != null) {
-        connections2.remove(drawable1);
-    }
-}
-
-    
-    
-    
-    public void setCurrentDrawable(Drawable drawable) {
-        this.currentDrawable = drawable;
-        if (drawable instanceof Path) {
-            ((Path) drawable).setDot(this);
-        }
-    }
-    
     public Point2D.Double getPosition() {
         return position;
-    }
-
-    public void setPosition(Point2D.Double newPosition) {
-        this.position = newPosition;
-    }
-
-    public boolean isInLampRange() {
-        return inLampRange;
-    }
-
-    public void setInLampRange(boolean inLampRange) {
-        this.inLampRange = inLampRange;
-    }
-
-    public void setPath(Path path) {
-        this.path = path;
-    }
-
-    public void setPathList(List<Path> paths) {
-        this.paths = paths;
-        if (!paths.isEmpty()) {
-            // Find the last path in the list
-            this.path = paths.get(paths.size() - 1);
-            
-            // Set the current path index based on the last path
-            this.currentPathIndex = paths.size() - 1;
-            
-            // Set the distance to the total distance traveled across all paths
-            this.currentDistance = paths.stream().limit(currentPathIndex).mapToDouble(Path::getLength).sum();
-        }
-    }
-
-    public void setDrawables(List<Drawable> drawables) {
-        this.drawables = drawables;
-    }
-
-    public void setDrawableConnections(Map<Drawable, List<Drawable>> drawableConnections) {
-        this.drawableConnections = drawableConnections;
     }
 
     public Drawable[] getDrawables() {
         return drawables.toArray(new Drawable[0]);
     }
-    
+
 }

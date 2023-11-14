@@ -81,7 +81,7 @@ public class SettingsPanel extends JPanel {
 }
 
 class Gbc {
-    private GridBagConstraints gbc;
+    private final GridBagConstraints gbc;
 
     public Gbc(int x, int y, int width) {
         gbc = new GridBagConstraints();
