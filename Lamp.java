@@ -1,62 +1,40 @@
 import java.awt.*;
-import java.util.List;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 
 public class Lamp {
-    private int x;
-    private int y;
+    private final Point2D.Double position;
+    private Graphics2D g2d;
     private boolean active = false;
-
-    private static final int LAMP_RADIUS = 50;
+    private static final int LAMP_RADIUS = 30;
     private static final Color LAMP_COLOR = Color.ORANGE;
     private static final Color LAMP_LIT_COLOR = Color.RED;
     private static final int LAMP_SIZE = 10;
 
-    public Lamp(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Lamp(Point2D.Double position) {
+        this.position = position;
     }
 
-    public void draw(Graphics g, Dot dot) {
-        g.setColor(LAMP_COLOR);
-        // Draw the dot from its center
-        int drawX = x - LAMP_SIZE / 2;
-        int drawY = y - LAMP_SIZE / 2;
-        g.fillOval(drawX, drawY, LAMP_SIZE, LAMP_SIZE);
+    public void draw(Graphics g) {
+        g2d = (Graphics2D) g;
+        g2d.setColor(LAMP_COLOR);
+        int drawX = (int) position.getX() - LAMP_SIZE / 2;
+        int drawY = (int) position.getY() - LAMP_SIZE / 2;
+        g2d.fill(new Ellipse2D.Double(drawX, drawY, LAMP_SIZE, LAMP_SIZE));
+    }
 
-        if (checkActivation(dot)) {
-            g.setColor(LAMP_LIT_COLOR);
-            g.drawOval(x - LAMP_RADIUS, y - LAMP_RADIUS, 2 * LAMP_RADIUS, 2 * LAMP_RADIUS);
-            active = true;
-        } else {
-            active = false;
+    public void activate(Dot dot) {
+        active = dot != null && isDotInRange(dot);
+
+        if (active) {
+            g2d.setColor(LAMP_LIT_COLOR);
+            g2d.draw(new Ellipse2D.Double(position.getX() - LAMP_RADIUS, position.getY() - LAMP_RADIUS, 2 * LAMP_RADIUS, 2 * LAMP_RADIUS));
         }
     }
 
-    public void activateDots(List<Dot> dots) {
-        for (Dot dot : dots) {
-            if (checkActivation(dot)) {
-                dot.setInLampRange(true);
-            } else {
-                dot.setInLampRange(false);
-            }
-        }
-    }
-
-    public boolean checkActivation(Dot dot) {
-        int dotX = dot.getX();
-        int dotY = dot.getY();
-        int lampX = x;
-        int lampY = y;
-        double distance = Math.sqrt(Math.pow(dotX - lampX, 2) + Math.pow(dotY - lampY, 2));
+    private boolean isDotInRange(Dot dot) {
+        double distance = position.distance(dot.getPosition());
         return distance <= LAMP_RADIUS;
     }
 
-    public void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
 }

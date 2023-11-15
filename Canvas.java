@@ -1,46 +1,28 @@
+import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
-public class Canvas {
-    private Dot dot;
-    private List<Lamp> lamps;
-    private static final Color PATH_COLOR = Color.GRAY;
-    private int pathThickness = 1;
+public class Canvas extends JPanel {
+    private final List<Dot> dots;  // Change to a list of Dots
 
-    public Canvas(Dot dot) {
-        this.dot = dot;
-        lamps = new ArrayList<>();
-        // Add lamps in each corner of the dot's path
-        updatePathAndLamps();
+    public Canvas(List<Dot> dots) {
+        this.dots = dots;
     }
 
-    public void draw(Graphics g) {
-        // Clear the canvas or background, if needed
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setStroke(new BasicStroke(pathThickness));
-        g2d.setColor(PATH_COLOR);
 
-        // Draw the dot's path in grey
-        g2d.drawRect(dot.getX1(), dot.getY1(), dot.getX2() - dot.getX1(), dot.getY3() - dot.getY1());
+        // Draw each Dot
+        for (Dot dot : dots) {
+            // Draw each Drawable in the Dot object
+            for (Drawable drawable : dot.getDrawables()) {
+                drawable.draw(g2d);
+            }
+            // Draw the dot
+            dot.draw(g2d);
 
-        // Draw other elements, if any
-        dot.draw(g);
-
-        // Draw the lamps
-        for (Lamp lamp : lamps) {
-            lamp.draw(g, dot);
-            lamp.checkActivation(dot);
         }
-    }
-
-    // Update the path and lamps based on the dot's position
-    private void updatePathAndLamps() {
-        lamps.clear();
-        // Add lamps in each corner of the dot's path
-        lamps.add(new Lamp(dot.getX1(), dot.getY1())); // Top left corner
-        lamps.add(new Lamp(dot.getX2(), dot.getY1())); // Top right corner
-        lamps.add(new Lamp(dot.getX2(), dot.getY3())); // Bottom right corner
-        lamps.add(new Lamp(dot.getX1(), dot.getY3())); // Bottom left corner
     }
 }
