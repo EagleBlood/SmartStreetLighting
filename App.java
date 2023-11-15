@@ -34,6 +34,7 @@ public class App {
         // Create a Map to represent the connections between Drawable objects
         Map<Drawable, List<Drawable>> drawableConnections = new HashMap<>();
 
+        /* Preset1 
         // Create the Drawable objects
         Path2D.Float path2D1 = new Path2D.Float();
         Line2D.Double line1 = new Line2D.Double(200, 200, 300, 300);
@@ -58,20 +59,73 @@ public class App {
         path2D3.append(line7, true);
         Drawable drawable3 = new Path(path2D3);
 
+        Path2D.Float path2D4 = new Path2D.Float();
+        Line2D.Double line8 = new Line2D.Double(400, 300, 500, 300);
+        Line2D.Double line9 = new Line2D.Double(500, 300, 200, 300);
+        path2D4.append(line8, true);
+        path2D4.append(line9, true);
+        Drawable drawable4 = new Path(path2D4);
+
         // Add the Drawable objects to the drawables list
         List<Drawable> drawables = new ArrayList<>();
         drawables.add(drawable1);
         drawables.add(drawable2);
         drawables.add(drawable3);
+        drawables.add(drawable4);
+
+        // For each Drawable object, add a List of Drawable objects that are connected to it to the Map
+        drawableConnections.put(drawable1, new ArrayList<>(List.of(drawable2, drawable3, drawable4)));
+        drawableConnections.put(drawable2, new ArrayList<>(List.of(drawable1)));
+        drawableConnections.put(drawable3, new ArrayList<>(List.of(drawable1)));
+        drawableConnections.put(drawable4, new ArrayList<>(List.of(drawable1)));
+        */
+
+        /* Preset2 */
+        // Create the Drawable objects
+        Path2D.Float path2D1 = new Path2D.Float();
+        Line2D.Double line1 = new Line2D.Double(200, 200, 300, 200);
+        Line2D.Double line2 = new Line2D.Double(300, 200, 300, 300);
+        path2D1.append(line1, true);
+        path2D1.append(line2, true);
+        Drawable drawable1 = new Path(path2D1);
+
+        Path2D.Float path2D2 = new Path2D.Float();
+        Line2D.Double line3 = new Line2D.Double(300, 300, 500, 300);
+        path2D2.append(line3, true);
+        Drawable drawable2 = new Path(path2D2);
+
+        Path2D.Float path2D3 = new Path2D.Float();
+        Line2D.Double line4 = new Line2D.Double(500, 300, 500, 400);
+        Line2D.Double line5 = new Line2D.Double(500, 400, 300, 300);
+        path2D3.append(line4, true);
+        path2D3.append(line5, true);
+        Drawable drawable3 = new Path(path2D3);
+
+        Path2D.Float path2D4 = new Path2D.Float();
+        Line2D.Double line6 = new Line2D.Double(500, 300, 500, 200);
+        Line2D.Double line7 = new Line2D.Double(500, 200, 300, 300);
+        path2D4.append(line6, true);
+        path2D4.append(line7, true);
+        Drawable drawable4 = new Path(path2D4);
+
+        // Add the Drawable objects to the drawables list
+        List<Drawable> drawables = new ArrayList<>();
+        drawables.add(drawable1);
+        drawables.add(drawable2);
+        drawables.add(drawable3);
+        drawables.add(drawable4);
+
+        // For each Drawable object, add a List of Drawable objects that are connected to it to the Map
+        drawableConnections.put(drawable1, new ArrayList<>(List.of(drawable2)));
+        drawableConnections.put(drawable2, new ArrayList<>(List.of(drawable3, drawable4)));
+        drawableConnections.put(drawable3, new ArrayList<>(List.of(drawable2)));
+        drawableConnections.put(drawable4, new ArrayList<>(List.of(drawable2)));
+
+
 
         // Create the Dot objects
         Point2D.Double startPoint = drawable1.getEntryPoint();
         Dot dot1 = new Dot(startPoint, drawables, drawableConnections);
-
-        // For each Drawable object, add a List of Drawable objects that are connected to it to the Map
-        drawableConnections.put(drawable1, new ArrayList<>(Arrays.asList(drawable2, drawable3)));
-        drawableConnections.put(drawable2, new ArrayList<>(List.of(drawable1)));
-        drawableConnections.put(drawable3, new ArrayList<>(List.of(drawable1)));
 
 
         JPanel left = new JPanel(new GridBagLayout());

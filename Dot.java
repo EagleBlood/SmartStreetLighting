@@ -16,6 +16,8 @@ public class Dot{
     private Drawable currentDrawable;
     private Drawable previousDrawable;
     private boolean isReversing = false;
+    private Random random = new Random();
+    private double step = 4;
 
 
     public Dot(Point2D.Double position, List<Drawable> drawables, Map<Drawable, List<Drawable>> drawableConnections) {
@@ -32,6 +34,7 @@ public class Dot{
         }
 
         // Generate a random index
+        //int index = random.nextInt(drawables.size());
 
         // Return the Drawable at the generated index
         return drawables.get(0);
@@ -64,7 +67,7 @@ public class Dot{
             lamp.activate(this);
         }
 
-        double step = 4;
+        
         double tolerance = DOT_SIZE / 2.0;
         if (currentDistance >= currentDrawable.getLength() - tolerance) {
             Drawable nextDrawable = getNextDrawable();
@@ -110,6 +113,7 @@ public class Dot{
     }
 
 
+    //TODO Znajduje tylko ścieszki któe są połączone z pierwszą ścieżką (w punkcie startowym) i to nie zawsze, trzeba to ogarnac
     public Drawable getNextDrawable() {
         List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
         if (connectedDrawables != null && !connectedDrawables.isEmpty()) {
@@ -135,6 +139,7 @@ public class Dot{
                 System.out.println("Selected drawable: " + nextDrawable);
                 return nextDrawable;
             } else {
+                
                 System.out.println("Single closest drawable: " + closestDrawables.get(0));
                 return closestDrawables.get(0);
             }
