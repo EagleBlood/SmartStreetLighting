@@ -177,7 +177,13 @@ public class Path implements Drawable{
 
     @Override
     public Double getEntryPoint() {
-        return new Point2D.Double(path2D.getBounds2D().getMinX(), path2D.getBounds2D().getMinY());
+        PathIterator pathIterator = path2D.getPathIterator(null);
+        double[] coords = new double[6];
+        if (!pathIterator.isDone()) {
+            pathIterator.currentSegment(coords);
+            return new Point2D.Double(coords[0], coords[1]);
+        }
+        return null;
     }
 
     @Override
