@@ -80,7 +80,7 @@ public class App {
         drawableConnections.put(drawable4, new ArrayList<>(List.of(drawable1)));
         */
 
-        /* Preset2 */
+        /* Preset2 
         // Create the Drawable objects
         Path2D.Float path2D1 = new Path2D.Float();
         Line2D.Double line1 = new Line2D.Double(200, 200, 300, 200);
@@ -107,6 +107,35 @@ public class App {
         path2D4.append(line6, true);
         path2D4.append(line7, true);
         Drawable drawable4 = new Path(path2D4);
+        */
+
+        /* Preset3 */
+        // Create the Drawable objects
+        Path2D.Float path2D1 = new Path2D.Float();
+        Line2D.Double line1 = new Line2D.Double(200, 200, 300, 200);
+        path2D1.append(line1, false);
+        Drawable drawable1 = new Path(path2D1);
+
+        Path2D.Float path2D2 = new Path2D.Float();
+        Line2D.Double line2 = new Line2D.Double(300, 200, 500, 300);
+        path2D2.append(line2, false);
+        Drawable drawable2 = new Path(path2D2);
+
+        Path2D.Float path2D3 = new Path2D.Float();
+        Line2D.Double line3 = new Line2D.Double(500, 300, 500, 400);
+        path2D3.append(line3, false);
+        Drawable drawable3 = new Path(path2D3);
+
+        Path2D.Float path2D4 = new Path2D.Float();
+        Line2D.Double line4 = new Line2D.Double(200, 200, 500, 200);
+        path2D4.append(line4, false);
+        Drawable drawable4 = new Path(path2D4);
+
+        Path2D.Float path2D5 = new Path2D.Float();
+        Line2D.Double line5 = new Line2D.Double(700, 700, 800, 800);
+        path2D5.append(line5, false);
+        Drawable drawable5 = new Path(path2D5);
+
 
         // Add the Drawable objects to the drawables list
         List<Drawable> drawables = new ArrayList<>();
@@ -114,18 +143,14 @@ public class App {
         drawables.add(drawable2);
         drawables.add(drawable3);
         drawables.add(drawable4);
+        drawables.add(drawable5);
 
-        // For each Drawable object, add a List of Drawable objects that are connected to it to the Map
-        drawableConnections.put(drawable1, new ArrayList<>(List.of(drawable2)));
-        drawableConnections.put(drawable2, new ArrayList<>(List.of(drawable3, drawable4)));
-        drawableConnections.put(drawable3, new ArrayList<>(List.of(drawable2)));
-        drawableConnections.put(drawable4, new ArrayList<>(List.of(drawable2)));
 
 
 
         // Create the Dot objects
         Point2D.Double startPoint = drawable1.getEntryPoint();
-        Dot dot1 = new Dot(startPoint, drawables, drawableConnections);
+        Dot dot1 = new Dot(startPoint, drawables);
 
 
         JPanel left = new JPanel(new GridBagLayout());

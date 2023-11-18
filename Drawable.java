@@ -12,6 +12,4 @@ public interface Drawable {
     double getLength();
     Double getPosition(double d);
     double getDistanceTo(Drawable drawable);
-
-
 }

@@ -12,18 +12,19 @@ public class Dot{
     private final Point2D.Double position; // Current position of the dot;
     private double currentDistance = 0.0;
     private final List<Drawable> drawables;
-    private final Map<Drawable, List<Drawable>> drawableConnections;
     private Drawable currentDrawable;
     private Drawable previousDrawable;
+    private List<Object> nextDrawable;
     private boolean isReversing = false;
+    private boolean shouldGetNextDrawable = false;
     private Random random = new Random();
-    private double step = 4;
+    private double step = 1;
+    private double tolerance = DOT_SIZE / 2.0;
 
 
-    public Dot(Point2D.Double position, List<Drawable> drawables, Map<Drawable, List<Drawable>> drawableConnections) {
+    public Dot(Point2D.Double position, List<Drawable> drawables) {
         this.position = position;
         this.drawables = drawables;
-        this.drawableConnections = drawableConnections; // Initialize drawableConnections
         this.currentDrawable = getFirstDrawable();
     }
 
@@ -59,51 +60,45 @@ public class Dot{
             System.out.println("CurrentDrawable is null");
             return;
         }
-
+    
         Double currentPosition = currentDrawable.getPosition(currentDistance);
         Double nextPosition;
-
+    
         for (Lamp lamp : currentDrawable.getLamps()) {
             lamp.activate(this);
         }
+    
 
-        
-        double tolerance = DOT_SIZE / 2.0;
-        if (currentDistance >= currentDrawable.getLength() - tolerance) {
-            Drawable nextDrawable = getNextDrawable();
-            if (nextDrawable != null) {
+        Double endPosition = isReversing ? currentDrawable.getPosition(0) : currentDrawable.getPosition(currentDrawable.getLength());
+    
+        if (Math.abs(currentPosition.getX() - endPosition.getX()) <= tolerance && Math.abs(currentPosition.getY() - endPosition.getY()) <= tolerance) {
+            shouldGetNextDrawable = true;
+        }
+    
+        if(shouldGetNextDrawable) {
+            nextDrawable = getNextDrawable();
+            if(nextDrawable != null && !nextDrawable.isEmpty()){
                 previousDrawable = currentDrawable;
-                currentDrawable = nextDrawable;
-                currentDistance = 0.0;
-                isReversing = false;
-                System.out.println("Moving to next drawable");
-            } else {
-                isReversing = true;
-                System.out.println("Reversing");
-                // Add a connection back to the previousDrawable
-                List<Drawable> connectedDrawables = drawableConnections.computeIfAbsent(currentDrawable, k -> new ArrayList<>());
-                connectedDrawables.add(previousDrawable);
-            }
-        } else if (currentDistance <= step && isReversing) {
-            isReversing = false;
-            System.out.println("Forward");
-            // Remove the connection to the previousDrawable
-            List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
-            if (connectedDrawables != null) {
-                connectedDrawables.remove(previousDrawable);
+                currentDrawable = (Drawable) nextDrawable.get(0);
+                isReversing = (Boolean) nextDrawable.get(1);
+                currentDistance = isReversing ? currentDrawable.getLength() : 0.0;
+                shouldGetNextDrawable = false;
             }
         }
-
+    
         if (isReversing) {
             nextPosition = currentDrawable.getPosition(currentDistance - step);
+            //System.out.println("Reversing");
         } else {
             nextPosition = currentDrawable.getPosition(currentDistance + step);
+            //System.out.println("Forward");
         }
-
+    
         if (nextPosition != null) {
             double dx = nextPosition.getX() - currentPosition.getX();
             double dy = nextPosition.getY() - currentPosition.getY();
             position.setLocation(currentPosition.getX() + dx, currentPosition.getY() + dy);
+    
             if (isReversing) {
                 currentDistance -= step;
             } else {
@@ -113,39 +108,45 @@ public class Dot{
     }
 
 
-    //TODO Znajduje tylko ścieszki któe są połączone z pierwszą ścieżką (w punkcie startowym) i to nie zawsze, trzeba to ogarnac
-    public Drawable getNextDrawable() {
-        List<Drawable> connectedDrawables = drawableConnections.get(currentDrawable);
-        if (connectedDrawables != null && !connectedDrawables.isEmpty()) {
-            List<Drawable> closestDrawables = new ArrayList<>();
-            double minDistance = currentDrawable.getDistanceTo(connectedDrawables.get(0));
-            closestDrawables.add(connectedDrawables.get(0));
-            for (int i = 1; i < connectedDrawables.size(); i++) {
-                Drawable drawable = connectedDrawables.get(i);
-                double distance = currentDrawable.getDistanceTo(drawable);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestDrawables.clear();
-                    closestDrawables.add(drawable);
-                } else if (distance == minDistance) {
-                    closestDrawables.add(drawable);
-                }
+    //TODO W miare działa ale trzeba ogarnąc czemu ciągle się ciągle cofa i jak zrobić żeby umiejętnie wybiełar cofanie gdy nie ma połaczeń
+    public List<Object> getNextDrawable() {
+        List<Drawable> potentialNextDrawables = new ArrayList<>();
+        List<Boolean> shouldReverse = new ArrayList<>();
+    
+        for(Drawable drawable : drawables){
+            //Causes endless loop when it wont find any drawable
+            if (drawable == previousDrawable) {
+                continue;
             }
-            // If there are multiple closest drawables, select one randomly
-            if (closestDrawables.size() > 1) {
-                System.out.println("Multiple closest drawables: " + closestDrawables);
-                Random rand = new Random();
-                Drawable nextDrawable = closestDrawables.get(rand.nextInt(closestDrawables.size()));
-                System.out.println("Selected drawable: " + nextDrawable);
-                return nextDrawable;
-            } else {
-                
-                System.out.println("Single closest drawable: " + closestDrawables.get(0));
-                return closestDrawables.get(0);
+    
+            System.out.println("Drawable " + drawable + " entry point: " + drawable.getEntryPoint());
+            System.out.println("Drawable " + drawable + " exit point: " + drawable.getExitPoint());
+            if(drawable.getEntryPoint().equals(currentDrawable.getExitPoint())){
+                potentialNextDrawables.add(drawable);
+                shouldReverse.add(false);
+                System.out.println("Found drawable and not shouldReverse: " + potentialNextDrawables);
+            }
+            else if(drawable.getExitPoint().equals(currentDrawable.getExitPoint())){
+                potentialNextDrawables.add(drawable);
+                shouldReverse.add(true);
+                System.out.println("Found drawable and shouldReverse: " + potentialNextDrawables);
             }
         }
-        return null;
+    
+        if (!potentialNextDrawables.isEmpty()) {
+            int index = potentialNextDrawables.size() == 1 ? 0 : random.nextInt(potentialNextDrawables.size());
+            List<Object> result = new ArrayList<>();
+            result.add(potentialNextDrawables.get(index));
+            result.add(shouldReverse.get(index));
+            System.out.println("Result send");
+            return result;
+        }
+        else{
+            return null;
+        }
     }
+
+
 
     public Point2D.Double getPosition() {
         return position;

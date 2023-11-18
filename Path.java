@@ -160,6 +160,18 @@ public class Path implements Drawable{
     }
 
     public Point2D.Double getEndPoint() {
+        PathIterator pathIterator = path2D.getPathIterator(null);
+        double[] coords = new double[6];
+        double lastX = 0;
+        double lastY = 0;
+        while (!pathIterator.isDone()) {
+            int segmentType = pathIterator.currentSegment(coords);
+            if (segmentType == PathIterator.SEG_MOVETO || segmentType == PathIterator.SEG_LINETO) {
+                lastX = coords[0];
+                lastY = coords[1];
+            }
+            pathIterator.next();
+        }
         return new Point2D.Double(lastX, lastY);
     }
 
@@ -196,7 +208,6 @@ public class Path implements Drawable{
                     double y = coords[1];
                     double segmentLength = Math.sqrt((x - lastX) * (x - lastX) + (y - lastY) * (y - lastY));
 
-                    // Check if the remaining distance is within the current segment
                     if (segmentLength >= remainingDistance) {
                         // Calculate the ratio of the remaining distance to the segment length
                         double ratio = remainingDistance / segmentLength;
@@ -228,8 +239,10 @@ public class Path implements Drawable{
             pathIterator.next();
         }
 
-        return null;
+        // If distance exceeds the path length, return the position at the end of the path
+        return new Point2D.Double(lastX, lastY);
     }
+
 
 
     @Override
