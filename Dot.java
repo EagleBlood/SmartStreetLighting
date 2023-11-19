@@ -51,7 +51,7 @@ public class Dot{
         // Move the dot on the path
         moveDot();
 
-        ///chyba tutaj trzeba dodać sprawdzanie lampy
+        g.dispose();
     }
 
     public void moveDot() {
@@ -61,7 +61,7 @@ public class Dot{
         }
     
         Double currentPosition = currentDrawable.getPosition(currentDistance);
-        Double nextPosition;
+        Double nextPosition ;
     
         for (Lamp lamp : currentDrawable.getLamps()) {
             lamp.activate(this);
@@ -76,13 +76,14 @@ public class Dot{
     
         if(shouldGetNextDrawable) {
             nextDrawable = getNextDrawable();
-            System.out.println("Current drawable: " + nextDrawable);
+            //System.out.println("Current drawable: " + nextDrawable);
             if(nextDrawable != null && !nextDrawable.isEmpty()){
                 previousDrawable = currentDrawable;
                 currentDrawable = (Drawable) nextDrawable.get(0);
                 isReversing = (Boolean) nextDrawable.get(1);
                 currentDistance = isReversing ? currentDrawable.getLength() : 0.0;
                 shouldGetNextDrawable = false;
+                System.gc(); //Garbage collector
             }
         }
     

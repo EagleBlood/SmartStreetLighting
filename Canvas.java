@@ -3,7 +3,7 @@ import java.awt.*;
 import java.util.List;
 
 public class Canvas extends JPanel {
-    private final List<Dot> dots;  // Change to a list of Dots
+    private final List<Dot> dots;
 
     public Canvas(List<Dot> dots) {
         this.dots = dots;
@@ -16,7 +16,7 @@ public class Canvas extends JPanel {
 
         // Draw each Dot
         for (Dot dot : dots) {
-            // Draw each Drawable in the Dot object
+            // Draw each Drawable (paths, lamps) in the Dot object
             for (Drawable drawable : dot.getDrawables()) {
                 drawable.draw(g2d);
             }
@@ -24,5 +24,8 @@ public class Canvas extends JPanel {
             dot.draw(g2d);
 
         }
+        g2d.dispose();
+        g.dispose();
     }
+
 }
