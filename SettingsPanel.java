@@ -12,10 +12,12 @@ public class SettingsPanel extends JPanel {
     private final JTextField minuteTextField;
     private JComboBox<String> seasonComboBox;
     private JComboBox<String> weatherComboBox;
+    private Timer timer;
+    
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(300, 300);
+        return new Dimension(350, 300);
     }
 
     @Override
@@ -29,6 +31,10 @@ public class SettingsPanel extends JPanel {
     }
     public SettingsPanel() {
         setLayout(new GridBagLayout());
+
+        this.timer = new Timer(1000, e -> {
+            // Timer action goes here
+        });
 
         JLabel currentTime = new JLabel("Current time");
         add(currentTime, new Gbc(0,0,2).build());
@@ -104,7 +110,18 @@ public class SettingsPanel extends JPanel {
         JButton startButton = new JButton("START");
         startButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 
-        add(startButton, new Gbc(1,13,2).build());
+        JButton stopButton = new JButton("STOP");
+        stopButton.setFont(new Font("SansSerif", Font.BOLD, 15));
+
+        add(startButton, new Gbc(0,13,2).build());
+        add(stopButton, new Gbc(2,13,2).build());
+
+
+        // Start and stop buttons
+        ButtonAction buttonAction1 = new ButtonAction(timer, App.getCanvas());
+
+        startButton.addActionListener(buttonAction1.StartCanvas());
+        stopButton.addActionListener(buttonAction1.StopCanvas());
 
 
 
