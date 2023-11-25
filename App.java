@@ -13,6 +13,8 @@ public class App {
 //    private static Canvas canvas2;
     private static JPanel canvasPanel;
 
+    private static Timer globalTimer;
+
 
     public static void main(String[] args) {
 

@@ -14,7 +14,7 @@ public class SettingsPanel extends JPanel {
     private JComboBox<String> weatherComboBox;
     private Timer timerCloak;
     private Timer timerDot;
-
+    public static SettingsPanel instance;
 
     @Override
     public Dimension getPreferredSize() {
@@ -31,6 +31,9 @@ public class SettingsPanel extends JPanel {
         return new Color(0xD4D9DB);
     }
     public SettingsPanel() {
+
+        instance = this;
+
         setLayout(new GridBagLayout());
 
         // Timer action listeners
@@ -145,8 +148,10 @@ public class SettingsPanel extends JPanel {
             startButtonClicked();
         });
 
-        
+    }
 
+    public static String getCurrentTime() {
+        return instance.clockLabel.getText();
     }
 
     private void presetButtonClicked(String presetTime) {
@@ -203,18 +208,19 @@ public class SettingsPanel extends JPanel {
         String[] parts = currentTime.split(":");
         int hour = Integer.parseInt(parts[0]);
         int minute = Integer.parseInt(parts[1]);
-    
+
         // Increment time by 15 minutes
         minute += 15;
         if (minute >= 60) {
             minute -= 60;
             hour = (hour + 1) % 24; // Ensure hour stays within 24-hour format
         }
-    
+
         // Update clockLabel
         String newTime = String.format("%02d:%02d", hour, minute);
         clockLabel.setText(newTime);
     }
+
 }
 
 class Gbc {

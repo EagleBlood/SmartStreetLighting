@@ -13,12 +13,10 @@ public class Dot{
     private final List<Drawable> drawables;
     private Drawable currentDrawable;
     private Drawable previousDrawable;
-    private List<Object> nextDrawable;
     private boolean isReversing = false;
     private boolean shouldGetNextDrawable = false;
-    private Random random = new Random();
-    private double step = 10;
-    private double tolerance = DOT_SIZE / 2.0;
+    private final Random random = new Random();
+    private final double tolerance = DOT_SIZE / 2.0;
 
 
     public Dot(Point2D.Double position, List<Drawable> drawables) {
@@ -59,23 +57,23 @@ public class Dot{
             System.out.println("CurrentDrawable is null");
             return;
         }
-    
+
         Double currentPosition = currentDrawable.getPosition(currentDistance);
         Double nextPosition ;
-    
+
         for (Lamp lamp : currentDrawable.getLamps()) {
             lamp.activate(this);
         }
-    
+
 
         Double endPosition = isReversing ? currentDrawable.getPosition(0) : currentDrawable.getPosition(currentDrawable.getLength());
-    
+
         if (Math.abs(currentPosition.getX() - endPosition.getX()) <= tolerance && Math.abs(currentPosition.getY() - endPosition.getY()) <= tolerance) {
             shouldGetNextDrawable = true;
         }
-    
+
         if(shouldGetNextDrawable) {
-            nextDrawable = getNextDrawable();
+            List<Object> nextDrawable = getNextDrawable();
             //System.out.println("Current drawable: " + nextDrawable);
             if(nextDrawable != null && !nextDrawable.isEmpty()){
                 previousDrawable = currentDrawable;
@@ -86,7 +84,8 @@ public class Dot{
                 System.gc(); //Garbage collector
             }
         }
-    
+
+        double step = 10;
         if (isReversing) {
             nextPosition = currentDrawable.getPosition(currentDistance - step);
             //System.out.println("Reversing");
@@ -94,12 +93,12 @@ public class Dot{
             nextPosition = currentDrawable.getPosition(currentDistance + step);
             //System.out.println("Forward");
         }
-    
+
         if (nextPosition != null) {
             double dx = nextPosition.getX() - currentPosition.getX();
             double dy = nextPosition.getY() - currentPosition.getY();
             position.setLocation(currentPosition.getX() + dx, currentPosition.getY() + dy);
-    
+
             if (isReversing) {
                 currentDistance -= step;
             } else {
@@ -112,12 +111,12 @@ public class Dot{
     public List<Object> getNextDrawable() {
         List<Drawable> potentialNextDrawables = new ArrayList<>();
         List<Boolean> shouldReverse = new ArrayList<>();
-    
+
         for(Drawable drawable : drawables){
             if (drawable == currentDrawable || drawable == previousDrawable) {
                 continue;
             }
-    
+
             if (!isReversing) {
                 if(pointsAreClose(drawable.getEntryPoint(), currentDrawable.getExitPoint(), tolerance)){
                     potentialNextDrawables.add(drawable);
@@ -138,7 +137,7 @@ public class Dot{
                 }
             }
         }
-    
+
         if (!potentialNextDrawables.isEmpty()) {
             int index = potentialNextDrawables.size() == 1 ? 0 : random.nextInt(potentialNextDrawables.size());
             List<Object> result = new ArrayList<>();
