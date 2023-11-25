@@ -17,6 +17,10 @@ public class SettingsPanel extends JPanel {
     private Timer timerDot;
     public static SettingsPanel instance;
 
+    public static String getCurrentTime() {
+        return instance.clockLabel.getText();
+    }
+
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(350, 700);
@@ -174,7 +178,7 @@ public class SettingsPanel extends JPanel {
             App.getJPanel().repaint();
         });
 
-        
+
 
     }
 
