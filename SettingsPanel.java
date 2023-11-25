@@ -144,6 +144,12 @@ public class SettingsPanel extends JPanel {
             startButtonClicked();
         });
 
+        // Initialize the timer
+        this.timer = new Timer(1000, e -> {
+            incrementClock();
+        });
+        this.timer.start(); // Start the timer
+
     }
 
     private void presetButtonClicked(String presetTime) {
@@ -198,6 +204,24 @@ public class SettingsPanel extends JPanel {
     private void updateTimeFromComboBox(String selectedOption) {
         // Aktualizacja clockLabel zgodnie z wybraną opcją
         clockLabel.setText(selectedOption);
+    }
+
+    private void incrementClock() {
+        String currentTime = clockLabel.getText();
+        String[] parts = currentTime.split(":");
+        int hour = Integer.parseInt(parts[0]);
+        int minute = Integer.parseInt(parts[1]);
+    
+        // Increment time by 15 minutes
+        minute += 15;
+        if (minute >= 60) {
+            minute -= 60;
+            hour = (hour + 1) % 24; // Ensure hour stays within 24-hour format
+        }
+    
+        // Update clockLabel
+        String newTime = String.format("%02d:%02d", hour, minute);
+        clockLabel.setText(newTime);
     }
 }
 
