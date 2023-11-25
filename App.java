@@ -31,30 +31,12 @@ public class App {
         gbc.fill = GridBagConstraints.BOTH;
 
 
-        JPanel buttonPanel = new JPanel() {
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(800, 50);
-            }
-
-            @Override
-            public Dimension getMinimumSize() {
-                return getPreferredSize();
-            }
-
-//            @Override
-//            public Color getBackground() {
-//                return Color.YELLOW;
-//            }
-
-        };
-
         canvas1 = new Canvas(List.of(dot1));
         canvasPanel = new JPanel() {
 
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(800, 600);
+                return new Dimension(800, 700);
             }
 
             @Override
@@ -94,8 +76,6 @@ public class App {
 
         gbc.gridy++;
         gbc.weighty = 0;
-        center.add(buttonPanel, gbc);
-
 
         //#####################################################
 
