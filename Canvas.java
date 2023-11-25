@@ -4,9 +4,14 @@ import java.util.List;
 
 public class Canvas extends JPanel {
     private final List<Dot> dots;
+    private List<Drawable> drawableList; // New field
 
     public Canvas(List<Dot> dots) {
         this.dots = dots;
+    }
+
+    public void setDrawableList(List<Drawable> drawableList) { // New method
+        this.drawableList = drawableList;
     }
 
     @Override
@@ -22,10 +27,16 @@ public class Canvas extends JPanel {
             }
             // Draw the dot
             dot.draw(g2d);
-
         }
+
+        // Draw each Drawable in the drawableList
+        if (drawableList != null) {
+            for (Drawable drawable : drawableList) {
+                drawable.draw(g2d);
+            }
+        }
+
         g2d.dispose();
         g.dispose();
     }
-
 }

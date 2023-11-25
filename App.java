@@ -9,7 +9,7 @@ public class App {
     }
     public static ButtonMode buttonMode = ButtonMode.NONE;
 
-    private static Canvas canvas1;
+    private static Canvas canvas;
 //    private static Canvas canvas2;
     private static JPanel canvasPanel;
 
@@ -31,7 +31,7 @@ public class App {
         gbc.fill = GridBagConstraints.BOTH;
 
 
-        canvas1 = new Canvas(List.of(dot1));
+        canvas = new Canvas(List.of(dot1));
         canvasPanel = new JPanel() {
 
             @Override
@@ -46,7 +46,7 @@ public class App {
 
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                canvas1.paintComponent(g);
+                canvas.paintComponent(g);
                 /*switch (buttonMode) {
                     case MODE1:
                         canvas1.paintComponent(g);
@@ -94,8 +94,12 @@ public class App {
         //button2.addActionListener(buttonAction2.button2Action());
     }
 
-    public static JPanel getCanvas() {
+    public static JPanel getJPanel() {
         return canvasPanel;
+    }
+
+    public static Canvas getCanvas() {
+        return canvas;
     }
 }
 

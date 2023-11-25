@@ -12,6 +12,7 @@ public class SettingsPanel extends JPanel {
     private final JTextField minuteTextField;
     private JComboBox<String> seasonComboBox;
     private JComboBox<String> weatherComboBox;
+    private JComboBox<String> presetComboBox;
     private Timer timerCloak;
     private Timer timerDot;
 
@@ -34,7 +35,7 @@ public class SettingsPanel extends JPanel {
         setLayout(new GridBagLayout());
 
         // Timer action listeners
-        this.timerDot = new Timer(1000, e -> {App.getCanvas().repaint();});
+        this.timerDot = new Timer(1000, e -> {App.getJPanel().repaint();});
         this.timerCloak = new Timer(3000, e -> {incrementClock();});
 
         JLabel currentTime = new JLabel("Current time");
@@ -93,7 +94,6 @@ public class SettingsPanel extends JPanel {
         add(seasonLabel, new Gbc(0,6,4).build());
 
         // 3 przyciski "Spring", "Summer", "Autumn", "Winter"
-
         seasonComboBox = new JComboBox<>(new String[]{"Spring", "Summer", "Autumn", "Winter"});
         add(seasonComboBox, new Gbc(0, 7, 4).build());
 
@@ -106,23 +106,33 @@ public class SettingsPanel extends JPanel {
         weatherComboBox = new JComboBox<>(new String[]{"Sun", "Rain"});
         add(weatherComboBox, new Gbc(0, 11, 4).build());
 
-        add(Gbc.createVerticalStrut(40), new Gbc(0, 12, 4).build());
+        add(Gbc.createVerticalStrut(5), new Gbc(0, 13, 4).build());
 
+        // Label - "Presets"
+        JLabel presetLabel = new JLabel("Presets");
+        add(presetLabel, new Gbc(0,14,4).build());
+
+        presetComboBox = new JComboBox<>(new String[]{"PRESET1", "PRESET2", "PRESET3"});
+        add(presetComboBox, new Gbc(0, 15, 4).build());
+
+        add(Gbc.createVerticalStrut(40), new Gbc(0, 17, 4).build());
+
+        // Start and stop buttons
         JButton startButton = new JButton("START");
         startButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 
         JButton stopButton = new JButton("STOP");
         stopButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 
-        add(startButton, new Gbc(0,13,2).build());
-        add(stopButton, new Gbc(2,13,2).build());
+        add(startButton, new Gbc(0,18,2).build());
+        add(stopButton, new Gbc(2,18,2).build());
 
-
-        // Start and stop buttons
         ButtonAction buttonAction1 = new ButtonAction(timerDot, timerCloak);
 
         startButton.addActionListener(buttonAction1.startCanvas());
         stopButton.addActionListener(buttonAction1.stopCanvas());
+
+
 
 
 
@@ -143,6 +153,22 @@ public class SettingsPanel extends JPanel {
 
         startButton.addActionListener(e -> {
             startButtonClicked();
+        });
+
+        presetComboBox.addActionListener(e -> {
+            String selectedPreset = (String) presetComboBox.getSelectedItem();
+            switch (selectedPreset) {
+                case "PRESET1":
+                    App.getCanvas().setDrawableList(Config.PRESET1);
+                    break;
+                case "PRESET2":
+                    App.getCanvas().setDrawableList(Config.PRESET2);
+                    break;
+                case "PRESET3":
+                    App.getCanvas().setDrawableList(Config.PRESET3);
+                    break;
+            }
+            App.getJPanel().repaint();
         });
 
         
