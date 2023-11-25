@@ -13,11 +13,11 @@ public class SettingsPanel extends JPanel {
     private JComboBox<String> seasonComboBox;
     private JComboBox<String> weatherComboBox;
     private Timer timer;
-    
+
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(350, 300);
+        return new Dimension(350, 700);
     }
 
     @Override
