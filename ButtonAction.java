@@ -1,36 +1,34 @@
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ButtonAction {
-    private Timer timer;
-    private final JPanel canvasPanel;
-    List<Path> userPathList = new ArrayList<>();
+    private Timer timerCloak;
+    private Timer timerDot;
 
 
-    public ButtonAction(Timer timer, JPanel canvasPanel) {
-        this.timer = timer;
-        this.canvasPanel = canvasPanel;
+    public ButtonAction(Timer timerDot, Timer timerCloak) {
+        this.timerDot = timerDot;
+        this.timerCloak = timerCloak;
     }
 
-    public ActionListener StartCanvas() {
+    public ActionListener startCanvas() {
         return e -> {
-            if (!timer.isRunning()) {
-                timer = new Timer(10, e1 -> {
-                    canvasPanel.repaint();
-                });
-                timer.start();
+            if (!timerDot.isRunning() && !timerCloak.isRunning()) {
+                timerDot.start();
+                
+                if (timerCloak != null && !timerCloak.isRunning()) {
+                    timerCloak.start();
+                }
             }
-
         };
     }
 
-    public ActionListener StopCanvas() {
+    public ActionListener stopCanvas() {
         return e -> {
-            if (timer.isRunning()) {
-                timer.stop();
+            if (timerDot.isRunning() && timerCloak.isRunning()) {
+                timerDot.stop();
+                timerCloak.stop();
             }
         };
     }

@@ -12,7 +12,8 @@ public class SettingsPanel extends JPanel {
     private final JTextField minuteTextField;
     private JComboBox<String> seasonComboBox;
     private JComboBox<String> weatherComboBox;
-    private Timer timer;
+    private Timer timerCloak;
+    private Timer timerDot;
 
 
     @Override
@@ -32,9 +33,9 @@ public class SettingsPanel extends JPanel {
     public SettingsPanel() {
         setLayout(new GridBagLayout());
 
-        this.timer = new Timer(1000, e -> {
-            // Timer action goes here
-        });
+        // Timer action listeners
+        this.timerDot = new Timer(1000, e -> {App.getCanvas().repaint();});
+        this.timerCloak = new Timer(3000, e -> {incrementClock();});
 
         JLabel currentTime = new JLabel("Current time");
         add(currentTime, new Gbc(0,0,2).build());
@@ -118,10 +119,10 @@ public class SettingsPanel extends JPanel {
 
 
         // Start and stop buttons
-        ButtonAction buttonAction1 = new ButtonAction(timer, App.getCanvas());
+        ButtonAction buttonAction1 = new ButtonAction(timerDot, timerCloak);
 
-        startButton.addActionListener(buttonAction1.StartCanvas());
-        stopButton.addActionListener(buttonAction1.StopCanvas());
+        startButton.addActionListener(buttonAction1.startCanvas());
+        stopButton.addActionListener(buttonAction1.stopCanvas());
 
 
 
@@ -144,11 +145,7 @@ public class SettingsPanel extends JPanel {
             startButtonClicked();
         });
 
-        // Initialize the timer
-        this.timer = new Timer(1000, e -> {
-            incrementClock();
-        });
-        this.timer.start(); // Start the timer
+        
 
     }
 
@@ -201,12 +198,7 @@ public class SettingsPanel extends JPanel {
         return (String) comboBox.getSelectedItem();
     }
 
-    private void updateTimeFromComboBox(String selectedOption) {
-        // Aktualizacja clockLabel zgodnie z wybraną opcją
-        clockLabel.setText(selectedOption);
-    }
-
-    private void incrementClock() {
+    public void incrementClock() {
         String currentTime = clockLabel.getText();
         String[] parts = currentTime.split(":");
         int hour = Integer.parseInt(parts[0]);
@@ -240,7 +232,6 @@ class Gbc {
     public static Component createVerticalStrut(int height) {
         return Box.createVerticalStrut(height);
     }
-
 
     public GridBagConstraints build() {
         return gbc;
