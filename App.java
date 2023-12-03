@@ -12,13 +12,12 @@ public class App {
     private static Canvas canvas;
 //    private static Canvas canvas2;
     private static JPanel canvasPanel;
-
     private static Timer globalTimer;
 
 
     public static void main(String[] args) {
 
-        List<Drawable> drawables = Config.PRESET3;
+        List<Drawable> drawables = Config.PRESET4;
 
         Point2D.Double startPoint = drawables.get(0).getEntryPoint();
         Dot dot1 = new Dot(startPoint, drawables);

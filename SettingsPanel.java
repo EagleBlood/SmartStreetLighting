@@ -42,7 +42,7 @@ public class SettingsPanel extends JPanel {
         setLayout(new GridBagLayout());
 
         // Timer action listeners
-        this.timerDot = new Timer(1000, e -> {App.getJPanel().repaint();});
+        this.timerDot = new Timer(100, e -> {App.getJPanel().repaint();});
         this.timerCloak = new Timer(3000, e -> {incrementClock();});
 
         JLabel currentTime = new JLabel("Current time");

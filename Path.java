@@ -4,7 +4,9 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Path implements Drawable{
     private static final Color PATH_COLOR = Color.GRAY;
@@ -15,6 +17,7 @@ public class Path implements Drawable{
     private double lastX;
     private double lastY;
     private final Point2D.Double exitPoint;
+    private List<Drawable> connectedDrawables;
 
 
 
@@ -22,20 +25,66 @@ public class Path implements Drawable{
         this.path2D = path2D;
         Point2D endPoint2D = getEndPoint();
         this.exitPoint = new Point2D.Double(endPoint2D.getX(), endPoint2D.getY());
-        updateLamps();
     }
 
-    void updateLamps() {
-        lamps.clear();
-        double totalPathLength = getLength();
-        double distance = 0.0;
-        double interval = 100.0; // Interval between lamps
+    public void updateLamps(List<Drawable> connectedDrawables) {
+        Set<Point2D> existingLampPositions = new HashSet<>();
+        double interval = 30.0; // Desired interval between lamps
+        double excessDistance = 0.0; // Distance carried over from the previous path
 
-        while (distance < totalPathLength) {
-            double[] pos = getPointAtLength(distance);
-            lamps.add(new Lamp(new Point2D.Double(pos[0], pos[1])));
-            distance += interval;
+        for (Drawable drawable : connectedDrawables) {
+            if (!(drawable instanceof Path)) continue;
+
+            Path path = (Path) drawable;
+            double pathLength = path.getLength();
+            double distance = -excessDistance; // Start at the negative excess distance
+
+            while (distance < pathLength) {
+                distance += interval;
+                if (distance >= 0 && distance <= pathLength) {
+                    Point2D.Double lampPosition = path.getPosition(distance);
+                    if (!isNearExistingLamp(lampPosition, existingLampPositions)) {
+                        lamps.add(new Lamp(lampPosition));
+                        existingLampPositions.add(lampPosition);
+                    }
+                }
+            }
+            excessDistance = distance - pathLength; // Calculate the excess distance for the next path
         }
+    }
+
+    private Set<Point2D> getAllLampPositions(List<Drawable> drawables) {
+        Set<Point2D> positions = new HashSet<>();
+        for (Drawable drawable : drawables) {
+            if (drawable instanceof Path) {
+                List<Lamp> drawableLamps = ((Path) drawable).getLamps();
+                for (Lamp lamp : drawableLamps) {
+                    positions.add(lamp.getPosition());
+                }
+            }
+        }
+        return positions;
+    }
+
+    
+    private double calculateTotalLength(List<Drawable> drawables) {
+        double totalLength = 0.0;
+        for (Drawable drawable : drawables) {
+            if (drawable instanceof Path) {
+                totalLength += ((Path) drawable).getLength();
+            }
+        }
+        return totalLength;
+    }
+
+    private boolean isNearExistingLamp(Point2D.Double newLampPosition, Set<Point2D> existingLamps) {
+        final double tolerance = 15.0; // Define a tolerance distance
+        for (Point2D existingPosition : existingLamps) {
+            if (existingPosition.distance(newLampPosition) < tolerance) {
+                return true; // Too close to an existing lamp
+            }
+        }
+        return false; // Not near any existing lamp
     }
 
 
@@ -249,6 +298,13 @@ public class Path implements Drawable{
         return new Point2D.Double(lastX, lastY);
     }
 
+    public void setConnectedDrawables(List<Drawable> connectedDrawables) {
+        this.connectedDrawables = connectedDrawables;
+    }
+
+    public void initializeAfterSettingDrawables() {
+        updateLamps(connectedDrawables);
+    }
 
 
     @Override
