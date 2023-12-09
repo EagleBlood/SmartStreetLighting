@@ -119,7 +119,7 @@ public class SettingsPanel extends JPanel {
         JLabel presetLabel = new JLabel("Presets");
         add(presetLabel, new Gbc(0,14,4).build());
 
-        presetComboBox = new JComboBox<>(new String[]{"PRESET1", "PRESET2", "PRESET3"});
+        presetComboBox = new JComboBox<>(new String[]{"PRESET1", "PRESET2", "PRESET3", "PRESET4"});
         add(presetComboBox, new Gbc(0, 15, 4).build());
 
         add(Gbc.createVerticalStrut(40), new Gbc(0, 17, 4).build());
@@ -164,21 +164,8 @@ public class SettingsPanel extends JPanel {
 
         presetComboBox.addActionListener(e -> {
             String selectedPreset = (String) presetComboBox.getSelectedItem();
-            switch (selectedPreset) {
-                case "PRESET1":
-                    App.getCanvas().setDrawableList(Config.PRESET1);
-                    break;
-                case "PRESET2":
-                    App.getCanvas().setDrawableList(Config.PRESET2);
-                    break;
-                case "PRESET3":
-                    App.getCanvas().setDrawableList(Config.PRESET3);
-                    break;
-            }
-            App.getJPanel().repaint();
+            updateDrawables(selectedPreset);
         });
-
-
 
     }
 
@@ -198,6 +185,23 @@ public class SettingsPanel extends JPanel {
 
         hourTextField.setText("");
         minuteTextField.setText("");
+    }
+
+    private void updateDrawables(String selectedPreset) {
+        App.buttonMode = App.ButtonMode.NONE; // Reset button mode
+        App.updateDrawables(selectedPreset);
+        App.getJPanel().repaint();
+    }
+
+    public JComboBox<String> getComboBox() {
+        // Zakładając, że chcesz stworzyć JComboBox dla wyboru presetów
+        String[] presetNames = {"PRESET1", "PRESET2", "PRESET3", "PRESET4"};
+        JComboBox<String> comboBox = new JComboBox<>(presetNames);
+
+        // Dodaj inne konfiguracje JComboBox według potrzeb
+        // Na przykład, możesz dodać nasłuchiwacza zdarzeń, itp.
+
+        return comboBox;
     }
 
     private void startButtonClicked(){

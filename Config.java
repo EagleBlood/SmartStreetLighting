@@ -88,6 +88,28 @@ public class Config {
         return preset;
     }
 
-    
+    public static List<Drawable> getDrawablesForPreset(String presetName) {
+        List<Drawable> allDrawables = new ArrayList<>();
+
+        switch (presetName) {
+            case "PRESET1":
+                allDrawables.addAll(PRESET1);
+                break;
+            case "PRESET2":
+                allDrawables.addAll(PRESET2);
+                break;
+            case "PRESET3":
+                allDrawables.addAll(PRESET3);
+                break;
+            case "PRESET4":
+                allDrawables.addAll(PRESET4);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid preset name: " + presetName);
+        }
+
+        return allDrawables;
+    }
+
 }
 

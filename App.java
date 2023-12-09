@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.awt.geom.Point2D;
+import java.util.List;
 
 public class App {
     public enum ButtonMode {
@@ -10,19 +10,8 @@ public class App {
     public static ButtonMode buttonMode = ButtonMode.NONE;
 
     private static Canvas canvas;
-//    private static Canvas canvas2;
     private static JPanel canvasPanel;
-    private static Timer globalTimer;
-
-
     public static void main(String[] args) {
-
-        List<Drawable> drawables = Config.PRESET4;
-
-        Point2D.Double startPoint = drawables.get(0).getEntryPoint();
-        Dot dot1 = new Dot(startPoint, drawables);
-
-
         JPanel left = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -31,10 +20,8 @@ public class App {
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
 
-
-        canvas = new Canvas(List.of(dot1));
+        canvas = new Canvas();  // Create Canvas without preset initially
         canvasPanel = new JPanel() {
-
             @Override
             public Dimension getPreferredSize() {
                 return new Dimension(800, 700);
@@ -45,21 +32,10 @@ public class App {
                 return getPreferredSize();
             }
 
-            @Override protected void paintComponent(Graphics g) {
+            @Override
+            protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 canvas.paintComponent(g);
-                /*switch (buttonMode) {
-                    case MODE1:
-                        canvas1.paintComponent(g);
-                        break;
-
-//                    case MODE2:
-//                        canvas2.paintComponent(g);
-//                        break;
-
-                    default:
-                        break;
-                }*/
             }
         };
 
@@ -82,17 +58,33 @@ public class App {
 
         JFrame frame = new JFrame("Street Lighting Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(settingsPanel, BorderLayout.WEST);
+        frame.add(left, BorderLayout.WEST);  // Fix: Add left panel, not settingsPanel
         frame.add(center);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        //ButtonAction buttonAction1 = new ButtonAction(timer, canvasPanel);
-        //ButtonAction buttonAction2 = new ButtonAction(timer, canvasPanel, canvas2);
+        // Set up the ActionListener for the JComboBox in SettingsPanel
+        settingsPanel.getComboBox().addActionListener(e -> {
+            JComboBox<?> source = (JComboBox<?>) e.getSource();
+            String selectedPreset = (String) source.getSelectedItem();
+            updateDrawables(selectedPreset);
+        });
+    }
 
-        //button1.addActionListener(buttonAction1.button1Action());
-        //button2.addActionListener(buttonAction2.button2Action());
+    public static void updateDrawables(String selectedPreset) {
+        List<Drawable> drawables = Config.getDrawablesForPreset(selectedPreset);
+
+        Point2D.Double startPoint = drawables.get(0).getEntryPoint();
+        Dot dot = new Dot(startPoint, drawables);
+
+        // Log to check if dot is created and drawables list is not empty
+        System.out.println("Dot: " + dot);
+        System.out.println("Drawables: " + drawables);
+
+        canvas.setDots(List.of(dot));
+        canvas.setDrawables(drawables);
+        canvasPanel.repaint();
     }
 
     public static JPanel getJPanel() {
@@ -103,5 +95,3 @@ public class App {
         return canvas;
     }
 }
-
-

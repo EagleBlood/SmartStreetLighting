@@ -1,17 +1,27 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Canvas extends JPanel {
     private final List<Dot> dots;
     private List<Drawable> drawableList; // New field
 
-    public Canvas(List<Dot> dots) {
-        this.dots = dots;
+    public Canvas() {
+        this.dots = new ArrayList<>();
     }
 
-    public void setDrawableList(List<Drawable> drawableList) { // New method
+    public void setDrawables(List<Drawable> drawableList) { // New method
         this.drawableList = drawableList;
+        repaint();
+        System.out.println("przebudowa canvas");
+    }
+
+    public void setDots(List<Dot> dots) { // New method
+        this.dots.clear();
+        this.dots.addAll(dots);
+        repaint();
+        System.out.println("Ustawiono nową listę kropek w canvas");
     }
 
     @Override
@@ -37,6 +47,5 @@ public class Canvas extends JPanel {
         }
 
         g2d.dispose();
-        g.dispose();
     }
 }
