@@ -60,29 +60,30 @@ public class Config {
     )));
 
     public static final List<Drawable> PRESET4 = initializePreset(new ArrayList<>(List.of(
-    // Horizontal paths
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(100, 100, 300, 100), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(300, 100, 500, 100), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(100, 300, 300, 300), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(300, 300, 500, 300), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(100, 500, 300, 500), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(300, 500, 500, 500), false); }}),
+        // Horizontal paths
+        new WidePath(new Path2D.Float() {{ append(new Line2D.Double(100, 100, 300, 100), false); }}),
+        new WidePath(new Path2D.Float() {{ append(new Line2D.Double(300, 100, 500, 100), false); }}),
+        new Path(new Path2D.Float() {{ append(new Line2D.Double(100, 300, 300, 300), false); }}),
+        new Path(new Path2D.Float() {{ append(new Line2D.Double(300, 300, 500, 300), false); }}),
+        new WidePath(new Path2D.Float() {{ append(new Line2D.Double(100, 500, 300, 500), false); }}),
+        new WidePath(new Path2D.Float() {{ append(new Line2D.Double(300, 500, 500, 500), false); }}),
 
-    // Vertical paths
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(100, 100, 100, 300), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(100, 300, 100, 500), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(300, 100, 300, 300), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(300, 300, 300, 500), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(500, 100, 500, 300), false); }}),
-    new Path(new Path2D.Float() {{ append(new Line2D.Double(500, 300, 500, 500), false); }})
-)));
+        // Vertical paths
+        new WidePath(new Path2D.Float() {{ append(new Line2D.Double(100, 100, 100, 300), false); }}),
+        new WidePath(new Path2D.Float() {{ append(new Line2D.Double(100, 300, 100, 500), false); }}),
+        new Path(new Path2D.Float() {{ append(new Line2D.Double(300, 100, 300, 300), false); }}),
+        new Path(new Path2D.Float() {{ append(new Line2D.Double(300, 300, 300, 500), false); }}),
+        new WidePath(new Path2D.Float() {{ append(new Line2D.Double(500, 100, 500, 300), false); }}),
+        new WidePath(new Path2D.Float() {{ append(new Line2D.Double(500, 300, 500, 500), false); }})
+    )));
 
     private static List<Drawable> initializePreset(List<Drawable> preset) {
         for (Drawable drawable : preset) {
             if (drawable instanceof Path) {
+    
                 Path path = (Path) drawable;
                 path.setConnectedDrawables(preset); // Set drawables list
-                path.initializeAfterSettingDrawables(); // Call any initialization methods that depend on 'drawables'
+                path.initializeAfterSettingDrawables();
             }
         }
         return preset;

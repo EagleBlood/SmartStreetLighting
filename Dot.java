@@ -65,6 +65,10 @@ public class Dot{
             lamp.activate(this);
         }
 
+        if (currentDrawable instanceof WidePath) {
+            ((WidePath) currentDrawable).activateLamps(this);
+        }
+
 
         Double endPosition = isReversing ? currentDrawable.getPosition(0) : currentDrawable.getPosition(currentDrawable.getLength());
 

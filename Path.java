@@ -10,16 +10,14 @@ import java.util.Set;
 
 public class Path implements Drawable{
     private static final Color PATH_COLOR = Color.GRAY;
-    private static final int PATH_THICKNESS = 20;
-    private static final int LAMP_ACTIVE_STROKE = 1;
-    private final List<Lamp> lamps = new ArrayList<>();
-    private final Path2D.Float path2D;
+    public static final int PATH_THICKNESS = 20;
+    public final List<Lamp> lamps = new ArrayList<>();
+    public final Path2D.Float path2D;
     private double lastX;
     private double lastY;
     private final Point2D.Double exitPoint;
-    private List<Drawable> connectedDrawables;
-
-
+    public List<Drawable> connectedDrawables;
+    protected boolean shouldDrawLamps = true;
 
     public Path(Path2D.Float path2D) {
         this.path2D = path2D;
@@ -31,14 +29,17 @@ public class Path implements Drawable{
         Set<Point2D> existingLampPositions = new HashSet<>();
         double interval = 30.0; // Desired interval between lamps
         double excessDistance = 0.0; // Distance carried over from the previous path
-
+    
         for (Drawable drawable : connectedDrawables) {
             if (!(drawable instanceof Path)) continue;
-
+    
+            // Skip lamp drawing for WidePath instances
+            if (drawable instanceof WidePath) continue;
+    
             Path path = (Path) drawable;
             double pathLength = path.getLength();
             double distance = -excessDistance; // Start at the negative excess distance
-
+    
             while (distance < pathLength) {
                 distance += interval;
                 if (distance >= 0 && distance <= pathLength) {
@@ -51,30 +52,6 @@ public class Path implements Drawable{
             }
             excessDistance = distance - pathLength; // Calculate the excess distance for the next path
         }
-    }
-
-    private Set<Point2D> getAllLampPositions(List<Drawable> drawables) {
-        Set<Point2D> positions = new HashSet<>();
-        for (Drawable drawable : drawables) {
-            if (drawable instanceof Path) {
-                List<Lamp> drawableLamps = ((Path) drawable).getLamps();
-                for (Lamp lamp : drawableLamps) {
-                    positions.add(lamp.getPosition());
-                }
-            }
-        }
-        return positions;
-    }
-
-    
-    private double calculateTotalLength(List<Drawable> drawables) {
-        double totalLength = 0.0;
-        for (Drawable drawable : drawables) {
-            if (drawable instanceof Path) {
-                totalLength += ((Path) drawable).getLength();
-            }
-        }
-        return totalLength;
     }
 
     private boolean isNearExistingLamp(Point2D.Double newLampPosition, Set<Point2D> existingLamps) {
@@ -93,18 +70,17 @@ public class Path implements Drawable{
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        // Set the color and thickness for the path
         g2d.setColor(PATH_COLOR);
         g2d.setStroke(new BasicStroke(PATH_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        
+        g2d.draw(path2D); // Draw the path itself
 
-        // Draw the path
-        g2d.draw(path2D);
-
-        // Draw the lamps
-        for (Lamp lamp : lamps) {
-            g2d.setStroke(new BasicStroke(LAMP_ACTIVE_STROKE));
-            lamp.draw(g2d);
+        for (Lamp lamp : this.getLamps()) {
+            lamp.draw(g); // Draw the lamps
         }
+    }
+        protected boolean shouldDrawLampAtPosition(Point2D.Double position) {
+            return true; // By default, a lamp should be drawn at every position
     }
 
 
@@ -302,9 +278,6 @@ public class Path implements Drawable{
         this.connectedDrawables = connectedDrawables;
     }
 
-    public void initializeAfterSettingDrawables() {
-        updateLamps(connectedDrawables);
-    }
 
 
     @Override
@@ -320,5 +293,9 @@ public class Path implements Drawable{
 
     public List<Lamp> getLamps() {
         return lamps;
+    }
+
+    public void initializeAfterSettingDrawables() {
+        updateLamps(connectedDrawables);
     }
 }

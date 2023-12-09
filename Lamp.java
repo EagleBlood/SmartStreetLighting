@@ -6,29 +6,43 @@ public class Lamp {
     private final Point2D.Double position;
     private Graphics2D g2d;
     private boolean active = false;
-    private static final int LAMP_RADIUS = 15; // Adjusted radius for 150 lux norm
-    private static final Color LAMP_COLOR = Color.ORANGE;
+    private static  Color LAMP_COLOR = Color.YELLOW;
     private static final Color LAMP_LIT_COLOR = Color.RED;
-    private static final int LAMP_SIZE = 10;
+    private static final int LAMP_SIZE = 5;
+    private static final int LAMP_RADIUS = 15;
+    private static final int LAMP_STROKE = 1;
+    private final int radius; // Variable radius instead of a fixed constant
+    private final Color color; // Variable color
 
-    public Lamp(Point2D.Double position) {
+     // Constructor for WidePath lamps
+     public Lamp(Point2D.Double position, int radius, Color color) {
         this.position = position;
+        this.radius = radius;
+        this.color = color;
+    }
+
+    // Constructor for regular path lamps
+    public Lamp(Point2D.Double position) {
+        this(position, LAMP_RADIUS, LAMP_COLOR); // Default radius and color
     }
 
     public void draw(Graphics g) {
         g2d = (Graphics2D) g;
-        g2d.setColor(LAMP_COLOR);
-        int drawX = (int) position.getX() - LAMP_SIZE / 2;
-        int drawY = (int) position.getY() - LAMP_SIZE / 2;
-        g2d.fill(new Ellipse2D.Double(drawX, drawY, LAMP_SIZE, LAMP_SIZE));
+
+        // Draw the lamp with the instance color and size
+        g2d.setColor(this.color); 
+        int drawX = (int) position.getX() - LAMP_SIZE; // Half of the default LAMP_SIZE
+        int drawY = (int) position.getY() - LAMP_SIZE; // Half of the default LAMP_SIZE
+        g2d.fill(new Ellipse2D.Double(drawX, drawY, 10, 10)); // Default LAMP_SIZE
     }
 
     public void activate(Dot dot) {
         active = dot != null && isDotInRange(dot) && isTimeInRange(SettingsPanel.getCurrentTime());
         if (active) {
-            g2d.setColor(LAMP_LIT_COLOR);
-            // Draw the effective lighting area
-            g2d.draw(new Ellipse2D.Double(position.getX() - LAMP_RADIUS, position.getY() - LAMP_RADIUS, 2 * LAMP_RADIUS, 2 * LAMP_RADIUS));
+            // When active, draw the effective lighting area using instance radius
+            g2d.setColor(LAMP_LIT_COLOR); // Active color
+            g2d.setStroke(new BasicStroke(LAMP_STROKE)); // Default stroke for active area
+            g2d.draw(new Ellipse2D.Double(position.getX() - this.radius, position.getY() - this.radius, this.radius * 2, this.radius * 2));
         }
     }
 
@@ -42,10 +56,11 @@ public class Lamp {
 
     private boolean isDotInRange(Dot dot) {
         double distance = position.distance(dot.getPosition());
-        return distance <= LAMP_RADIUS;
+        return distance <= this.radius; // Use the instance variable 'radius'
     }
 
     public Point2D.Double getPosition() {
         return position;
     }
+
 }
