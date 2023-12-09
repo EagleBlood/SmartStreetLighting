@@ -4,17 +4,19 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class SettingsPanel extends JPanel {
 
     private final JLabel clockLabel;
     private final JTextField hourTextField;
     private final JTextField minuteTextField;
-    private JComboBox<String> seasonComboBox;
-    private JComboBox<String> weatherComboBox;
-    private JComboBox<String> presetComboBox;
-    private Timer timerCloak;
-    private Timer timerDot;
+    private final String[] presetNames = {"PRESET1", "PRESET2", "PRESET3", "PRESET4"};
+    private final JComboBox<String> seasonComboBox;
+    private final JComboBox<String> weatherComboBox;
+    private final JComboBox<String> presetComboBox;
     public static SettingsPanel instance;
 
     public static String getCurrentTime() {
@@ -42,8 +44,12 @@ public class SettingsPanel extends JPanel {
         setLayout(new GridBagLayout());
 
         // Timer action listeners
-        this.timerDot = new Timer(100, e -> {App.getJPanel().repaint();});
-        this.timerCloak = new Timer(3000, e -> {incrementClock();});
+        Timer timerDot = new Timer(100, e -> {
+            App.getJPanel().repaint();
+        });
+        Timer timerCloak = new Timer(3000, e -> {
+            incrementClock();
+        });
 
         JLabel currentTime = new JLabel("Current time");
         add(currentTime, new Gbc(0,0,2).build());
@@ -102,6 +108,15 @@ public class SettingsPanel extends JPanel {
 
         // 3 przyciski "Spring", "Summer", "Autumn", "Winter"
         seasonComboBox = new JComboBox<>(new String[]{"Spring", "Summer", "Autumn", "Winter"});
+        seasonComboBox.setSelectedIndex(-1);
+        seasonComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setText(value == null ? "No selection" : getText());
+                return comp;
+            }
+        });
         add(seasonComboBox, new Gbc(0, 7, 4).build());
 
         add(Gbc.createVerticalStrut(5), new Gbc(0, 9, 4).build());
@@ -110,7 +125,17 @@ public class SettingsPanel extends JPanel {
         JLabel weatherLabel = new JLabel("Weather");
         add(weatherLabel, new Gbc(0,10,4).build());
 
+
         weatherComboBox = new JComboBox<>(new String[]{"Sun", "Rain"});
+        weatherComboBox.setSelectedIndex(-1);
+        weatherComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setText(value == null ? "No selection" : getText());
+                return comp;
+            }
+        });
         add(weatherComboBox, new Gbc(0, 11, 4).build());
 
         add(Gbc.createVerticalStrut(5), new Gbc(0, 13, 4).build());
@@ -119,10 +144,21 @@ public class SettingsPanel extends JPanel {
         JLabel presetLabel = new JLabel("Presets");
         add(presetLabel, new Gbc(0,14,4).build());
 
-        presetComboBox = new JComboBox<>(new String[]{"PRESET1", "PRESET2", "PRESET3", "PRESET4"});
-        add(presetComboBox, new Gbc(0, 15, 4).build());
+        presetComboBox = new JComboBox<>(presetNames);
+        presetComboBox.setSelectedIndex(-1);
+        presetComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setText(value == null ? "No selection" : getText());
+                return comp;
+            }
+        });
 
+        add(presetComboBox, new Gbc(0, 15, 4).build());
         add(Gbc.createVerticalStrut(40), new Gbc(0, 17, 4).build());
+
+
 
         // Start and stop buttons
         JButton startButton = new JButton("START");
@@ -138,8 +174,6 @@ public class SettingsPanel extends JPanel {
 
         startButton.addActionListener(buttonAction1.startCanvas());
         stopButton.addActionListener(buttonAction1.stopCanvas());
-
-
 
 
 
@@ -169,6 +203,7 @@ public class SettingsPanel extends JPanel {
 
     }
 
+
     private void presetButtonClicked(String presetTime) {
         clockLabel.setText(presetTime);
     }
@@ -194,12 +229,7 @@ public class SettingsPanel extends JPanel {
     }
 
     public JComboBox<String> getComboBox() {
-        // Zakładając, że chcesz stworzyć JComboBox dla wyboru presetów
-        String[] presetNames = {"PRESET1", "PRESET2", "PRESET3", "PRESET4"};
         JComboBox<String> comboBox = new JComboBox<>(presetNames);
-
-        // Dodaj inne konfiguracje JComboBox według potrzeb
-        // Na przykład, możesz dodać nasłuchiwacza zdarzeń, itp.
 
         return comboBox;
     }
