@@ -14,7 +14,8 @@ public class Lamp {
     private final int radius; // Variable radius instead of a fixed constant
     private final Color color; // Variable color
 
-     // Constructor for WidePath lamps
+
+    // Constructor for WidePath lamps
      public Lamp(Point2D.Double position, int radius, Color color) {
         this.position = position;
         this.radius = radius;
@@ -30,13 +31,14 @@ public class Lamp {
         g2d = (Graphics2D) g;
 
         // Draw the lamp with the instance color and size
-        g2d.setColor(this.color); 
+        g2d.setColor(this.color);
         int drawX = (int) position.getX() - LAMP_SIZE; // Half of the default LAMP_SIZE
         int drawY = (int) position.getY() - LAMP_SIZE; // Half of the default LAMP_SIZE
         g2d.fill(new Ellipse2D.Double(drawX, drawY, 10, 10)); // Default LAMP_SIZE
     }
 
     public void activate(Dot dot) {
+
         active = dot != null && isDotInRange(dot) && isTimeInRange(SettingsPanel.getCurrentTime());
         if (active) {
             // When active, draw the effective lighting area using instance radius
@@ -50,8 +52,28 @@ public class Lamp {
         // Convert time to int for comparison
         int currentHour = Integer.parseInt(currentTime.split(":")[0]);
 
-        // Check if the hour is between 17:00 and 6:00
-        return (currentHour >= 17 && currentHour <= 23) || (currentHour >= 0 && currentHour < 6);
+        String selectedWeather = SettingsPanel.getCurrentWeather();
+        String selectedSeason = SettingsPanel.getCurrentSeason();
+
+        if (selectedWeather.equals("Sun")) {
+            if (selectedSeason.equals("Spring") || selectedSeason.equals("Autumn")) {
+                return (currentHour >= 18 && currentHour <= 23) || (currentHour >= 0 && currentHour < 5);
+            } else if (selectedSeason.equals("Summer")) {
+                return (currentHour >= 21 && currentHour <= 23) || (currentHour >= 0 && currentHour < 4);
+            } else if (selectedSeason.equals("Winter")) {
+                return (currentHour >= 16 && currentHour <= 23) || (currentHour >= 0 && currentHour < 7);
+            }
+        } else if (selectedWeather.equals("Precipitation")) {
+            if (selectedSeason.equals("Spring") || selectedSeason.equals("Autumn")) {
+                return (currentHour >= 17 && currentHour <= 23) || (currentHour >= 0 && currentHour < 6);
+            } else if (selectedSeason.equals("Summer")) {
+                return (currentHour >= 20 && currentHour <= 23) || (currentHour >= 0 && currentHour < 4);
+            } else if (selectedSeason.equals("Winter")) {
+                return (currentHour >= 15 && currentHour <= 23) || (currentHour >= 0 && currentHour < 7);
+            }
+        }
+
+        return false;
     }
 
     private boolean isDotInRange(Dot dot) {

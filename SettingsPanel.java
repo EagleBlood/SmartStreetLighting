@@ -23,6 +23,14 @@ public class SettingsPanel extends JPanel {
         return instance.clockLabel.getText();
     }
 
+    public static String getCurrentWeather() {
+        return (String) instance.weatherComboBox.getSelectedItem();
+    }
+
+    public static String getCurrentSeason() {
+        return (String) instance.seasonComboBox.getSelectedItem();
+    }
+
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(350, 700);
@@ -107,7 +115,8 @@ public class SettingsPanel extends JPanel {
         add(seasonLabel, new Gbc(0,6,4).build());
 
         // 3 przyciski "Spring", "Summer", "Autumn", "Winter"
-        seasonComboBox = new JComboBox<>(new String[]{"Spring", "Summer", "Autumn", "Winter"});
+        String[] season = {"Spring", "Summer", "Autumn", "Winter"};
+        seasonComboBox = new JComboBox<>(season);
         seasonComboBox.setSelectedIndex(-1);
         seasonComboBox.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -126,7 +135,8 @@ public class SettingsPanel extends JPanel {
         add(weatherLabel, new Gbc(0,10,4).build());
 
 
-        weatherComboBox = new JComboBox<>(new String[]{"Sun", "Rain"});
+        String[] weather = {"Sun", "Precipitation"};
+        weatherComboBox = new JComboBox<>(weather);
         weatherComboBox.setSelectedIndex(-1);
         weatherComboBox.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -201,6 +211,14 @@ public class SettingsPanel extends JPanel {
             updateDrawables(selectedPreset);
         });
 
+        weatherComboBox.addActionListener(e -> {
+            String selectedSeason = (String) weatherComboBox.getSelectedItem();
+        });
+
+        seasonComboBox.addActionListener(e -> {
+            String selectedSeason = (String) weatherComboBox.getSelectedItem();
+        });
+
     }
 
 
@@ -230,7 +248,6 @@ public class SettingsPanel extends JPanel {
 
     public JComboBox<String> getComboBox() {
         JComboBox<String> comboBox = new JComboBox<>(presetNames);
-
         return comboBox;
     }
 
