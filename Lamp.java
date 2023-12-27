@@ -9,29 +9,28 @@ public class Lamp {
     private static  Color LAMP_COLOR = Color.YELLOW;
     private static final Color LAMP_LIT_COLOR = Color.RED;
     private static final int LAMP_SIZE = 5;
-    private static final int LAMP_RADIUS = 15;
     private static final int LAMP_STROKE = 1;
     private final int radius; // Variable radius instead of a fixed constant
-    private final Color color; // Variable color
 
-
-    // Constructor for WidePath lamps
-     public Lamp(Point2D.Double position, int radius, Color color) {
+    public Lamp(Point2D.Double position, char roadCategory) {
         this.position = position;
-        this.radius = radius;
-        this.color = color;
-    }
-
-    // Constructor for regular path lamps
-    public Lamp(Point2D.Double position) {
-        this(position, LAMP_RADIUS, LAMP_COLOR); // Default radius and color
+        switch (roadCategory) {
+            case 'A':
+                this.radius = 15;
+                break;
+            case 'B':
+                this.radius = 30;
+                break;
+            default:
+                this.radius = 10; // default radius
+                break;
+        }
     }
 
     public void draw(Graphics g) {
         g2d = (Graphics2D) g;
 
-        // Draw the lamp with the instance color and size
-        g2d.setColor(this.color);
+        g2d.setColor(LAMP_COLOR);
         int drawX = (int) position.getX() - LAMP_SIZE; // Half of the default LAMP_SIZE
         int drawY = (int) position.getY() - LAMP_SIZE; // Half of the default LAMP_SIZE
         g2d.fill(new Ellipse2D.Double(drawX, drawY, 10, 10)); // Default LAMP_SIZE

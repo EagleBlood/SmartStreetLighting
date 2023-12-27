@@ -42,7 +42,7 @@ public class Path implements Drawable{
             // If there's only one lamp, place it at the center of the path
             Point2D.Double lampPosition = getPosition(pathLength / 2);
             if (lampPosition != null) {
-                lamps.add(new Lamp(lampPosition));
+                lamps.add(new Lamp(lampPosition, roadCategory));
             }
         } else {
             // If there are more than one lamps, place them at intervals along the path
@@ -54,22 +54,11 @@ public class Path implements Drawable{
                 double lampPositionDistance = startDistance + i * lampInterval;
                 Point2D.Double lampPosition = getPosition(lampPositionDistance);
                 if (lampPosition != null) {
-                    lamps.add(new Lamp(lampPosition));
+                    lamps.add(new Lamp(lampPosition, roadCategory));
                 }
             }
         }
     }
-    private boolean isNearExistingLamp(Point2D.Double newLampPosition, Set<Point2D> existingLamps) {
-        final double tolerance = 15.0; // Define a tolerance distance
-        for (Point2D existingPosition : existingLamps) {
-            if (existingPosition.distance(newLampPosition) < tolerance) {
-                return true; // Too close to an existing lamp
-            }
-        }
-        return false; // Not near any existing lamp
-    }
-
-
 
     @Override
     public void draw(Graphics g) {
