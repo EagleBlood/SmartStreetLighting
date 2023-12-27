@@ -5,9 +5,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 public class SettingsPanel extends JPanel {
 
@@ -225,7 +222,8 @@ public class SettingsPanel extends JPanel {
             if (result == JFileChooser.APPROVE_OPTION) {
                 java.io.File selectedFile = fileChooser.getSelectedFile();
                 System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-                String newPreset = "PRESET5";
+                App.setCustomConfig(selectedFile.getAbsolutePath());
+                String newPreset = "Your config";
                 presetComboBox.addItem(newPreset);
                 presetComboBox.setSelectedItem(newPreset);
             }

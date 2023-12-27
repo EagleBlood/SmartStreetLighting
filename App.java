@@ -72,6 +72,10 @@ public class App {
         });
     }
 
+    public static void setCustomConfig(String path){
+        Config.setFilePath(path);
+    }
+
     public static void updateDrawables(String selectedPreset) {
         List<Drawable> drawables = Config.getDrawablesForPreset(selectedPreset);
 
@@ -91,7 +95,4 @@ public class App {
         return canvasPanel;
     }
 
-    public static Canvas getCanvas() {
-        return canvas;
-    }
 }
