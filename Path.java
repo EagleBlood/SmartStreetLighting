@@ -9,7 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 public class Path implements Drawable{
-    private static final Color PATH_COLOR = Color.GRAY;
+    private static final Color MAIN_COLOR = Color.BLACK;
+    private static final Color SUBMAIN_COLOR = Color.GRAY;
+    private static final Color PATH_COLOR = Color.RED;
+
+
     public static final int PATH_THICKNESS = 20;
     public final List<Lamp> lamps = new ArrayList<>();
     public final Path2D.Float path2D;
@@ -18,42 +22,43 @@ public class Path implements Drawable{
     private final Point2D.Double exitPoint;
     public List<Drawable> connectedDrawables;
     protected boolean shouldDrawLamps = true;
+    char roadCategory;
+    int lampInterval;
+    int lampCount;
 
-    public Path(Path2D.Float path2D) {
+    public Path(Path2D.Float path2D, int lampInterval, int lampCount, char roadCategory) {
         this.path2D = path2D;
         Point2D endPoint2D = getEndPoint();
         this.exitPoint = new Point2D.Double(endPoint2D.getX(), endPoint2D.getY());
+        this.lampInterval = lampInterval;
+        this.lampCount = lampCount;
+        this.roadCategory = roadCategory;
     }
-
-    public void updateLamps(List<Drawable> connectedDrawables) {
-        Set<Point2D> existingLampPositions = new HashSet<>();
-        double interval = 30.0; // Desired interval between lamps
-        double excessDistance = 0.0; // Distance carried over from the previous path
+    public void updateLamps() {
+        lamps.clear();
+        double pathLength = getLength();
     
-        for (Drawable drawable : connectedDrawables) {
-            if (!(drawable instanceof Path)) continue;
+        if (lampCount == 1) {
+            // If there's only one lamp, place it at the center of the path
+            Point2D.Double lampPosition = getPosition(pathLength / 2);
+            if (lampPosition != null) {
+                lamps.add(new Lamp(lampPosition));
+            }
+        } else {
+            // If there are more than one lamps, place them at intervals along the path
+            double totalIntervalLength = (lampCount - 1) * lampInterval;
+            double remainingLength = pathLength - totalIntervalLength;
+            double startDistance = remainingLength / 2;
     
-            // Skip lamp drawing for WidePath instances
-            if (drawable instanceof WidePath) continue;
-    
-            Path path = (Path) drawable;
-            double pathLength = path.getLength();
-            double distance = -excessDistance; // Start at the negative excess distance
-    
-            while (distance < pathLength) {
-                distance += interval;
-                if (distance >= 0 && distance <= pathLength) {
-                    Point2D.Double lampPosition = path.getPosition(distance);
-                    if (!isNearExistingLamp(lampPosition, existingLampPositions)) {
-                        lamps.add(new Lamp(lampPosition));
-                        existingLampPositions.add(lampPosition);
-                    }
+            for (int i = 0; i < lampCount; i++) {
+                double lampPositionDistance = startDistance + i * lampInterval;
+                Point2D.Double lampPosition = getPosition(lampPositionDistance);
+                if (lampPosition != null) {
+                    lamps.add(new Lamp(lampPosition));
                 }
             }
-            excessDistance = distance - pathLength; // Calculate the excess distance for the next path
         }
     }
-
     private boolean isNearExistingLamp(Point2D.Double newLampPosition, Set<Point2D> existingLamps) {
         final double tolerance = 15.0; // Define a tolerance distance
         for (Point2D existingPosition : existingLamps) {
@@ -70,8 +75,28 @@ public class Path implements Drawable{
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
-        g2d.setColor(PATH_COLOR);
-        g2d.setStroke(new BasicStroke(PATH_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        switch(roadCategory)
+        {
+            case 'A':
+            {
+                g2d.setColor(MAIN_COLOR);
+                g2d.setStroke(new BasicStroke(PATH_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                break;
+            }
+            case 'B':
+            {
+                g2d.setColor(SUBMAIN_COLOR);
+                g2d.setStroke(new BasicStroke(PATH_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                break;
+            }
+            default:
+            {
+                g2d.setColor(PATH_COLOR);
+                g2d.setStroke(new BasicStroke(PATH_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                break;
+            }
+        }
+        
         
         g2d.draw(path2D); // Draw the path itself
 
@@ -296,6 +321,6 @@ public class Path implements Drawable{
     }
 
     public void initializeAfterSettingDrawables() {
-        updateLamps(connectedDrawables);
+        updateLamps();
     }
 }
