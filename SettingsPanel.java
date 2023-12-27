@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -31,6 +32,8 @@ public class SettingsPanel extends JPanel {
         return (String) instance.seasonComboBox.getSelectedItem();
     }
 
+
+
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(350, 700);
@@ -47,7 +50,7 @@ public class SettingsPanel extends JPanel {
     }
     public SettingsPanel() {
 
-        instance = this;
+        instance = null;
 
         setLayout(new GridBagLayout());
 
@@ -110,9 +113,30 @@ public class SettingsPanel extends JPanel {
 
         add(Gbc.createVerticalStrut(5), new Gbc(0, 5, 4).build());
 
+        // Label - "Presets"
+        JLabel presetLabel = new JLabel("Presets");
+        add(presetLabel, new Gbc(0,6,4).build());
+
+        presetComboBox = new JComboBox<>(presetNames);
+        presetComboBox.setSelectedIndex(-1);
+        presetComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setText(value == null ? "No selection" : getText());
+                return comp;
+            }
+        });
+
+        add(presetComboBox, new Gbc(0, 7, 4).build());
+        add(Gbc.createVerticalStrut(40), new Gbc(0, 17, 4).build());
+
+        JButton chooseFileButton = new JButton("Choose your config");
+        add(chooseFileButton, new Gbc(0, 8, 4).build());
+
         // Label - "Season"
         JLabel seasonLabel = new JLabel("Season");
-        add(seasonLabel, new Gbc(0,6,4).build());
+        add(seasonLabel, new Gbc(0,9,4).build());
 
         // 3 przyciski "Spring", "Summer", "Autumn", "Winter"
         String[] season = {"Spring", "Summer", "Autumn", "Winter"};
@@ -126,13 +150,13 @@ public class SettingsPanel extends JPanel {
                 return comp;
             }
         });
-        add(seasonComboBox, new Gbc(0, 7, 4).build());
+        add(seasonComboBox, new Gbc(0, 10, 4).build());
 
         add(Gbc.createVerticalStrut(5), new Gbc(0, 9, 4).build());
 
         // Label - "Weather"
         JLabel weatherLabel = new JLabel("Weather");
-        add(weatherLabel, new Gbc(0,10,4).build());
+        add(weatherLabel, new Gbc(0,11,4).build());
 
 
         String[] weather = {"Sun", "Precipitation"};
@@ -146,29 +170,9 @@ public class SettingsPanel extends JPanel {
                 return comp;
             }
         });
-        add(weatherComboBox, new Gbc(0, 11, 4).build());
+        add(weatherComboBox, new Gbc(0, 12, 4).build());
 
         add(Gbc.createVerticalStrut(5), new Gbc(0, 13, 4).build());
-
-        // Label - "Presets"
-        JLabel presetLabel = new JLabel("Presets");
-        add(presetLabel, new Gbc(0,14,4).build());
-
-        presetComboBox = new JComboBox<>(presetNames);
-        presetComboBox.setSelectedIndex(-1);
-        presetComboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                setText(value == null ? "No selection" : getText());
-                return comp;
-            }
-        });
-
-        add(presetComboBox, new Gbc(0, 15, 4).build());
-        add(Gbc.createVerticalStrut(40), new Gbc(0, 17, 4).build());
-
-
 
         // Start and stop buttons
         JButton startButton = new JButton("START");
@@ -177,14 +181,13 @@ public class SettingsPanel extends JPanel {
         JButton stopButton = new JButton("STOP");
         stopButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 
-        add(startButton, new Gbc(0,18,2).build());
-        add(stopButton, new Gbc(2,18,2).build());
+        add(startButton, new Gbc(0,19,2).build());
+        add(stopButton, new Gbc(2,19,2).build());
 
         ButtonAction buttonAction1 = new ButtonAction(timerDot, timerCloak);
 
         startButton.addActionListener(buttonAction1.startCanvas());
         stopButton.addActionListener(buttonAction1.stopCanvas());
-
 
 
         // buttons listeners
@@ -203,6 +206,7 @@ public class SettingsPanel extends JPanel {
         });
 
         startButton.addActionListener(e -> {
+            initializeInstance();
             startButtonClicked();
         });
 
@@ -211,16 +215,28 @@ public class SettingsPanel extends JPanel {
             updateDrawables(selectedPreset);
         });
 
-        weatherComboBox.addActionListener(e -> {
-            String selectedSeason = (String) weatherComboBox.getSelectedItem();
-        });
+        chooseFileButton.addActionListener( e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON File", "json");
+            fileChooser.setFileFilter(filter);
 
-        seasonComboBox.addActionListener(e -> {
-            String selectedSeason = (String) weatherComboBox.getSelectedItem();
+            int result = fileChooser.showOpenDialog(SettingsPanel.this);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                java.io.File selectedFile = fileChooser.getSelectedFile();
+                System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+                String newPreset = "PRESET5";
+                presetComboBox.addItem(newPreset);
+                presetComboBox.setSelectedItem(newPreset);
+            }
         });
 
     }
 
+
+    public void initializeInstance() {
+        instance = this;
+    }
 
     private void presetButtonClicked(String presetTime) {
         clockLabel.setText(presetTime);
@@ -241,7 +257,7 @@ public class SettingsPanel extends JPanel {
     }
 
     private void updateDrawables(String selectedPreset) {
-        App.buttonMode = App.ButtonMode.NONE; // Reset button mode
+        App.buttonMode = App.ButtonMode.NONE;
         App.updateDrawables(selectedPreset);
         App.getJPanel().repaint();
     }
@@ -251,12 +267,17 @@ public class SettingsPanel extends JPanel {
         return comboBox;
     }
 
-    private void startButtonClicked(){
+    private void startButtonClicked() {
         String selectedSeason = getSelectedComboBoxOption(seasonComboBox);
-        String selectedWeather = getSelectedComboBoxOption(weatherComboBox);
+//        String selectedWeather = getSelectedComboBoxOption(weatherComboBox);
         String currentTime = clockLabel.getText();
 
-        JOptionPane.showMessageDialog(this, "Current Time: " + currentTime + "\nSelected season: " + selectedSeason + "\nSelected Weather: " + selectedWeather);
+        // Check if any of the selected items are null
+//        if (selectedSeason != null && selectedWeather != null && currentTime != null) {
+//            JOptionPane.showMessageDialog(this, "Current Time: " + currentTime + "\nSelected season: " + selectedSeason + "\nSelected Weather: " + selectedWeather);
+//        } else {
+//            JOptionPane.showMessageDialog(this, "Please fill in all the required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }
 
     private JTextField createFormattedTextField(int maxValue) {
