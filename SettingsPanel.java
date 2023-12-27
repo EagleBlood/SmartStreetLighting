@@ -5,9 +5,11 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
+import java.util.Arrays;
 
 public class SettingsPanel extends JPanel {
 
+    private final int DAYS_OF_MONTH = 1;
     private final JLabel clockLabel;
     private final JTextField hourTextField;
     private final JTextField minuteTextField;
@@ -15,6 +17,7 @@ public class SettingsPanel extends JPanel {
     private final JComboBox<String> seasonComboBox;
     private final JComboBox<String> weatherComboBox;
     private final JComboBox<String> presetComboBox;
+    private final JLabel currentMonth;
     public static SettingsPanel instance;
 
     public static String getCurrentTime() {
@@ -59,22 +62,38 @@ public class SettingsPanel extends JPanel {
             incrementClock();
         });
 
-        JLabel currentTime = new JLabel("Current time");
-        add(currentTime, new Gbc(0,0,2).build());
 
-
-        clockLabel = new JLabel("13:00");
-        clockLabel.setFont(new Font("Arial", Font.BOLD, 30));
-        add(clockLabel, new Gbc(2,0,2).build());
+        JLabel appTitle = new JLabel("Smart Street Lighting");
+        appTitle.setFont(new Font("Arial", Font.BOLD, 25));
+        add(appTitle, new Gbc(0,0,4).build());
 
         add(Gbc.createVerticalStrut(20), new Gbc(0, 1, 4).build());
 
+        JLabel currentTime = new JLabel("Current time");
+        add(currentTime, new Gbc(0,2,2).build());
+
+        clockLabel = new JLabel("13:00");
+        clockLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        add(clockLabel, new Gbc(2,2,2).build());
+
+        add(Gbc.createVerticalStrut(20), new Gbc(0, 4, 4).build());
+
+        //Label - "Current Month"
+
+        JLabel monthLabel = new JLabel("Current Month");
+        add(monthLabel, new Gbc(0,3,2).build());
+
+        currentMonth = new JLabel("");
+        currentMonth.setFont(new Font("Arial", Font.BOLD, 15));
+        add(currentMonth, new Gbc(2,3,2).build());
+
+
         // Label - "Hour settings"
         JLabel timeLabel = new JLabel("Time settings");
-        add(timeLabel, new Gbc(0,2,4).build());
+        add(timeLabel, new Gbc(0,5,4).build());
 
         JLabel customTimeLabel = new JLabel("Time");
-        add(customTimeLabel, new Gbc(0,3,1).build());
+        add(customTimeLabel, new Gbc(0,6,1).build());
 
         JPanel timePanel = new JPanel(new GridLayout(1, 4, 0, 0));
 
@@ -90,10 +109,10 @@ public class SettingsPanel extends JPanel {
 
         timePanel.setOpaque(false);
 
-        add(timePanel, new Gbc(1, 3, 2).build());
+        add(timePanel, new Gbc(1, 6, 2).build());
 
         JButton setTime = new JButton("SET");
-        add(setTime, new Gbc(3,3,1).build());
+        add(setTime, new Gbc(3,6,1).build());
 
         // 4 przyciski w jednej linii
         JButton button1 = new JButton("00:00");
@@ -101,18 +120,18 @@ public class SettingsPanel extends JPanel {
         JButton button3 = new JButton("12:00");
         JButton button4 = new JButton("18:00");
 
-        add(button1, new Gbc(0,4,1).build());
-        add(button2, new Gbc(1,4,1).build());
-        add(button3, new Gbc(2,4,1).build());
-        add(button4, new Gbc(3,4,1).build());
+        add(button1, new Gbc(0,7,1).build());
+        add(button2, new Gbc(1,7,1).build());
+        add(button3, new Gbc(2,7,1).build());
+        add(button4, new Gbc(3,7,1).build());
 
         // Pole tekstowe (2 znaki) + h
 
-        add(Gbc.createVerticalStrut(5), new Gbc(0, 5, 4).build());
+        add(Gbc.createVerticalStrut(5), new Gbc(0, 8, 4).build());
 
         // Label - "Presets"
         JLabel presetLabel = new JLabel("Presets");
-        add(presetLabel, new Gbc(0,6,4).build());
+        add(presetLabel, new Gbc(0,9,4).build());
 
         presetComboBox = new JComboBox<>(presetNames);
         presetComboBox.setSelectedIndex(-1);
@@ -125,15 +144,15 @@ public class SettingsPanel extends JPanel {
             }
         });
 
-        add(presetComboBox, new Gbc(0, 7, 4).build());
+        add(presetComboBox, new Gbc(0, 10, 4).build());
         add(Gbc.createVerticalStrut(40), new Gbc(0, 17, 4).build());
 
         JButton chooseFileButton = new JButton("Choose your config");
-        add(chooseFileButton, new Gbc(0, 8, 4).build());
+        add(chooseFileButton, new Gbc(0, 11, 4).build());
 
         // Label - "Season"
         JLabel seasonLabel = new JLabel("Season");
-        add(seasonLabel, new Gbc(0,9,4).build());
+        add(seasonLabel, new Gbc(0,12,4).build());
 
         // 3 przyciski "Spring", "Summer", "Autumn", "Winter"
         String[] season = {"Spring", "Summer", "Autumn", "Winter"};
@@ -147,13 +166,13 @@ public class SettingsPanel extends JPanel {
                 return comp;
             }
         });
-        add(seasonComboBox, new Gbc(0, 10, 4).build());
+        add(seasonComboBox, new Gbc(0, 13, 4).build());
 
         add(Gbc.createVerticalStrut(5), new Gbc(0, 9, 4).build());
 
         // Label - "Weather"
         JLabel weatherLabel = new JLabel("Weather");
-        add(weatherLabel, new Gbc(0,11,4).build());
+        add(weatherLabel, new Gbc(0,14,4).build());
 
 
         String[] weather = {"Sun", "Precipitation"};
@@ -167,9 +186,9 @@ public class SettingsPanel extends JPanel {
                 return comp;
             }
         });
-        add(weatherComboBox, new Gbc(0, 12, 4).build());
+        add(weatherComboBox, new Gbc(0, 15, 4).build());
 
-        add(Gbc.createVerticalStrut(5), new Gbc(0, 13, 4).build());
+        add(Gbc.createVerticalStrut(25), new Gbc(0, 16, 4).build());
 
         // Start and stop buttons
         JButton startButton = new JButton("START");
@@ -178,8 +197,8 @@ public class SettingsPanel extends JPanel {
         JButton stopButton = new JButton("STOP");
         stopButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 
-        add(startButton, new Gbc(0,19,2).build());
-        add(stopButton, new Gbc(2,19,2).build());
+        add(startButton, new Gbc(0,17,2).build());
+        add(stopButton, new Gbc(2,17,2).build());
 
         ButtonAction buttonAction1 = new ButtonAction(timerDot, timerCloak);
 
@@ -207,6 +226,10 @@ public class SettingsPanel extends JPanel {
             startButtonClicked();
         });
 
+        seasonComboBox.addActionListener(e->{
+            updateCalendar();
+        });
+
         presetComboBox.addActionListener(e -> {
             String selectedPreset = (String) presetComboBox.getSelectedItem();
             updateDrawables(selectedPreset);
@@ -229,6 +252,28 @@ public class SettingsPanel extends JPanel {
             }
         });
 
+    }
+
+
+    private void updateCalendar() {
+        String selectedSeason = (String) seasonComboBox.getSelectedItem();
+        if (selectedSeason != null) {
+
+            switch (selectedSeason) {
+                case "Spring":
+                    currentMonth.setText("April");
+                    break;
+                case "Summer":
+                    currentMonth.setText("July");
+                    break;
+                case "Autumn":
+                    currentMonth.setText("October");
+                    break;
+                case "Winter":
+                    currentMonth.setText("January");
+                    break;
+            }
+        }
     }
 
 
@@ -267,15 +312,16 @@ public class SettingsPanel extends JPanel {
 
     private void startButtonClicked() {
         String selectedSeason = getSelectedComboBoxOption(seasonComboBox);
-//        String selectedWeather = getSelectedComboBoxOption(weatherComboBox);
+        String selectedWeather = getSelectedComboBoxOption(weatherComboBox);
         String currentTime = clockLabel.getText();
 
-        // Check if any of the selected items are null
-//        if (selectedSeason != null && selectedWeather != null && currentTime != null) {
-//            JOptionPane.showMessageDialog(this, "Current Time: " + currentTime + "\nSelected season: " + selectedSeason + "\nSelected Weather: " + selectedWeather);
-//        } else {
-//            JOptionPane.showMessageDialog(this, "Please fill in all the required fields.", "Error", JOptionPane.ERROR_MESSAGE);
-//        }
+//         Check if any of the selected items are null
+        if (selectedSeason != null && selectedWeather != null && currentTime != null) {
+            JOptionPane.showMessageDialog(this, "Current Time: " + currentTime + "\nSelected season: " + selectedSeason + "\nSelected Weather: " + selectedWeather);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please fill in all the required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+
+        }
     }
 
     private JTextField createFormattedTextField(int maxValue) {
@@ -301,7 +347,9 @@ public class SettingsPanel extends JPanel {
         return (String) comboBox.getSelectedItem();
     }
 
-    public void incrementClock() {
+    private int midnightCount = 0;
+
+    private void incrementClock() {
         String currentTime = clockLabel.getText();
         String[] parts = currentTime.split(":");
         int hour = Integer.parseInt(parts[0]);
@@ -312,12 +360,46 @@ public class SettingsPanel extends JPanel {
         if (minute >= 60) {
             minute -= 60;
             hour = (hour + 1) % 24; // Ensure hour stays within 24-hour format
+
+            // Check if it's midnight (00:00)
+            if (hour == 0 && minute == 0) {
+                midnightCount++;
+
+                // If midnight occurred once, update the month
+                if (midnightCount == DAYS_OF_MONTH) {
+                    updateMonthAndSeason(currentMonth.getText());
+                    midnightCount = 0;
+                }
+            }
         }
 
         // Update clockLabel
         String newTime = String.format("%02d:%02d", hour, minute);
         clockLabel.setText(newTime);
     }
+
+    private void updateMonthAndSeason(String month) {
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+        // Znajdź indeks aktualnego miesiąca
+        int currentMonthIndex = Arrays.asList(months).indexOf(month);
+
+        // Zmiana na kolejny miesiąc
+        int newMonthIndex = (currentMonthIndex + 1) % 12;
+        String newMonth = months[newMonthIndex];
+
+        // Aktualizacja pola miesiąca
+        currentMonth.setText(newMonth);
+
+        // Sprawdź, czy nowy miesiąc to kwiecień, lipiec, październik lub styczeń
+        switch (newMonth) {
+            case "April" -> seasonComboBox.setSelectedItem("Spring");
+            case "July" -> seasonComboBox.setSelectedItem("Summer");
+            case "October" -> seasonComboBox.setSelectedItem("Autumn");
+            case "January" -> seasonComboBox.setSelectedItem("Winter");
+        }
+    }
+
 
 }
 
