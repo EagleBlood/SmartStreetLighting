@@ -39,14 +39,29 @@ public class Lamp {
 
     public void activate(Dot dot) {
 
-        active = dot != null && isDotInRange(dot) && isTimeInRange(SettingsPanel.getCurrentTime());
-        if (active) {
-            // When active, draw the effective lighting area using instance radius
-            g2d.setColor(LAMP_LIT_COLOR); // Active color
-            g2d.setStroke(new BasicStroke(LAMP_STROKE)); // Default stroke for active area
-            g2d.draw(new Ellipse2D.Double(position.getX() - this.radius, position.getY() - this.radius, this.radius * 2, this.radius * 2));
+        if (SettingsPanel.instance != null) {
+            active = dot != null && isDotInRange(dot) && isTimeInRange(SettingsPanel.getCurrentTime());
+
+            if (active) {
+                // When active, draw the effective lighting area using instance radius\
+                if (SettingsPanel.getCurrentSeason().equals("Winter")) {
+                    g2d.setColor(Color.BLUE);
+//                g2d.draw(new Ellipse2D.Double(position.getX() - this.radius, position.getY() - this.radius, this.radius * 3, this.radius * 3));
+                    //activateAdjacentLamps(dot);
+                } else {
+                    g2d.setColor(LAMP_LIT_COLOR); // Active color
+                }
+
+                g2d.setStroke(new BasicStroke(LAMP_STROKE)); // Default stroke for active area
+                g2d.draw(new Ellipse2D.Double(position.getX() - this.radius, position.getY() - this.radius, this.radius * 2, this.radius * 2));
+            }
         }
+
+        // Activate lamps +1 and -1 during winter season
+
     }
+
+
 
     private boolean isTimeInRange(String currentTime) {
         // Convert time to int for comparison
