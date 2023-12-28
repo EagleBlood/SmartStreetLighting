@@ -22,6 +22,7 @@ public class SettingsPanel extends JPanel {
     private final JComboBox<String> presetComboBox;
     private final JLabel currentMonth;
     public static SettingsPanel instance;
+    private ButtonAction buttonAction1;
 
     public static String getCurrentTime() {
         return instance.clockLabel.getText();
@@ -192,9 +193,7 @@ public class SettingsPanel extends JPanel {
         JButton resetButton= new JButton("RESET");
         add(resetButton, new Gbc(1,19,2).build());
 
-        ButtonAction buttonAction1 = new ButtonAction(timerDot, timerClock);
-
-        stopButton.addActionListener(buttonAction1.stopCanvas());
+        buttonAction1 = new ButtonAction(timerDot, timerClock);
 
 
         // buttons listeners
@@ -221,10 +220,15 @@ public class SettingsPanel extends JPanel {
                 initializeInstance();
                 startButtonClicked();
                 buttonAction1.startCanvas();
+                System.out.println("Start");
             } catch (IllegalStateException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
 
+        });
+
+        stopButton.addActionListener(e -> {
+            buttonAction1.stopCanvas();
         });
 
         seasonComboBox.addActionListener(e->{
