@@ -145,19 +145,13 @@ public class Config {
         }
     }
     public static List<Drawable> getDrawablesForPreset(String presetName) {
+
         List<Drawable> allDrawables = new ArrayList<>();
 
         switch (presetName) {
             case "PRESET1":
                 allDrawables.addAll(PRESET1);
-                break;/*
-            case "PRESET2":
-                allDrawables.addAll(PRESET2);
                 break;
-            case "PRESET3":
-                allDrawables.addAll(PRESET3);
-                break;
-            */
             case "Your config":
                 if (filePath!=null) {
                     PRESET5 = initializePreset(loadDrawablesFromConfigFile(filePath));

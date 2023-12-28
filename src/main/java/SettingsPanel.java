@@ -5,6 +5,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
+import java.io.File;
 import java.util.Arrays;
 
 public class SettingsPanel extends JPanel {
@@ -15,7 +16,7 @@ public class SettingsPanel extends JPanel {
     private final JTextField minuteTextField;
     private final JTextField dayTextField;
     private final JLabel customDaysLabel;
-    private final String[] presetNames = {"PRESET1", "PRESET2", "PRESET3", "PRESET4"};
+    private final String[] presetNames = {"PRESET1"};
     private final JComboBox<String> seasonComboBox;
     private final JComboBox<String> weatherComboBox;
     private final JComboBox<String> presetComboBox;
@@ -60,7 +61,8 @@ public class SettingsPanel extends JPanel {
         Timer timerDot = new Timer(100, e -> {
             Main.getJPanel().repaint();
         });
-        Timer timerCloak = new Timer(3000, e -> {
+
+        Timer timerClock = new Timer(3000, e -> {
             incrementClock();
         });
 
@@ -74,7 +76,7 @@ public class SettingsPanel extends JPanel {
         JLabel currentTime = new JLabel("Current time");
         add(currentTime, new Gbc(0,2,2).build());
 
-        clockLabel = new JLabel("13:00");
+        clockLabel = new JLabel("00:00");
         clockLabel.setFont(new Font("Arial", Font.BOLD, 30));
         add(clockLabel, new Gbc(2,2,2).build());
 
@@ -85,7 +87,7 @@ public class SettingsPanel extends JPanel {
         JLabel monthLabel = new JLabel("Current Month");
         add(monthLabel, new Gbc(0,3,2).build());
 
-        currentMonth = new JLabel("");
+        currentMonth = new JLabel("January");
         currentMonth.setFont(new Font("Arial", Font.BOLD, 15));
         add(currentMonth, new Gbc(2,3,2).build());
 
@@ -99,12 +101,12 @@ public class SettingsPanel extends JPanel {
 
         JPanel timePanel = new JPanel(new GridLayout(1, 4, 0, 0));
 
-        hourTextField = createFormattedTextField(23);
+        hourTextField = createFormattedTextField(0, 23);
         JLabel hourTextFieldLabel = new JLabel(" h");
         timePanel.add(hourTextField);
         timePanel.add(hourTextFieldLabel);
 
-        minuteTextField = createFormattedTextField(59);
+        minuteTextField = createFormattedTextField(0, 59);
         JLabel minuteTextFieldLabel = new JLabel(" m");
         timePanel.add(minuteTextField);
         timePanel.add(minuteTextFieldLabel);
@@ -131,10 +133,10 @@ public class SettingsPanel extends JPanel {
 
 
 
-        customDaysLabel = new JLabel("Days a month ["+daysMonth+"]");
+        customDaysLabel = new JLabel("Days in a month ["+daysMonth+"]");
         add(customDaysLabel, new Gbc(0,8,2).build());
 
-        dayTextField = createFormattedTextField(31);
+        dayTextField = createFormattedTextField(1, 31);
         add(dayTextField, new Gbc(2, 8, 1).build());
 
         JButton setDay = new JButton("SET");
@@ -147,15 +149,7 @@ public class SettingsPanel extends JPanel {
         add(presetLabel, new Gbc(0,10,4).build());
 
         presetComboBox = new JComboBox<>(presetNames);
-        presetComboBox.setSelectedIndex(-1);
-        presetComboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                setText(value == null ? "No selection" : getText());
-                return comp;
-            }
-        });
+        resetComboBox(presetComboBox);
 
         add(presetComboBox, new Gbc(0, 11, 4).build());
 
@@ -169,15 +163,7 @@ public class SettingsPanel extends JPanel {
         // 3 przyciski "Spring", "Summer", "Autumn", "Winter"
         String[] season = {"Spring", "Summer", "Autumn", "Winter"};
         seasonComboBox = new JComboBox<>(season);
-        seasonComboBox.setSelectedIndex(-1);
-        seasonComboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                setText(value == null ? "No selection" : getText());
-                return comp;
-            }
-        });
+        resetComboBox(seasonComboBox);
         add(seasonComboBox, new Gbc(0, 14, 4).build());
 
         // Label - "Weather"
@@ -187,15 +173,7 @@ public class SettingsPanel extends JPanel {
 
         String[] weather = {"Sun", "Precipitation"};
         weatherComboBox = new JComboBox<>(weather);
-        weatherComboBox.setSelectedIndex(-1);
-        weatherComboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                setText(value == null ? "No selection" : getText());
-                return comp;
-            }
-        });
+        resetComboBox(weatherComboBox);
         add(weatherComboBox, new Gbc(0, 16, 4).build());
 
         add(Gbc.createVerticalStrut(25), new Gbc(0, 17, 4).build());
@@ -210,9 +188,12 @@ public class SettingsPanel extends JPanel {
         add(startButton, new Gbc(0,18,2).build());
         add(stopButton, new Gbc(2,18,2).build());
 
-        ButtonAction buttonAction1 = new ButtonAction(timerDot, timerCloak);
 
-        startButton.addActionListener(buttonAction1.startCanvas());
+        JButton resetButton= new JButton("RESET");
+        add(resetButton, new Gbc(1,19,2).build());
+
+        ButtonAction buttonAction1 = new ButtonAction(timerDot, timerClock);
+
         stopButton.addActionListener(buttonAction1.stopCanvas());
 
 
@@ -236,8 +217,14 @@ public class SettingsPanel extends JPanel {
         });
 
         startButton.addActionListener(e -> {
-            initializeInstance();
-            startButtonClicked();
+            try {
+                initializeInstance();
+                startButtonClicked();
+                buttonAction1.startCanvas();
+            } catch (IllegalStateException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
         });
 
         seasonComboBox.addActionListener(e->{
@@ -249,8 +236,16 @@ public class SettingsPanel extends JPanel {
             updateDrawables(selectedPreset);
         });
 
+        resetButton.addActionListener(e-> {
+            resetSettings();
+        });
+
         chooseFileButton.addActionListener( e -> {
             JFileChooser fileChooser = new JFileChooser();
+
+            File programDirectory = new File(System.getProperty("user.dir"));
+            fileChooser.setCurrentDirectory(programDirectory);
+
             FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON File", "json");
             fileChooser.setFileFilter(filter);
 
@@ -260,14 +255,52 @@ public class SettingsPanel extends JPanel {
                 java.io.File selectedFile = fileChooser.getSelectedFile();
                 System.out.println("Selected file: " + selectedFile.getAbsolutePath());
                 Main.setCustomConfig(selectedFile.getAbsolutePath());
+
                 String newPreset = "Your config";
-                presetComboBox.addItem(newPreset);
+
+                // Sprawdź, czy preset już istnieje w comboboxie
+                boolean presetExists = false;
+                for (int i = 0; i < presetComboBox.getItemCount(); i++) {
+                    if (newPreset.equals(presetComboBox.getItemAt(i))) {
+                        presetExists = true;
+                        break;
+                    }
+                }
+
+                // Jeśli nie istnieje, dodaj nowy preset
+                if (!presetExists) {
+                    presetComboBox.addItem(newPreset);
+                }
+
                 presetComboBox.setSelectedItem(newPreset);
             }
         });
 
     }
 
+    private void resetSettings() {
+        clockLabel.setText("00:00");
+        currentMonth.setText("January");
+        daysMonth=1;
+        customDaysLabel.setText("Days a month ["+daysMonth+"]");
+        midnightCount = 0;
+
+        resetComboBox(seasonComboBox);
+        resetComboBox(weatherComboBox);
+    }
+
+    private void resetComboBox(JComboBox<String> comboBox) {
+        comboBox.setSelectedIndex(-1);
+
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setText(value == null ? "No selection" : getText());
+                return comp;
+            }
+        });
+    }
 
     private void updateCalendar() {
         String selectedSeason = (String) seasonComboBox.getSelectedItem();
@@ -335,17 +368,17 @@ public class SettingsPanel extends JPanel {
         String selectedSeason = getSelectedComboBoxOption(seasonComboBox);
         String selectedWeather = getSelectedComboBoxOption(weatherComboBox);
         String currentTime = clockLabel.getText();
+        String selectedPreset = getSelectedComboBoxOption(presetComboBox);
 
 //         Check if any of the selected items are null
-        if (selectedSeason != null && selectedWeather != null && currentTime != null) {
-            JOptionPane.showMessageDialog(this, "Current Time: " + currentTime + "\nSelected season: " + selectedSeason + "\nSelected Weather: " + selectedWeather);
+        if (selectedSeason != null && selectedWeather != null && currentTime != null && selectedPreset != null) {
+            JOptionPane.showMessageDialog(this, "Current Time: " + currentTime + "\nSelected season: " + selectedSeason + "\nSelected Weather: " + selectedWeather + "\nSelected PRESET: " + selectedPreset);
         } else {
-            JOptionPane.showMessageDialog(this, "Please fill in all the required fields.", "Error", JOptionPane.ERROR_MESSAGE);
-
+            throw new IllegalStateException("Not all required fields are filled in.");
         }
     }
 
-    private JTextField createFormattedTextField(int maxValue) {
+    private JTextField createFormattedTextField(int minValue, int maxValue) {
         JTextField textField = new JTextField(2);
         ((AbstractDocument) textField.getDocument()).setDocumentFilter(new DocumentFilter() {
             @Override
@@ -355,7 +388,7 @@ public class SettingsPanel extends JPanel {
                 currentText += text;
                 if (currentText.length() <= 2 && currentText.matches("\\d*")) {
                     int value = Integer.parseInt(currentText);
-                    if (value >= 0 && value <= maxValue) {
+                    if (value >= minValue && value <= maxValue) {
                         super.replace(fb, offset, length, text, attrs);
                     }
                 }
