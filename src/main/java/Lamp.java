@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Lamp {
     private final Point2D.Double position;
@@ -36,7 +38,7 @@ public class Lamp {
         g2d.fill(new Ellipse2D.Double(drawX, drawY, 10, 10)); // Default LAMP_SIZE
     }
 
-    public void activate(Dot dot) {
+    /*public void activate(Dot dot) {
 
         if (SettingsPanel.instance != null) {
             active = dot != null && isDotInRange(dot) && isTimeInRange(SettingsPanel.getCurrentTime());
@@ -58,6 +60,39 @@ public class Lamp {
 
         // Activate lamps +1 and -1 during winter season
 
+    }*/
+
+    public void activate(Dot dot) {
+        if (SettingsPanel.instance != null) {
+            active = dot != null && isDotInRange(dot) && isTimeInRange(SettingsPanel.getCurrentTime());
+            if (active) {
+                // When active, draw the effective lighting area using instance radius
+                if (SettingsPanel.getCurrentSeason().equals("Winter")) {
+                    g2d.setColor(Color.BLUE);
+                } else {
+                    g2d.setColor(LAMP_LIT_COLOR); // Active color
+                }
+                    
+                g2d.setStroke(new BasicStroke(LAMP_STROKE)); // Default stroke for active area
+                
+                // Draw the area for the current lamp
+                g2d.draw(new Ellipse2D.Double(position.getX() - this.radius, position.getY() - this.radius, this.radius * 2, this.radius * 2));
+        
+                // Draw the area for the lamp ahead
+                List<Lamp> lamps = Path.getAllLamps();
+                int currentIndex = lamps.indexOf(this);
+                if (currentIndex < lamps.size() - 1) {
+                    Lamp nextLamp = lamps.get(currentIndex + 1);
+                    nextLamp.drawArea();
+                }
+                
+                // Draw the area for the lamp behind
+                if (currentIndex > 0) {
+                    Lamp previousLamp = lamps.get(currentIndex - 1);
+                    previousLamp.drawArea();
+                }
+            }
+        }
     }
 
 
@@ -97,6 +132,21 @@ public class Lamp {
 
     public Point2D.Double getPosition() {
         return position;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void drawArea() {
+         if (SettingsPanel.getCurrentSeason().equals("Winter")) {
+            g2d.setColor(Color.BLUE);
+        } else {
+            g2d.setColor(LAMP_LIT_COLOR); // Active color
+        }
+
+        g2d.setStroke(new BasicStroke(LAMP_STROKE));
+        g2d.draw(new Ellipse2D.Double(position.getX() - this.radius, position.getY() - this.radius, this.radius * 2, this.radius * 2));
     }
 
 }

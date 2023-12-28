@@ -16,6 +16,7 @@ public class Path implements Drawable{
 
     public static final int PATH_THICKNESS = 20;
     public final List<Lamp> lamps = new ArrayList<>();
+    public static List<List<Lamp>> allLamps = new ArrayList<>();
     public final Path2D.Float path2D;
     private double lastX;
     private double lastY;
@@ -34,10 +35,11 @@ public class Path implements Drawable{
         this.lampCount = lampCount;
         this.roadCategory = roadCategory;
     }
+
     public void updateLamps() {
         lamps.clear();
         double pathLength = getLength();
-    
+
         if (lampCount == 1) {
             // If there's only one lamp, place it at the center of the path
             Point2D.Double lampPosition = getPosition(pathLength / 2);
@@ -49,7 +51,7 @@ public class Path implements Drawable{
             double totalIntervalLength = (lampCount - 1) * lampInterval;
             double remainingLength = pathLength - totalIntervalLength;
             double startDistance = remainingLength / 2;
-    
+
             for (int i = 0; i < lampCount; i++) {
                 double lampPositionDistance = startDistance + i * lampInterval;
                 Point2D.Double lampPosition = getPosition(lampPositionDistance);
@@ -58,6 +60,8 @@ public class Path implements Drawable{
                 }
             }
         }
+
+        allLamps.add(lamps);
     }
 
     @Override
@@ -312,4 +316,13 @@ public class Path implements Drawable{
     public void initializeAfterSettingDrawables() {
         updateLamps();
     }
+
+    public static List<Lamp> getAllLamps() {
+        List<Lamp> allLampsFlat = new ArrayList<>();
+        for (List<Lamp> lampList : allLamps) {
+            allLampsFlat.addAll(lampList);
+        }
+        return allLampsFlat;
+    }
 }
+
