@@ -39,7 +39,143 @@ public class Config {
             }}, lampInterval, lampCount, 'B')
     )));
 
+    public static final List<Drawable> PRESET2 = initializePreset(new ArrayList<>(List.of(
 
+
+            //krotkie uliczki
+
+
+            // ul Krotka
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(550, 200, 700, 200), true);
+            }}, lampInterval, lampCount, 'B'),
+
+            // ul krzywa
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(550, 500, 700, 500), true);
+            }}, lampInterval, lampCount, 'A'),
+
+            // ul Owocowa
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(400, 50, 400, 200), true);
+            }}, lampInterval, lampCount, 'B'),
+
+            // ul warzywna
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(550, 50, 550, 200), true);
+            }}, lampInterval, lampCount, 'B'),
+
+            // ul polna
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(50, 300, 150, 300), true);
+            }}, lampInterval, lampCount, 'B'),
+
+
+
+            //kreta
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(150, 300, 250, 300), true);
+                append(new Line2D.Double(250, 300, 250, 500), true);
+                append(new Line2D.Double(250, 500, 550, 500), true);
+            }}, lampInterval, lampCount, 'B'),
+
+
+            //ul. Polnocna
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(50, 50, 400, 50), true);
+            }}, lampInterval, lampCount, 'B'),
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(400, 50, 550, 50), true);
+            }}, lampInterval, lampCount, 'B'),
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(550, 50, 650, 50), true);
+                append(new Line2D.Double(650, 50, 700, 100), true);
+                append(new Line2D.Double(700, 100, 700, 200), true);
+            }}, lampInterval, lampCount, 'B'),
+
+            //ul Wschodnia
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(700, 200, 700, 400), true);
+            }}, lampInterval, lampCount, 'B'),
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(700, 400, 700, 500), true);
+            }}, lampInterval, lampCount, 'B'),
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(700, 500, 700, 650), true);
+            }}, lampInterval, lampCount, 'A'),
+
+            //ul Poludniowa
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(700, 650, 550, 650), true);
+            }}, lampInterval, lampCount, 'A'),
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(550, 650, 450, 650), true);
+            }}, lampInterval, lampCount, 'A'),
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(450, 650, 150, 650), true);
+            }}, lampInterval, lampCount, 'A'),
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(150, 650, 50, 650), true);
+            }}, lampInterval, lampCount, 'B'),
+
+            //ul Zachodnia
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(50, 650, 50, 300), true);
+            }}, lampInterval, lampCount, 'B'),
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(50, 300, 50, 200), true);
+            }}, lampInterval, lampCount, 'B'),
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(50, 200, 50, 50), true);
+            }}, lampInterval, lampCount, 'A'),
+
+            // ul. srodkowa
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(50, 200, 150, 200), true);
+            }}, lampInterval, lampCount, 'A'),
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(150, 200, 400, 200), true);
+            }}, lampInterval, lampCount, 'A'),
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(400, 200, 550, 200), true);
+            }}, lampInterval, lampCount, 'A'),
+
+
+            //ul glowna
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(550, 200, 550, 500), true);
+            }}, lampInterval, lampCount, 'A'),
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(550, 500, 550, 650), true);
+            }}, lampInterval, lampCount, 'A'),
+
+            //ul. mickiewicza
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(150, 650, 150, 300), true);
+            }}, lampInterval, lampCount, 'A'),
+
+            new Path(new Path2D.Float() {{
+                append(new Line2D.Double(150, 300, 150, 200), true);
+            }}, lampInterval, lampCount, 'A')
+
+
+
+
+
+    )));
 
     private static List<Drawable> initializePreset(List<Drawable> preset) {
         for (Drawable drawable : preset) {
@@ -151,6 +287,9 @@ public class Config {
         switch (presetName) {
             case "PRESET1":
                 allDrawables.addAll(PRESET1);
+                break;
+            case "PRESET2":
+                allDrawables.addAll(PRESET2);
                 break;
             case "Your config":
                 if (filePath!=null) {

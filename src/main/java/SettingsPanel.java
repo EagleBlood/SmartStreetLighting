@@ -16,13 +16,13 @@ public class SettingsPanel extends JPanel {
     private final JTextField minuteTextField;
     private final JTextField dayTextField;
     private final JLabel customDaysLabel;
-    private final String[] presetNames = {"PRESET1"};
+    private final String[] presetNames = {"PRESET1", "PRESET2"};
     private final JComboBox<String> seasonComboBox;
     private final JComboBox<String> weatherComboBox;
     private final JComboBox<String> presetComboBox;
     private final JLabel currentMonth;
     public static SettingsPanel instance;
-    private ButtonAction buttonAction1;
+    private final ButtonAction buttonAction1;
 
     public static String getCurrentTime() {
         return instance.clockLabel.getText();
@@ -77,7 +77,7 @@ public class SettingsPanel extends JPanel {
         JLabel currentTime = new JLabel("Current time");
         add(currentTime, new Gbc(0,2,2).build());
 
-        clockLabel = new JLabel("00:00");
+        clockLabel = new JLabel("12:00");
         clockLabel.setFont(new Font("Arial", Font.BOLD, 30));
         add(clockLabel, new Gbc(2,2,2).build());
 
@@ -283,7 +283,7 @@ public class SettingsPanel extends JPanel {
     }
 
     private void resetSettings() {
-        clockLabel.setText("00:00");
+        clockLabel.setText("12:00");
         currentMonth.setText("January");
         daysMonth=1;
         customDaysLabel.setText("Days a month ["+daysMonth+"]");
