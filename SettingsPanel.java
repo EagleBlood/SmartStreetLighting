@@ -9,10 +9,12 @@ import java.util.Arrays;
 
 public class SettingsPanel extends JPanel {
 
-    private final int DAYS_OF_MONTH = 1;
+    private int daysMonth = 1;
     private final JLabel clockLabel;
     private final JTextField hourTextField;
     private final JTextField minuteTextField;
+    private final JTextField dayTextField;
+    private final JLabel customDaysLabel;
     private final String[] presetNames = {"PRESET1", "PRESET2", "PRESET3", "PRESET4"};
     private final JComboBox<String> seasonComboBox;
     private final JComboBox<String> weatherComboBox;
@@ -127,11 +129,22 @@ public class SettingsPanel extends JPanel {
 
         // Pole tekstowe (2 znaki) + h
 
-        add(Gbc.createVerticalStrut(5), new Gbc(0, 8, 4).build());
+
+
+        customDaysLabel = new JLabel("Days a month ["+daysMonth+"]");
+        add(customDaysLabel, new Gbc(0,8,2).build());
+
+        dayTextField = createFormattedTextField(31);
+        add(dayTextField, new Gbc(2, 8, 1).build());
+
+        JButton setDay = new JButton("SET");
+        add(setDay, new Gbc(3,8,1).build());
+
+        add(Gbc.createVerticalStrut(10), new Gbc(0, 9, 4).build());
 
         // Label - "Presets"
         JLabel presetLabel = new JLabel("Presets");
-        add(presetLabel, new Gbc(0,9,4).build());
+        add(presetLabel, new Gbc(0,10,4).build());
 
         presetComboBox = new JComboBox<>(presetNames);
         presetComboBox.setSelectedIndex(-1);
@@ -144,15 +157,14 @@ public class SettingsPanel extends JPanel {
             }
         });
 
-        add(presetComboBox, new Gbc(0, 10, 4).build());
-        add(Gbc.createVerticalStrut(40), new Gbc(0, 17, 4).build());
+        add(presetComboBox, new Gbc(0, 11, 4).build());
 
         JButton chooseFileButton = new JButton("Choose your config");
-        add(chooseFileButton, new Gbc(0, 11, 4).build());
+        add(chooseFileButton, new Gbc(0, 12, 4).build());
 
         // Label - "Season"
         JLabel seasonLabel = new JLabel("Season");
-        add(seasonLabel, new Gbc(0,12,4).build());
+        add(seasonLabel, new Gbc(0,13,4).build());
 
         // 3 przyciski "Spring", "Summer", "Autumn", "Winter"
         String[] season = {"Spring", "Summer", "Autumn", "Winter"};
@@ -166,13 +178,11 @@ public class SettingsPanel extends JPanel {
                 return comp;
             }
         });
-        add(seasonComboBox, new Gbc(0, 13, 4).build());
-
-        add(Gbc.createVerticalStrut(5), new Gbc(0, 9, 4).build());
+        add(seasonComboBox, new Gbc(0, 14, 4).build());
 
         // Label - "Weather"
         JLabel weatherLabel = new JLabel("Weather");
-        add(weatherLabel, new Gbc(0,14,4).build());
+        add(weatherLabel, new Gbc(0,15,4).build());
 
 
         String[] weather = {"Sun", "Precipitation"};
@@ -186,9 +196,9 @@ public class SettingsPanel extends JPanel {
                 return comp;
             }
         });
-        add(weatherComboBox, new Gbc(0, 15, 4).build());
+        add(weatherComboBox, new Gbc(0, 16, 4).build());
 
-        add(Gbc.createVerticalStrut(25), new Gbc(0, 16, 4).build());
+        add(Gbc.createVerticalStrut(25), new Gbc(0, 17, 4).build());
 
         // Start and stop buttons
         JButton startButton = new JButton("START");
@@ -197,8 +207,8 @@ public class SettingsPanel extends JPanel {
         JButton stopButton = new JButton("STOP");
         stopButton.setFont(new Font("SansSerif", Font.BOLD, 15));
 
-        add(startButton, new Gbc(0,17,2).build());
-        add(stopButton, new Gbc(2,17,2).build());
+        add(startButton, new Gbc(0,18,2).build());
+        add(stopButton, new Gbc(2,18,2).build());
 
         ButtonAction buttonAction1 = new ButtonAction(timerDot, timerCloak);
 
@@ -219,6 +229,10 @@ public class SettingsPanel extends JPanel {
 
         setTime.addActionListener(e -> {
             setClock();
+        });
+
+        setDay.addActionListener(e -> {
+            setDaysOfMonth();
         });
 
         startButton.addActionListener(e -> {
@@ -299,6 +313,14 @@ public class SettingsPanel extends JPanel {
         minuteTextField.setText("");
     }
 
+    private void setDaysOfMonth(){
+        String dayText = dayTextField.getText();
+        daysMonth = Integer.parseInt(dayText);
+        dayTextField.setText("");
+        customDaysLabel.setText("Days a month ["+daysMonth+"]");
+        midnightCount = 0;
+    }
+
     private void updateDrawables(String selectedPreset) {
         App.buttonMode = App.ButtonMode.NONE;
         App.updateDrawables(selectedPreset);
@@ -306,8 +328,7 @@ public class SettingsPanel extends JPanel {
     }
 
     public JComboBox<String> getComboBox() {
-        JComboBox<String> comboBox = new JComboBox<>(presetNames);
-        return comboBox;
+        return new JComboBox<>(presetNames);
     }
 
     private void startButtonClicked() {
@@ -366,7 +387,7 @@ public class SettingsPanel extends JPanel {
                 midnightCount++;
 
                 // If midnight occurred once, update the month
-                if (midnightCount == DAYS_OF_MONTH) {
+                if (midnightCount == daysMonth) {
                     updateMonthAndSeason(currentMonth.getText());
                     midnightCount = 0;
                 }
