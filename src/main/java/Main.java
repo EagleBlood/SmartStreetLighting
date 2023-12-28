@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.List;
 
-public class App {
+public class Main {
     public enum ButtonMode {
         NONE, MODE1, MODE2
     }

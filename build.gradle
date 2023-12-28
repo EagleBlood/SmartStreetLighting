@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+    id 'application' // Dodaj plugin 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+}
+
+application {
+    mainClassName = 'Main'
+}

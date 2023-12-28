@@ -58,7 +58,7 @@ public class SettingsPanel extends JPanel {
 
         // Timer action listeners
         Timer timerDot = new Timer(100, e -> {
-            App.getJPanel().repaint();
+            Main.getJPanel().repaint();
         });
         Timer timerCloak = new Timer(3000, e -> {
             incrementClock();
@@ -259,7 +259,7 @@ public class SettingsPanel extends JPanel {
             if (result == JFileChooser.APPROVE_OPTION) {
                 java.io.File selectedFile = fileChooser.getSelectedFile();
                 System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-                App.setCustomConfig(selectedFile.getAbsolutePath());
+                Main.setCustomConfig(selectedFile.getAbsolutePath());
                 String newPreset = "Your config";
                 presetComboBox.addItem(newPreset);
                 presetComboBox.setSelectedItem(newPreset);
@@ -322,9 +322,9 @@ public class SettingsPanel extends JPanel {
     }
 
     private void updateDrawables(String selectedPreset) {
-        App.buttonMode = App.ButtonMode.NONE;
-        App.updateDrawables(selectedPreset);
-        App.getJPanel().repaint();
+        Main.buttonMode = Main.ButtonMode.NONE;
+        Main.updateDrawables(selectedPreset);
+        Main.getJPanel().repaint();
     }
 
     public JComboBox<String> getComboBox() {
