@@ -193,6 +193,16 @@ public class SettingsPanel extends JPanel {
         JButton resetButton= new JButton("RESET");
         add(resetButton, new Gbc(1,19,2).build());
 
+        add(Gbc.createVerticalStrut(25), new Gbc(0, 20, 4).build());
+
+        JButton openSettingsButton = new JButton("Create custom road grid");
+        add(openSettingsButton, new Gbc(0, 21, 4).build());
+
+        openSettingsButton.addActionListener( e -> {
+                openSettingsWindow();
+        });
+
+
         buttonAction1 = new ButtonAction(timerDot, timerClock);
 
 
@@ -280,6 +290,12 @@ public class SettingsPanel extends JPanel {
             }
         });
 
+    }
+
+    private void openSettingsWindow() {
+
+        DotCanvasApp dotCanvasApp = new DotCanvasApp();
+        dotCanvasApp.setVisible(true);
     }
 
     private void resetSettings() {

@@ -21,6 +21,8 @@ public class Main {
         gbc.fill = GridBagConstraints.BOTH;
 
         canvas = new Canvas();  // Create Canvas without preset initially
+
+
         canvasPanel = new JPanel() {
             @Override
             public Dimension getPreferredSize() {
