@@ -1,3 +1,6 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -10,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -17,12 +21,13 @@ public class DotCanvasApp extends JFrame {
 
     private static JPanel canvasPanel;
     private final ArrayList<Point> dots = new ArrayList<>();
+    private final ArrayList<RoadPoint> roadPoints = new ArrayList<>();
     private final ArrayList<Point> newDots = new ArrayList<>();
+
+    private final String[] categoriesRoad = {"A", "B"};
     private BufferedImage backgroundImage;
     private final JTextField streetNameField;
-    private final ButtonGroup optionGroup;
-    private final JRadioButton optionARadioButton;
-    private final JRadioButton optionBRadioButton;
+    private final JComboBox category;
     private final JButton roadWithIntersectionsButton;
     private final JButton windingRoadButton;
     private final JButton addRoad;
@@ -144,7 +149,7 @@ public class DotCanvasApp extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        //      ########## przyciski
+        // ########## buttons ############
 
         settingsPanel.setLayout(new GridBagLayout());
 
@@ -154,13 +159,8 @@ public class DotCanvasApp extends JFrame {
         saveToJsonButton = new JButton("Save to JSON File");
         streetNameField = new JTextField();
 
-        optionGroup = new ButtonGroup();  // Utwórz grupę przycisków
-
-        optionARadioButton = new JRadioButton("Option A");
-        optionBRadioButton = new JRadioButton("Option B");
-
-        optionGroup.add(optionARadioButton);  // Dodaj przycisk A do grupy
-        optionGroup.add(optionBRadioButton);
+        category = new JComboBox<>(categoriesRoad);
+        resetCombobox(category);
 
         lampCountField = createFormattedTextField();
         lampDistanceField = createFormattedTextField();
@@ -174,8 +174,7 @@ public class DotCanvasApp extends JFrame {
         settingsPanel.add(new JLabel("Street Name:"), new Gbc(0, 3, 1).build());
         settingsPanel.add(streetNameField, new Gbc(1, 3, 3).build());
         settingsPanel.add(new JLabel("Options:"), new Gbc(0, 4, 1).build());
-        settingsPanel.add(optionARadioButton, new Gbc(1, 4, 1).build());
-        settingsPanel.add(optionBRadioButton, new Gbc(2, 4, 1).build());
+        settingsPanel.add(category, new Gbc(1, 4, 2).build());
         settingsPanel.add(new JLabel("Lamp Count:"), new Gbc(0, 5, 1).build());
         settingsPanel.add(lampCountField, new Gbc(1, 5, 3).build());
         settingsPanel.add(new JLabel("Lamp Distance:"), new Gbc(0, 6, 1).build());
@@ -185,10 +184,14 @@ public class DotCanvasApp extends JFrame {
         settingsPanel.add(Gbc.createVerticalStrut(25), new Gbc(0, 8, 4).build());
         settingsPanel.add(saveToJsonButton, new Gbc(0,9,4).build());
 
+        // ########## disable fields ############
+
         disableFields();
         windingRoadButton.setEnabled(false);
         roadWithIntersectionsButton.setEnabled(false);
         saveToJsonButton.setEnabled(false);
+
+        // ########## button listeners ############
 
         loadRoadButton.addActionListener(e -> loadRoadImage());
         roadWithIntersectionsButton.addActionListener(e -> {
@@ -200,10 +203,24 @@ public class DotCanvasApp extends JFrame {
             enableFields();
         });
         addRoad.addActionListener(e -> addRoad());
-//        saveToJsonButton.addActionListener(e -> saveToJson());
+        saveToJsonButton.addActionListener(e -> saveToJson());
         clearAddedPoints.addActionListener(e -> {
             newDots.clear();
             canvasPanel.repaint();
+        });
+
+    }
+
+    private void resetCombobox(JComboBox<String> comboBox) {
+        comboBox.setSelectedIndex(-1);
+
+        comboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component comp = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                setText(value == null ? "No selection" : getText());
+                return comp;
+            }
         });
     }
 
@@ -234,8 +251,7 @@ public class DotCanvasApp extends JFrame {
         lampCountField.setEnabled(true);
         lampDistanceField.setEnabled(true);
         streetNameField.setEnabled(true);
-        optionARadioButton.setEnabled(true);
-        optionBRadioButton.setEnabled(true);
+        category.setEnabled(true);
         addRoad.setEnabled(true);
         addingPointsAllowed = true;
         clearAddedPoints.setEnabled(true);
@@ -245,8 +261,7 @@ public class DotCanvasApp extends JFrame {
         lampCountField.setEnabled(false);
         lampDistanceField.setEnabled(false);
         streetNameField.setEnabled(false);
-        optionARadioButton.setEnabled(false);
-        optionBRadioButton.setEnabled(false);
+        category.setEnabled(false);
         addRoad.setEnabled(false);
         addingPointsAllowed = false;
         clearAddedPoints.setEnabled(false);
@@ -257,7 +272,16 @@ public class DotCanvasApp extends JFrame {
             JOptionPane.showMessageDialog(this, "Fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        dots.addAll(newDots);
+        if (windingMode) {
+            RoadPoint roadPoint = new RoadPoint("winding", newDots, lampDistanceField.getText(), lampCountField.getText(), (String) category.getSelectedItem(), streetNameField.getText());
+            roadPoints.add(roadPoint);
+            dots.addAll(newDots);
+        } else if (intersectionMode) {
+            RoadPoint roadPoint = new RoadPoint("intersection", newDots, lampDistanceField.getText(), lampCountField.getText(), (String) category.getSelectedItem(), streetNameField.getText());
+            roadPoints.add(roadPoint);
+            dots.addAll(newDots);
+        }
+
         newDots.clear();
 
         addingPointsAllowed = false;
@@ -272,16 +296,12 @@ public class DotCanvasApp extends JFrame {
         String streetName = streetNameField.getText().trim();
         String lampCount = lampCountField.getText().trim();
         String lampDistance = lampDistanceField.getText().trim();
+        String selectedPreset = (String) category.getSelectedItem();
 
-        if (streetName.isEmpty() || lampCount.isEmpty() || lampDistance.isEmpty()) {
+        if (streetName.isEmpty() || lampCount.isEmpty() || lampDistance.isEmpty() || selectedPreset == null) {
             return false;
         }
 
-        if (!optionARadioButton.isSelected() && !optionBRadioButton.isSelected()) {
-            return false;
-        }
-
-        // Dodatkowe sprawdzenie, czy lampCount i lampDistance są liczbami
         try {
             Integer.parseInt(lampCount);
             Double.parseDouble(lampDistance);
@@ -296,7 +316,7 @@ public class DotCanvasApp extends JFrame {
         streetNameField.setText("");
         lampCountField.setText("");
         lampDistanceField.setText("");
-        optionGroup.clearSelection();
+        resetCombobox(category);
     }
 
     private JTextField createFormattedTextField() {
@@ -307,7 +327,7 @@ public class DotCanvasApp extends JFrame {
                     throws BadLocationException {
                 String currentText = fb.getDocument().getText(0, fb.getDocument().getLength());
                 currentText += text;
-                if (currentText.length() <= 2 && currentText.matches("\\d*")) {
+                if (currentText.length() <= 4 && currentText.matches("\\d*")) {
                     int value = Integer.parseInt(currentText);
                     if (value >= 0) {
                         super.replace(fb, offset, length, text, attrs);
@@ -318,43 +338,114 @@ public class DotCanvasApp extends JFrame {
         return textField;
     }
 
-//
-//
-//    private JSONObject createRoadObject() {
-//        JSONObject roadObject = new JSONObject();
-//
-//        JSONArray pointsArray = new JSONArray();
-//        for (Point dot : dots) {
-//            JSONObject pointObject = new JSONObject();
-//            pointObject.put("x", dot.x);
-//            pointObject.put("y", dot.y);
-//            pointsArray.add(pointObject);
-//        }
-//
-//        roadObject.put("points", pointsArray);
-//        roadObject.put("lampDistance", Double.parseDouble(lampDistanceField.getText()));
-//        roadObject.put("lampCount", Integer.parseInt(lampCountField.getText()));
-//        roadObject.put("roadCategory", optionARadioButton.isSelected() ? "A" : "B");
-//        roadObject.put("streetName", streetNameField.getText());
-//
-//        return roadObject;
-//    }
-//
-//    private void saveToJson() {
-//        // Dodajemy ostatni odcinek drogi przed zapisaniem do pliku
-//        JSONObject roadObject = createRoadObject();
-//        roadsList.add(roadObject);
-//
-//        // Tworzymy obiekt JSON z listą odcinków dróg
-//        JSONObject json = new JSONObject();
-//        json.put("roads", roadsList);
-//
-//        try (FileWriter file = new FileWriter("output.json")) {
-//            file.write(json.toJSONString());
-//            file.flush();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
+    public void saveToJson() {
+
+        for (RoadPoint point : roadPoints) {
+            System.out.println("Connection Type: " + point.getConnectionType());
+            System.out.println("Dots: ");
+//            for (Point dot : point.getDots()) {
+//                System.out.print("(" + dot.x + ", " + dot.y + ") ");
+//            }
+            System.out.println("Lamp Distance: " + point.getLampDistance());
+            System.out.println("Lamp Count: " + point.getLampCount());
+            System.out.println("Street Name: " + point.getStreetName());
+            System.out.println("Category: " + point.getCategory());
+            System.out.println("=================");
+        }
+
+
+        JSONArray mainArray = new JSONArray();
+
+        for (RoadPoint roadPoint : roadPoints) {
+            if (intersectionMode && roadPoint.getConnectionType().equals("intersection")) {
+
+                ArrayList<Point> dots = roadPoint.getArrayDots();
+
+                for (int i = 0; i < dots.size() - 1; i++) {
+
+                    Point currentPoint = dots.get(i);
+                    Point nextPoint = dots.get(i + 1);
+
+                    JSONObject jsonObject = new JSONObject();
+
+                    JSONArray pointsArray = new JSONArray();
+                    JSONObject pointObject = new JSONObject();
+
+                    pointObject.put("x", currentPoint.getX());
+                    pointObject.put("y", currentPoint.getY());
+                    pointObject.put("x2", nextPoint.getX());
+                    pointObject.put("y2", nextPoint.getY());
+                    pointsArray.add(pointObject);
+
+                    jsonObject.put("points", pointsArray);
+                    jsonObject.put("lampDistance", roadPoint.getLampDistance());
+                    jsonObject.put("lampCount", roadPoint.getLampCount());
+                    jsonObject.put("roadCategory", roadPoint.getCategory());
+                    jsonObject.put("streetName", roadPoint.getStreetName());
+
+                    mainArray.add(jsonObject);
+                }
+
+            } else if (windingMode && roadPoint.getConnectionType().equals("winding")) {
+
+                JSONObject jsonObject = new JSONObject();
+
+                JSONArray pointsArray = new JSONArray();
+
+                ArrayList<Point> dots = roadPoint.getArrayDots();
+
+                for (int i = 0; i < dots.size() - 1; i++) {
+
+                    Point currentPoint = dots.get(i);
+                    Point nextPoint = dots.get(i + 1);
+
+                    JSONObject pointObject = new JSONObject();
+                    pointObject.put("x", currentPoint.getX());
+                    pointObject.put("y", currentPoint.getY());
+                    pointObject.put("x2", nextPoint.getX());
+                    pointObject.put("y2", nextPoint.getY());
+                    pointsArray.add(pointObject);
+                }
+
+                jsonObject.put("points", pointsArray);
+                jsonObject.put("lampDistance", roadPoint.getLampDistance());
+                jsonObject.put("lampCount", roadPoint.getLampCount());
+                jsonObject.put("roadCategory", roadPoint.getCategory());
+                jsonObject.put("streetName", roadPoint.getStreetName());
+
+                mainArray.add(jsonObject);
+
+            }
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save JSON File");
+
+        // Set the default directory
+        File programDirectory = new File(System.getProperty("user.dir"));
+        fileChooser.setCurrentDirectory(programDirectory);
+
+        // Set a file filter for JSON files
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON files", "json");
+        fileChooser.setFileFilter(filter);
+
+        // Show the save dialog
+        int userSelection = fileChooser.showSaveDialog(null);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            // Get the selected file
+            File selectedFile = fileChooser.getSelectedFile();
+
+            try (FileWriter fileWriter = new FileWriter(selectedFile)) {
+                // Write JSON content to the selected file
+                fileWriter.write(mainArray.toJSONString());
+                System.out.println("JSON file created successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 
 }
