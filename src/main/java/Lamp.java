@@ -18,7 +18,7 @@ public class Lamp {
         this.position = position;
         switch (roadCategory) {
             case 'A':
-                this.radius = 15;
+                this.radius = 30;
                 break;
             case 'B':
                 this.radius = 30;
@@ -81,12 +81,14 @@ public class Lamp {
                 // Draw the area for the lamp ahead
                 List<Lamp> lamps = Path.getAllLamps();
                 int currentIndex = lamps.indexOf(this);
+
+                // Check if the next lamp is within the range of the dot and is in the same drawable
                 if (currentIndex < lamps.size() - 1) {
                     Lamp nextLamp = lamps.get(currentIndex + 1);
                     nextLamp.drawArea();
                 }
-                
-                // Draw the area for the lamp behind
+
+                // Check if the previous lamp is within the range of the dot and is in the same drawable
                 if (currentIndex > 0) {
                     Lamp previousLamp = lamps.get(currentIndex - 1);
                     previousLamp.drawArea();

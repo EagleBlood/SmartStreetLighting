@@ -26,14 +26,16 @@ public class Path implements Drawable{
     char roadCategory;
     int lampInterval;
     int lampCount;
+    String streetName;
 
-    public Path(Path2D.Float path2D, int lampInterval, int lampCount, char roadCategory) {
+    public Path(Path2D.Float path2D, int lampInterval, int lampCount, char roadCategory, String streetName) {
         this.path2D = path2D;
         Point2D endPoint2D = getEndPoint();
         this.exitPoint = new Point2D.Double(endPoint2D.getX(), endPoint2D.getY());
         this.lampInterval = lampInterval;
         this.lampCount = lampCount;
         this.roadCategory = roadCategory;
+        this.streetName = streetName;
     }
 
     public void updateLamps() {
@@ -66,8 +68,37 @@ public class Path implements Drawable{
 
     @Override
     public void draw(Graphics g) {
+        // Draw the name in the center of the drawable
         Graphics2D g2d = (Graphics2D) g;
+        FontMetrics fm = g2d.getFontMetrics();
+        double textWidth = fm.getStringBounds(this.getName(), g2d).getWidth();
+        
+        // Calculate the center of the path
+        double centerX = (this.getEntryPoint().getX() + this.getEndPoint().getX()) / 2;
+        double centerY = (this.getEntryPoint().getY() + this.getEndPoint().getY()) / 2;
 
+        // Calculate the angle of the path
+        double angle = Math.atan2(this.getEndPoint().getY() - this.getEntryPoint().getY(), this.getEndPoint().getX() - this.getEntryPoint().getX());
+
+        // Calculate the offset
+        double offset = 25; // You can adjust this value as needed
+        double offsetX = offset * Math.cos(angle + Math.PI / 2);
+        double offsetY = offset * Math.sin(angle + Math.PI / 2);
+
+        // Adjust the center of the path
+        centerX += offsetX;
+        centerY += offsetY;
+
+        // Rotate the Graphics2D object
+        g2d.rotate(angle, centerX, centerY);
+
+        // Draw the name
+        g2d.setColor(Color.BLACK);
+        g2d.drawString(this.getName(), (int) (centerX - textWidth / 2), (int) centerY);
+
+        // Rotate the Graphics2D object back
+        g2d.rotate(-angle, centerX, centerY);
+        
         switch(roadCategory)
         {
             case 'A':
@@ -323,6 +354,11 @@ public class Path implements Drawable{
             allLampsFlat.addAll(lampList);
         }
         return allLampsFlat;
+    }
+
+    @Override
+    public String getName() {
+        return this.streetName;
     }
 }
 

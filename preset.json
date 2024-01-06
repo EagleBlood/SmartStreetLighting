@@ -6,7 +6,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 1"
     },
 
     
@@ -16,7 +17,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 2"
     },
 
     
@@ -26,7 +28,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 3"
     },
 
     
@@ -36,7 +39,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 4"
     },
 
     
@@ -46,7 +50,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 5"
     },
 
     
@@ -58,7 +63,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 6"
     },
 
     
@@ -68,7 +74,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 7"
     },
     {
       "points": [
@@ -76,7 +83,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 8"
     },
     {
       "points": [
@@ -86,7 +94,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 9"
     },
 
     
@@ -96,7 +105,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 10"
     },
     {
       "points": [
@@ -104,7 +114,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 11"
     },
     {
       "points": [
@@ -112,7 +123,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 12"
     },
 
     
@@ -122,7 +134,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 13"
     },
     {
       "points": [
@@ -130,7 +143,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 14"
     },
     {
       "points": [
@@ -138,7 +152,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 15"
     },
     {
       "points": [
@@ -146,7 +161,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 16"
     },
 
     
@@ -156,7 +172,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 17"
     },
     {
       "points": [
@@ -164,7 +181,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "B"
+      "roadCategory": "B",
+      "streetName": "Street 18"
     },
     {
       "points": [
@@ -172,7 +190,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 19"
     },
     
     {
@@ -181,7 +200,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 20"
     },
     {
       "points": [
@@ -189,7 +209,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 21"
     },
     {
       "points": [
@@ -197,7 +218,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 22"
     },
     
     {
@@ -206,7 +228,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 23"
     },
     {
       "points": [
@@ -214,7 +237,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 24"
     },
 
     
@@ -224,7 +248,8 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 25"
     },
     {
       "points": [
@@ -232,6 +257,7 @@
       ],
       "lampDistance": 50.0,
       "lampCount": 10,
-      "roadCategory": "A"
+      "roadCategory": "A",
+      "streetName": "Street 26"
     }
   ]

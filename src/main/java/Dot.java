@@ -17,7 +17,7 @@ public class Dot{
     private boolean shouldGetNextDrawable = false;
     private final Random random = new Random();
     private final double tolerance = DOT_SIZE / 2.0;
-
+    private Path previousPath;
 
     public Dot(Point2D.Double position, List<Drawable> drawables) {
         this.position = position;
@@ -168,6 +168,14 @@ public class Dot{
 
     private boolean pointsAreClose(Point2D.Double p1, Point2D.Double p2, double tolerance) {
         return p1.distance(p2) < tolerance;
+    }
+
+    public void setPreviousPath(Path previousPath) {
+        this.previousPath = previousPath;
+    }
+    
+    public Path getPreviousPath() {
+        return previousPath;
     }
 
 }
