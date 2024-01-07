@@ -307,6 +307,10 @@ public class SettingsPanel extends JPanel {
 
         resetComboBox(seasonComboBox);
         resetComboBox(weatherComboBox);
+//        Config.resetConfig();
+//        Main.resetCanvas();
+//        resetComboBox(presetComboBox);
+
     }
 
     private void resetComboBox(JComboBox<String> comboBox) {

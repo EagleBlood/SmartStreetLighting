@@ -24,6 +24,13 @@ public class Canvas extends JPanel {
         System.out.println("Ustawiono nową listę kropek w canvas");
     }
 
+    public void resetCanvas() {
+        dots.clear();
+        drawableList = null;
+        repaint();
+        System.out.println("Zresetowano canvas");
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

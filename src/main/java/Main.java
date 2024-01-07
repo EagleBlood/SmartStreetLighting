@@ -93,6 +93,10 @@ public class Main {
         canvasPanel.repaint();
     }
 
+    public static void resetCanvas(){
+        canvas.resetCanvas();
+    }
+
     public static JPanel getJPanel() {
         return canvasPanel;
     }
