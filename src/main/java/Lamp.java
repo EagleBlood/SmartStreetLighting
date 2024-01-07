@@ -63,7 +63,7 @@ public class Lamp {
     }*/
 
     public void activate(Dot dot) {
-        if (SettingsPanel.instance != null) {
+        if (SettingsPanel.instance != null && g2d != null) {
             active = dot != null && isDotInRange(dot) && isTimeInRange(SettingsPanel.getCurrentTime());
             if (active) {
                 // When active, draw the effective lighting area using instance radius
@@ -81,13 +81,13 @@ public class Lamp {
                 // Draw the area for the lamp ahead
                 List<Lamp> lamps = Path.getAllLamps();
                 int currentIndex = lamps.indexOf(this);
-
+    
                 // Check if the next lamp is within the range of the dot and is in the same drawable
                 if (currentIndex < lamps.size() - 1) {
                     Lamp nextLamp = lamps.get(currentIndex + 1);
                     nextLamp.drawArea();
                 }
-
+    
                 // Check if the previous lamp is within the range of the dot and is in the same drawable
                 if (currentIndex > 0) {
                     Lamp previousLamp = lamps.get(currentIndex - 1);
@@ -141,14 +141,16 @@ public class Lamp {
     }
 
     public void drawArea() {
-         if (SettingsPanel.getCurrentSeason().equals("Winter")) {
-            g2d.setColor(Color.BLUE);
-        } else {
-            g2d.setColor(LAMP_LIT_COLOR); // Active color
-        }
+        if (g2d != null) {
+            if (SettingsPanel.getCurrentSeason().equals("Winter")) {
+                g2d.setColor(Color.BLUE);
+            } else {
+                g2d.setColor(LAMP_LIT_COLOR); // Active color
+            }
 
-        g2d.setStroke(new BasicStroke(LAMP_STROKE));
-        g2d.draw(new Ellipse2D.Double(position.getX() - this.radius, position.getY() - this.radius, this.radius * 2, this.radius * 2));
+            g2d.setStroke(new BasicStroke(LAMP_STROKE));
+            g2d.draw(new Ellipse2D.Double(position.getX() - this.radius, position.getY() - this.radius, this.radius * 2, this.radius * 2));
+        }
     }
 
 }
