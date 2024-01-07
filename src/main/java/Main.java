@@ -36,8 +36,11 @@ public class Main {
 
             @Override
             protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                canvas.paintComponent(g);
+                // Draw the canvas x times to make it visible
+                for(int i = 0; i < 10; i+=1){
+                    super.paintComponent(g);
+                    canvas.paintComponent(g);
+                }
             }
         };
 

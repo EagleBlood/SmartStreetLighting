@@ -18,6 +18,7 @@ public class Dot{
     private final Random random = new Random();
     private final double tolerance = DOT_SIZE / 2.0;
     private Path previousPath;
+    private final double step = 1;
 
     public Dot(Point2D.Double position, List<Drawable> drawables) {
         this.position = position;
@@ -85,7 +86,7 @@ public class Dot{
             }
         }
 
-        double step = 10;
+        
         if (isReversing) {
             nextPosition = currentDrawable.getPosition(currentDistance - step);
             //System.out.println("Reversing");
