@@ -157,6 +157,7 @@ public class DotCanvasApp extends JFrame {
         roadWithIntersectionsButton = new JButton("Road with Intersections");
         windingRoadButton = new JButton("Winding Road");
         saveToJsonButton = new JButton("Save to JSON File");
+        JButton resetButton = new JButton("Reset");
         streetNameField = new JTextField();
 
         category = new JComboBox<>(categoriesRoad);
@@ -173,7 +174,7 @@ public class DotCanvasApp extends JFrame {
         settingsPanel.add(windingRoadButton, new Gbc(2,2,2).build());
         settingsPanel.add(new JLabel("Street Name:"), new Gbc(0, 3, 1).build());
         settingsPanel.add(streetNameField, new Gbc(1, 3, 3).build());
-        settingsPanel.add(new JLabel("Options:"), new Gbc(0, 4, 1).build());
+        settingsPanel.add(new JLabel("Road category:"), new Gbc(0, 4, 1).build());
         settingsPanel.add(category, new Gbc(1, 4, 2).build());
         settingsPanel.add(new JLabel("Lamp Count:"), new Gbc(0, 5, 1).build());
         settingsPanel.add(lampCountField, new Gbc(1, 5, 3).build());
@@ -183,12 +184,12 @@ public class DotCanvasApp extends JFrame {
         settingsPanel.add(clearAddedPoints, new Gbc(2,7, 2).build());
         settingsPanel.add(Gbc.createVerticalStrut(25), new Gbc(0, 8, 4).build());
         settingsPanel.add(saveToJsonButton, new Gbc(0,9,4).build());
+        settingsPanel.add(Gbc.createVerticalStrut(25), new Gbc(0, 10, 4).build());
+        settingsPanel.add(resetButton, new Gbc(0, 11, 4).build());
 
         // ########## disable fields ############
 
         disableFields();
-        windingRoadButton.setEnabled(false);
-        roadWithIntersectionsButton.setEnabled(false);
         saveToJsonButton.setEnabled(false);
 
         // ########## button listeners ############
@@ -207,6 +208,11 @@ public class DotCanvasApp extends JFrame {
         clearAddedPoints.addActionListener(e -> {
             newDots.clear();
             canvasPanel.repaint();
+        });
+
+
+        resetButton.addActionListener(e -> {
+            resetAll();
         });
 
     }
@@ -270,6 +276,15 @@ public class DotCanvasApp extends JFrame {
         clearAddedPoints.setEnabled(false);
     }
 
+    private void resetAll(){
+        disableFields();
+        saveToJsonButton.setEnabled(false);
+        dots.clear();
+        newDots.clear();
+        backgroundImage = null;
+        canvasPanel.repaint();
+    }
+
     private void addRoad() {
         if (!areFieldsValid()) {
             JOptionPane.showMessageDialog(this, "Fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -296,12 +311,11 @@ public class DotCanvasApp extends JFrame {
 
 
     private boolean areFieldsValid() {
-        String streetName = streetNameField.getText().trim();
         String lampCount = lampCountField.getText().trim();
         String lampDistance = lampDistanceField.getText().trim();
         String selectedPreset = (String) category.getSelectedItem();
 
-        if (streetName.isEmpty() || lampCount.isEmpty() || lampDistance.isEmpty() || selectedPreset == null) {
+        if (lampCount.isEmpty() || lampDistance.isEmpty() || selectedPreset == null) {
             return false;
         }
 
@@ -417,6 +431,10 @@ public class DotCanvasApp extends JFrame {
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
 
+            if (!selectedFile.getName().toLowerCase().endsWith(".json")) {
+                selectedFile = new File(selectedFile.getAbsolutePath() + ".json");
+            }
+
             try (FileWriter fileWriter = new FileWriter(selectedFile)) {
                 fileWriter.write(mainArray.toJSONString());
                 System.out.println("JSON file created successfully.");
@@ -424,6 +442,8 @@ public class DotCanvasApp extends JFrame {
                 e.printStackTrace();
             }
         }
+        resetAll();
+
     }
 
 }

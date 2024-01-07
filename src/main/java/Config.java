@@ -15,14 +15,13 @@ import java.util.List;
 @SuppressWarnings("ALL")
 public class Config {
     private static String filePath = null;
-
-    
+    public static final List<Drawable> NO_PRESET = new ArrayList<>();
     public static final int lampInterval = 50;
     public static final int lampCount = 10;
     public static final char roadCategory = 'A';
     public static final String streetName = "Street name";
 
-    
+
     public static final List<Drawable> PRESET1 = initializePreset(List.of(
         new Path(new Path2D.Float() {{
             append(new Line2D.Double(200, 200, 300, 300), true);
@@ -298,17 +297,23 @@ public class Config {
                 allDrawables.addAll(PRESET2);
                 break;
             case "Your config":
-                if (filePath!=null) {
+                if (filePath != null) {
                     PRESET5 = initializePreset(loadDrawablesFromConfigFile(filePath));
                     allDrawables.addAll(PRESET5);
+                } else {
+                    System.err.println("File path is null. Cannot load drawables.");
                 }
-
                 break;
             default:
                 throw new IllegalArgumentException("Invalid preset name: " + presetName);
         }
 
         return allDrawables;
+    }
+
+    public static void resetConfig() {
+        filePath = null;
+        PRESET5.clear();
     }
 
 }
