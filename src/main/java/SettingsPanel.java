@@ -23,6 +23,7 @@ public class SettingsPanel extends JPanel {
     private final JLabel currentMonth;
     public static SettingsPanel instance;
     private final ButtonAction buttonAction1;
+    private int presetCount = 1;
 
     public static String getCurrentTime() {
         return instance.clockLabel.getText();
@@ -234,7 +235,6 @@ public class SettingsPanel extends JPanel {
             } catch (IllegalStateException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-
         });
 
         stopButton.addActionListener(e -> {
@@ -270,21 +270,10 @@ public class SettingsPanel extends JPanel {
                 System.out.println("Selected file: " + selectedFile.getAbsolutePath());
                 Main.setCustomConfig(selectedFile.getAbsolutePath());
 
-                String newPreset = "Your config";
+                String newPreset = "Your config " + presetCount;
+                presetCount++;
 
-                // Sprawdź, czy preset już istnieje w comboboxie
-                boolean presetExists = false;
-                for (int i = 0; i < presetComboBox.getItemCount(); i++) {
-                    if (newPreset.equals(presetComboBox.getItemAt(i))) {
-                        presetExists = true;
-                        break;
-                    }
-                }
-
-                // Jeśli nie istnieje, dodaj nowy preset
-                if (!presetExists) {
-                    presetComboBox.addItem(newPreset);
-                }
+                presetComboBox.addItem(newPreset);
 
                 presetComboBox.setSelectedItem(newPreset);
             }
@@ -307,9 +296,8 @@ public class SettingsPanel extends JPanel {
 
         resetComboBox(seasonComboBox);
         resetComboBox(weatherComboBox);
-//        Config.resetConfig();
-//        Main.resetCanvas();
-//        resetComboBox(presetComboBox);
+        Main.resetCanvas();
+        resetComboBox(presetComboBox);
 
     }
 
@@ -379,9 +367,16 @@ public class SettingsPanel extends JPanel {
     }
 
     private void updateDrawables(String selectedPreset) {
-        Main.buttonMode = Main.ButtonMode.NONE;
-        Main.updateDrawables(selectedPreset);
-        Main.getJPanel().repaint();
+        if (selectedPreset != null) {
+            Main.buttonMode = Main.ButtonMode.NONE;
+            Main.updateDrawables(selectedPreset);
+            Main.getJPanel().repaint();
+        } else {
+            for (int i=1; i<=presetCount; i++){
+                String preset = "Your config " + i;
+                presetComboBox.removeItem(preset);
+            }
+        }
     }
 
     public JComboBox<String> getComboBox() {

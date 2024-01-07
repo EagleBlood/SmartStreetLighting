@@ -296,24 +296,16 @@ public class Config {
             case "PRESET2":
                 allDrawables.addAll(PRESET2);
                 break;
-            case "Your config":
+            default:
                 if (filePath != null) {
                     PRESET5 = initializePreset(loadDrawablesFromConfigFile(filePath));
                     allDrawables.addAll(PRESET5);
                 } else {
                     System.err.println("File path is null. Cannot load drawables.");
                 }
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid preset name: " + presetName);
         }
 
         return allDrawables;
-    }
-
-    public static void resetConfig() {
-        filePath = null;
-        PRESET5.clear();
     }
 
 }

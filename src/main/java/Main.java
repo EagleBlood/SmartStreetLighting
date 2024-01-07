@@ -95,6 +95,7 @@ public class Main {
 
     public static void resetCanvas(){
         canvas.resetCanvas();
+        canvasPanel.repaint();
     }
 
     public static JPanel getJPanel() {
