@@ -26,7 +26,7 @@ public class Main {
         canvasPanel = new JPanel() {
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(800, 700);
+                return new Dimension(1000, 900);
             }
 
             @Override

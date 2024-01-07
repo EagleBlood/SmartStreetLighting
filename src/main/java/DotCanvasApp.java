@@ -21,9 +21,7 @@ public class DotCanvasApp extends JFrame {
 
     private static JPanel canvasPanel;
     private final ArrayList<Point> dots = new ArrayList<>();
-    private final ArrayList<RoadPoint> roadPoints = new ArrayList<>();
     private final ArrayList<Point> newDots = new ArrayList<>();
-
     private final String[] categoriesRoad = {"A", "B"};
     private BufferedImage backgroundImage;
     private final JTextField streetNameField;
@@ -39,6 +37,8 @@ public class DotCanvasApp extends JFrame {
     private boolean windingMode = false;
     private final JTextField lampDistanceField;
     private final int dotRadius = 20;
+
+    private JSONArray mainArray = new JSONArray();
 
 
     public DotCanvasApp() {
@@ -246,6 +246,9 @@ public class DotCanvasApp extends JFrame {
                 e.printStackTrace();
             }
         }
+
+        mainArray = new JSONArray();
+
     }
     private void enableFields() {
         lampCountField.setEnabled(true);
@@ -272,13 +275,12 @@ public class DotCanvasApp extends JFrame {
             JOptionPane.showMessageDialog(this, "Fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         if (windingMode) {
-            RoadPoint roadPoint = new RoadPoint("winding", newDots, lampDistanceField.getText(), lampCountField.getText(), (String) category.getSelectedItem(), streetNameField.getText());
-            roadPoints.add(roadPoint);
+            addRoadPoint("winding", newDots, lampDistanceField.getText(), lampCountField.getText(), (String) category.getSelectedItem(), streetNameField.getText());
             dots.addAll(newDots);
         } else if (intersectionMode) {
-            RoadPoint roadPoint = new RoadPoint("intersection", newDots, lampDistanceField.getText(), lampCountField.getText(), (String) category.getSelectedItem(), streetNameField.getText());
-            roadPoints.add(roadPoint);
+            addRoadPoint("intersection", newDots, lampDistanceField.getText(), lampCountField.getText(), (String) category.getSelectedItem(), streetNameField.getText());
             dots.addAll(newDots);
         }
 
@@ -291,6 +293,7 @@ public class DotCanvasApp extends JFrame {
         saveToJsonButton.setEnabled(true);
         clearFields();
     }
+
 
     private boolean areFieldsValid() {
         String streetName = streetNameField.getText().trim();
@@ -338,114 +341,89 @@ public class DotCanvasApp extends JFrame {
         return textField;
     }
 
+    private void addRoadPoint(String type, ArrayList<Point> newDots, String lampDistance, String lampCount, String category, String streetName) {
 
-    public void saveToJson() {
+        if (intersectionMode && type.equals("intersection")) {
 
-        for (RoadPoint point : roadPoints) {
-            System.out.println("Connection Type: " + point.getConnectionType());
-            System.out.println("Dots: ");
-//            for (Point dot : point.getDots()) {
-//                System.out.print("(" + dot.x + ", " + dot.y + ") ");
-//            }
-            System.out.println("Lamp Distance: " + point.getLampDistance());
-            System.out.println("Lamp Count: " + point.getLampCount());
-            System.out.println("Street Name: " + point.getStreetName());
-            System.out.println("Category: " + point.getCategory());
-            System.out.println("=================");
-        }
+            for (int i = 0; i < newDots.size() - 1; i++) {
 
-
-        JSONArray mainArray = new JSONArray();
-
-        for (RoadPoint roadPoint : roadPoints) {
-            if (intersectionMode && roadPoint.getConnectionType().equals("intersection")) {
-
-                ArrayList<Point> dots = roadPoint.getArrayDots();
-
-                for (int i = 0; i < dots.size() - 1; i++) {
-
-                    Point currentPoint = dots.get(i);
-                    Point nextPoint = dots.get(i + 1);
-
-                    JSONObject jsonObject = new JSONObject();
-
-                    JSONArray pointsArray = new JSONArray();
-                    JSONObject pointObject = new JSONObject();
-
-                    pointObject.put("x", currentPoint.getX());
-                    pointObject.put("y", currentPoint.getY());
-                    pointObject.put("x2", nextPoint.getX());
-                    pointObject.put("y2", nextPoint.getY());
-                    pointsArray.add(pointObject);
-
-                    jsonObject.put("points", pointsArray);
-                    jsonObject.put("lampDistance", roadPoint.getLampDistance());
-                    jsonObject.put("lampCount", roadPoint.getLampCount());
-                    jsonObject.put("roadCategory", roadPoint.getCategory());
-                    jsonObject.put("streetName", roadPoint.getStreetName());
-
-                    mainArray.add(jsonObject);
-                }
-
-            } else if (windingMode && roadPoint.getConnectionType().equals("winding")) {
+                Point currentPoint = newDots.get(i);
+                Point nextPoint = newDots.get(i + 1);
 
                 JSONObject jsonObject = new JSONObject();
 
                 JSONArray pointsArray = new JSONArray();
+                JSONObject pointObject = new JSONObject();
 
-                ArrayList<Point> dots = roadPoint.getArrayDots();
-
-                for (int i = 0; i < dots.size() - 1; i++) {
-
-                    Point currentPoint = dots.get(i);
-                    Point nextPoint = dots.get(i + 1);
-
-                    JSONObject pointObject = new JSONObject();
-                    pointObject.put("x", currentPoint.getX());
-                    pointObject.put("y", currentPoint.getY());
-                    pointObject.put("x2", nextPoint.getX());
-                    pointObject.put("y2", nextPoint.getY());
-                    pointsArray.add(pointObject);
-                }
+                pointObject.put("x", currentPoint.getX());
+                pointObject.put("y", currentPoint.getY());
+                pointObject.put("x2", nextPoint.getX());
+                pointObject.put("y2", nextPoint.getY());
+                pointsArray.add(pointObject);
 
                 jsonObject.put("points", pointsArray);
-                jsonObject.put("lampDistance", roadPoint.getLampDistance());
-                jsonObject.put("lampCount", roadPoint.getLampCount());
-                jsonObject.put("roadCategory", roadPoint.getCategory());
-                jsonObject.put("streetName", roadPoint.getStreetName());
+                jsonObject.put("lampDistance", Integer.parseInt(lampDistance));
+                jsonObject.put("lampCount", Integer.parseInt(lampCount));
+                jsonObject.put("roadCategory", category);
+                jsonObject.put("streetName", streetName);
 
                 mainArray.add(jsonObject);
-
             }
+
+        } else if (windingMode && type.equals("winding")) {
+
+            JSONObject jsonObject = new JSONObject();
+
+            JSONArray pointsArray = new JSONArray();
+
+            for (int i = 0; i < newDots.size() - 1; i++) {
+
+                Point currentPoint = newDots.get(i);
+                Point nextPoint = newDots.get(i + 1);
+
+                JSONObject pointObject = new JSONObject();
+                pointObject.put("x", currentPoint.getX());
+                pointObject.put("y", currentPoint.getY());
+                pointObject.put("x2", nextPoint.getX());
+                pointObject.put("y2", nextPoint.getY());
+                pointsArray.add(pointObject);
+            }
+
+            jsonObject.put("points", pointsArray);
+            jsonObject.put("lampDistance", Integer.parseInt(lampDistance));
+            jsonObject.put("lampCount", Integer.parseInt(lampCount));
+            jsonObject.put("roadCategory", category);
+            jsonObject.put("streetName", streetName);
+
+            mainArray.add(jsonObject);
+
         }
 
+    }
+
+
+    public void saveToJson() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Save JSON File");
 
-        // Set the default directory
         File programDirectory = new File(System.getProperty("user.dir"));
         fileChooser.setCurrentDirectory(programDirectory);
 
-        // Set a file filter for JSON files
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON files", "json");
         fileChooser.setFileFilter(filter);
 
-        // Show the save dialog
         int userSelection = fileChooser.showSaveDialog(null);
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
-            // Get the selected file
             File selectedFile = fileChooser.getSelectedFile();
 
             try (FileWriter fileWriter = new FileWriter(selectedFile)) {
-                // Write JSON content to the selected file
                 fileWriter.write(mainArray.toJSONString());
                 System.out.println("JSON file created successfully.");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
 }
