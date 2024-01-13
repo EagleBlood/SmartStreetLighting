@@ -1,263 +1,263 @@
 [
   
-    {
-      "points": [
-        {"x": 550, "y": 200, "x2":700, "y2":200}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 1"
-    },
+  {
+    "points": [
+      {"x": 550, "y": 200, "x2":700, "y2":200}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 1"
+  },
 
-    
-    {
-      "points": [
-        {"x": 550, "y": 500, "x2":700, "y2":500}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 2"
-    },
+  
+  {
+    "points": [
+      {"x": 550, "y": 500, "x2":700, "y2":500}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 2"
+  },
 
-    
-    {
-      "points": [
-        {"x": 400, "y": 50, "x2":400, "y2":200}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 3"
-    },
+  
+  {
+    "points": [
+      {"x": 400, "y": 50, "x2":400, "y2":200}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 3"
+  },
 
-    
-    {
-      "points": [
-        {"x": 550, "y": 50, "x2":550, "y2":200}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 4"
-    },
+  
+  {
+    "points": [
+      {"x": 550, "y": 50, "x2":550, "y2":200}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 4"
+  },
 
-    
-    {
-      "points": [
-        {"x": 50, "y": 300, "x2":150, "y2":300}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 5"
-    },
+  
+  {
+    "points": [
+      {"x": 50, "y": 300, "x2":150, "y2":300}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 5"
+  },
 
-    
-    {
-      "points": [
-        {"x": 150, "y": 300, "x2":250, "y2":300},
-        {"x": 250, "y": 300, "x2":250, "y2":500},
-        {"x": 250, "y": 500, "x2":550, "y2":500}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 6"
-    },
+  
+  {
+    "points": [
+      {"x": 150, "y": 300, "x2":250, "y2":300},
+      {"x": 250, "y": 300, "x2":250, "y2":500},
+      {"x": 250, "y": 500, "x2":550, "y2":500}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 6"
+  },
 
-    
-    {
-      "points": [
-        {"x": 50, "y": 50, "x2":400, "y2":50}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 7"
-    },
-    {
-      "points": [
-        {"x": 400, "y": 50, "x2":550, "y2":50}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 8"
-    },
-    {
-      "points": [
-        {"x": 550, "y": 50, "x2":650, "y2":50},
-        {"x": 650, "y": 50, "x2":700, "y2":100},
-        {"x": 700, "y": 100, "x2":700, "y2":200}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 9"
-    },
+  
+  {
+    "points": [
+      {"x": 50, "y": 50, "x2":400, "y2":50}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 7"
+  },
+  {
+    "points": [
+      {"x": 400, "y": 50, "x2":550, "y2":50}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 8"
+  },
+  {
+    "points": [
+      {"x": 550, "y": 50, "x2":650, "y2":50},
+      {"x": 650, "y": 50, "x2":700, "y2":100},
+      {"x": 700, "y": 100, "x2":700, "y2":200}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 9"
+  },
 
-    
-    {
-      "points": [
-        {"x": 700, "y": 200, "x2":700, "y2":400}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 10"
-    },
-    {
-      "points": [
-        {"x": 700, "y": 400, "x2":700, "y2":500}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 11"
-    },
-    {
-      "points": [
-        {"x": 700, "y": 500, "x2":700, "y2":650}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 12"
-    },
+  
+  {
+    "points": [
+      {"x": 700, "y": 200, "x2":700, "y2":400}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 10"
+  },
+  {
+    "points": [
+      {"x": 700, "y": 400, "x2":700, "y2":500}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 11"
+  },
+  {
+    "points": [
+      {"x": 700, "y": 500, "x2":700, "y2":650}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 12"
+  },
 
-    
-    {
-      "points": [
-        {"x": 700, "y": 650, "x2":550, "y2":650}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 13"
-    },
-    {
-      "points": [
-        {"x": 550, "y": 650, "x2":450, "y2":650}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 14"
-    },
-    {
-      "points": [
-        {"x": 450, "y": 650, "x2":150, "y2":650}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 15"
-    },
-    {
-      "points": [
-        {"x": 150, "y": 650, "x2":50, "y2":650}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 16"
-    },
+  
+  {
+    "points": [
+      {"x": 700, "y": 650, "x2":550, "y2":650}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 13"
+  },
+  {
+    "points": [
+      {"x": 550, "y": 650, "x2":450, "y2":650}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 14"
+  },
+  {
+    "points": [
+      {"x": 450, "y": 650, "x2":150, "y2":650}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 15"
+  },
+  {
+    "points": [
+      {"x": 150, "y": 650, "x2":50, "y2":650}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 16"
+  },
 
-    
-    {
-      "points": [
-        {"x": 50, "y": 650, "x2":50, "y2":300}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 17"
-    },
-    {
-      "points": [
-        {"x": 50, "y": 300, "x2":50, "y2":200}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "B",
-      "streetName": "Street 18"
-    },
-    {
-      "points": [
-        {"x": 50, "y": 200, "x2":50, "y2":50}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 19"
-    },
-    
-    {
-      "points": [
-        {"x": 50, "y": 200, "x2":150, "y2":200}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 20"
-    },
-    {
-      "points": [
-        {"x": 150, "y": 200, "x2":400, "y2":200}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 21"
-    },
-    {
-      "points": [
-        {"x": 400, "y": 200, "x2":550, "y2":200}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 22"
-    },
-    
-    {
-      "points": [
-        {"x": 550, "y": 200, "x2":550, "y2":500}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 23"
-    },
-    {
-      "points": [
-        {"x": 550, "y": 500, "x2":550, "y2":650}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 24"
-    },
+  
+  {
+    "points": [
+      {"x": 50, "y": 650, "x2":50, "y2":300}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 17"
+  },
+  {
+    "points": [
+      {"x": 50, "y": 300, "x2":50, "y2":200}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 18"
+  },
+  {
+    "points": [
+      {"x": 50, "y": 200, "x2":50, "y2":50}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 19"
+  },
+  
+  {
+    "points": [
+      {"x": 50, "y": 200, "x2":150, "y2":200}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 20"
+  },
+  {
+    "points": [
+      {"x": 150, "y": 200, "x2":400, "y2":200}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 21"
+  },
+  {
+    "points": [
+      {"x": 400, "y": 200, "x2":550, "y2":200}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 22"
+  },
+  
+  {
+    "points": [
+      {"x": 550, "y": 200, "x2":550, "y2":500}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 23"
+  },
+  {
+    "points": [
+      {"x": 550, "y": 500, "x2":550, "y2":650}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 24"
+  },
 
-    
-    {
-      "points": [
-        {"x": 150, "y": 650, "x2":150, "y2":300}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 25"
-    },
-    {
-      "points": [
-        {"x": 150, "y": 300, "x2":150, "y2":200}
-      ],
-      "lampDistance": 50.0,
-      "lampCount": 10,
-      "roadCategory": "A",
-      "streetName": "Street 26"
-    }
-  ]
+  
+  {
+    "points": [
+      {"x": 150, "y": 650, "x2":150, "y2":300}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 25"
+  },
+  {
+    "points": [
+      {"x": 150, "y": 300, "x2":150, "y2":200}
+    ],
+    "lampDistance": 50.0,
+    "lampCount": 10,
+    "roadCategory": "C",
+    "streetName": "Street 26"
+  }
+]

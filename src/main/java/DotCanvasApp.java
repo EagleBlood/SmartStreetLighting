@@ -22,7 +22,7 @@ public class DotCanvasApp extends JFrame {
     private static JPanel canvasPanel;
     private final ArrayList<Point> dots = new ArrayList<>();
     private final ArrayList<Point> newDots = new ArrayList<>();
-    private final String[] categoriesRoad = {"A", "B"};
+    private final String[] categoriesRoad = {"C", "P"};
     private BufferedImage backgroundImage;
     private final JTextField streetNameField;
     private final JComboBox category;

@@ -101,13 +101,13 @@ public class Path implements Drawable{
         
         switch(roadCategory)
         {
-            case 'A':
+            case 'C':
             {
                 g2d.setColor(MAIN_COLOR);
                 g2d.setStroke(new BasicStroke(PATH_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 break;
             }
-            case 'B':
+            case 'P':
             {
                 g2d.setColor(SUBMAIN_COLOR);
                 g2d.setStroke(new BasicStroke(PATH_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
@@ -115,7 +115,7 @@ public class Path implements Drawable{
             }
             default:
             {
-                g2d.setColor(PATH_COLOR);
+                g2d.setColor(SUBMAIN_COLOR);
                 g2d.setStroke(new BasicStroke(PATH_THICKNESS, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 break;
             }

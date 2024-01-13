@@ -17,10 +17,10 @@ public class Lamp {
     public Lamp(Point2D.Double position, char roadCategory) {
         this.position = position;
         switch (roadCategory) {
-            case 'A':
+            case 'C':
                 this.radius = 30;
                 break;
-            case 'B':
+            case 'P':
                 this.radius = 30;
                 break;
             default:
