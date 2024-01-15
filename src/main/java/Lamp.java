@@ -72,22 +72,22 @@ public class Lamp {
                 } else {
                     g2d.setColor(LAMP_LIT_COLOR); // Active color
                 }
-                    
+
                 g2d.setStroke(new BasicStroke(LAMP_STROKE)); // Default stroke for active area
-                
+
                 // Draw the area for the current lamp
                 g2d.draw(new Ellipse2D.Double(position.getX() - this.radius, position.getY() - this.radius, this.radius * 2, this.radius * 2));
-        
+
                 // Draw the area for the lamp ahead
                 List<Lamp> lamps = Path.getAllLamps();
                 int currentIndex = lamps.indexOf(this);
-    
+
                 // Check if the next lamp is within the range of the dot and is in the same drawable
                 if (currentIndex < lamps.size() - 1) {
                     Lamp nextLamp = lamps.get(currentIndex + 1);
                     nextLamp.drawArea();
                 }
-    
+
                 // Check if the previous lamp is within the range of the dot and is in the same drawable
                 if (currentIndex > 0) {
                     Lamp previousLamp = lamps.get(currentIndex - 1);
@@ -106,21 +106,23 @@ public class Lamp {
         String selectedWeather = SettingsPanel.getCurrentWeather();
         String selectedSeason = SettingsPanel.getCurrentSeason();
 
-        if (selectedWeather.equals("Sun")) {
-            if (selectedSeason.equals("Spring") || selectedSeason.equals("Autumn")) {
-                return (currentHour >= 18 && currentHour <= 23) || (currentHour >= 0 && currentHour < 5);
-            } else if (selectedSeason.equals("Summer")) {
-                return (currentHour >= 21 && currentHour <= 23) || (currentHour >= 0 && currentHour < 4);
-            } else if (selectedSeason.equals("Winter")) {
-                return (currentHour >= 16 && currentHour <= 23) || (currentHour >= 0 && currentHour < 7);
-            }
-        } else if (selectedWeather.equals("Precipitation")) {
-            if (selectedSeason.equals("Spring") || selectedSeason.equals("Autumn")) {
-                return (currentHour >= 17 && currentHour <= 23) || (currentHour >= 0 && currentHour < 6);
-            } else if (selectedSeason.equals("Summer")) {
-                return (currentHour >= 20 && currentHour <= 23) || (currentHour >= 0 && currentHour < 4);
-            } else if (selectedSeason.equals("Winter")) {
-                return (currentHour >= 15 && currentHour <= 23) || (currentHour >= 0 && currentHour < 7);
+        if (selectedWeather != null) {
+            if (selectedWeather.equals("Sun")) {
+                if (selectedSeason.equals("Spring") || selectedSeason.equals("Autumn")) {
+                    return (currentHour >= 18 && currentHour <= 23) || (currentHour >= 0 && currentHour < 5);
+                } else if (selectedSeason.equals("Summer")) {
+                    return (currentHour >= 21 && currentHour <= 23) || (currentHour >= 0 && currentHour < 4);
+                } else if (selectedSeason.equals("Winter")) {
+                    return (currentHour >= 16 && currentHour <= 23) || (currentHour >= 0 && currentHour < 7);
+                }
+            } else if (selectedWeather.equals("Precipitation")) {
+                if (selectedSeason.equals("Spring") || selectedSeason.equals("Autumn")) {
+                    return (currentHour >= 17 && currentHour <= 23) || (currentHour >= 0 && currentHour < 6);
+                } else if (selectedSeason.equals("Summer")) {
+                    return (currentHour >= 20 && currentHour <= 23) || (currentHour >= 0 && currentHour < 4);
+                } else if (selectedSeason.equals("Winter")) {
+                    return (currentHour >= 15 && currentHour <= 23) || (currentHour >= 0 && currentHour < 7);
+                }
             }
         }
 
