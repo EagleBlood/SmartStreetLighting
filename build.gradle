@@ -18,6 +18,12 @@ application {
     mainClassName = 'Main'
 }
 
+java {
+    // Ustawienie minimalnej wersji Javy
+    sourceCompatibility = JavaVersion.VERSION_19
+    targetCompatibility = JavaVersion.VERSION_19
+}
+
 shadowJar {
     archiveFileName = 'Smart Street Lighting.jar' // nazwa twojego pliku JAR
 }
@@ -25,7 +31,3 @@ shadowJar {
 launch4j {
     mainClassName = 'Main'
 }
-
-//task wrapper(type: Wrapper) {
-//    gradleVersion '4.4.1'
-//}

@@ -219,8 +219,6 @@ public class DotCanvasApp extends JFrame {
     }
 
     private void resetCombobox(JComboBox<String> comboBox) {
-        comboBox.addItem("empty");
-        comboBox.setSelectedItem("empty");
         comboBox.setSelectedIndex(-1);
 
         comboBox.setRenderer(new DefaultListCellRenderer() {
