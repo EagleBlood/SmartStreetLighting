@@ -55,7 +55,7 @@ public class DotCanvasApp extends JFrame {
         canvasPanel = new JPanel() {
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(1000, 900);
+                return new Dimension(1000, 750);
             }
 
             @Override
@@ -114,7 +114,7 @@ public class DotCanvasApp extends JFrame {
         JPanel settingsPanel = new JPanel(new GridBagLayout()) {
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(350, 900);
+                return new Dimension(350, 750);
             }
 
             @Override

@@ -39,7 +39,7 @@ public class SettingsPanel extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(350, 700);
+        return new Dimension(350, 750);
     }
 
     @Override
