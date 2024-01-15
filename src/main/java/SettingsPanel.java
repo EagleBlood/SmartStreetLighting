@@ -23,8 +23,6 @@ public class SettingsPanel extends JPanel {
     private final JLabel currentMonth;
     public static SettingsPanel instance;
     private final ButtonAction buttonAction1;
-    private int presetCount = 1;
-
     public static String getCurrentTime() {
         return instance.clockLabel.getText();
     }
@@ -270,10 +268,21 @@ public class SettingsPanel extends JPanel {
                 System.out.println("Selected file: " + selectedFile.getAbsolutePath());
                 Main.setCustomConfig(selectedFile.getAbsolutePath());
 
-                String newPreset = "Your config " + presetCount;
-                presetCount++;
+                String newPreset = "Your config";
 
-                presetComboBox.addItem(newPreset);
+                // Sprawdź, czy preset już istnieje w comboboxie
+                boolean presetExists = false;
+                for (int i = 0; i < presetComboBox.getItemCount(); i++) {
+                    if (newPreset.equals(presetComboBox.getItemAt(i))) {
+                        presetExists = true;
+                        break;
+                    }
+                }
+
+                // Jeśli nie istnieje, dodaj nowy preset
+                if (!presetExists) {
+                    presetComboBox.addItem(newPreset);
+                }
 
                 presetComboBox.setSelectedItem(newPreset);
             }
@@ -372,10 +381,7 @@ public class SettingsPanel extends JPanel {
             Main.updateDrawables(selectedPreset);
             Main.getJPanel().repaint();
         } else {
-            for (int i=1; i<=presetCount; i++){
-                String preset = "Your config " + i;
-                presetComboBox.removeItem(preset);
-            }
+            presetComboBox.removeItem("Your preset");
         }
     }
 
@@ -466,10 +472,10 @@ public class SettingsPanel extends JPanel {
 
         // Sprawdź, czy nowy miesiąc to kwiecień, lipiec, październik lub styczeń
         switch (newMonth) {
-            case "April" -> seasonComboBox.setSelectedItem("Spring");
-            case "July" -> seasonComboBox.setSelectedItem("Summer");
-            case "October" -> seasonComboBox.setSelectedItem("Autumn");
-            case "January" -> seasonComboBox.setSelectedItem("Winter");
+            case "April" : seasonComboBox.setSelectedItem("Spring");
+            case "July" : seasonComboBox.setSelectedItem("Summer");
+            case "October" : seasonComboBox.setSelectedItem("Autumn");
+            case "January" : seasonComboBox.setSelectedItem("Winter");
         }
     }
 
