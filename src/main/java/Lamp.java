@@ -18,10 +18,10 @@ public class Lamp {
         this.position = position;
         switch (roadCategory) {
             case 'C':
-                this.radius = 30;
+                this.radius = 35;
                 break;
             case 'P':
-                this.radius = 30;
+                this.radius = 20;
                 break;
             default:
                 this.radius = 10; // default radius
